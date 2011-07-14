@@ -5,16 +5,44 @@ import me.matterz.supernaturals.io.SNConfigHandler;
 public class SuperNPlayer implements Comparable<SuperNPlayer>{
 	
 	private String playername;
+	private String superType = "human";
+	private String oldSuperType = "human";
+	private double oldSuperPower = 0;
+	private boolean supernatural = false;
 	private boolean vampire = false;
 	private double superPower = 0;
 	private boolean truce = true;
 	private int truceTimer = 0;
 	
-	public SuperNPlayer() {}
+	public SuperNPlayer(){}
 	
-	public SuperNPlayer(String playername, boolean isVampire, double superPower, boolean truce, int truceTimer){
+	public SuperNPlayer(String playername){
+		this.playername=playername;
+		this.superType = "human";
+		this.oldSuperType = "human";
+		this.oldSuperPower = 0;
+		this.supernatural = false;
+		this.vampire = false;
+		this.superPower = 0;
+		this.truce = true;
+		this.truceTimer = 0;
+	}
+	
+	public SuperNPlayer(String playername, String superType, double superPower, String oldSuperType, double oldSuperPower, boolean truce, int truceTimer){
 		this.playername = playername;
-		this.vampire = isVampire;
+		this.superType = superType;
+		this.oldSuperType = oldSuperType;
+		this.oldSuperPower = oldSuperPower;		
+		if(superType.equalsIgnoreCase("human")){
+			this.supernatural = false;
+			this.vampire = false;
+		} else {
+			this.supernatural = true;
+			if(superType.equalsIgnoreCase("vampire"))
+				this.vampire = true;
+			else
+				this.vampire = false;
+		}
 		this.superPower = superPower;
 		this.truce = truce;
 		this.truceTimer = truceTimer;
@@ -38,6 +66,38 @@ public class SuperNPlayer implements Comparable<SuperNPlayer>{
 	
 	public void setName(String name){
 		this.playername=name;
+	}
+	
+	public String getType(){
+		return this.superType;
+	}
+	
+	public void setType(String type){
+		this.superType=type;
+	}
+	
+	public String getOldType(){
+		return this.oldSuperType;
+	}
+	
+	public void setOldType(String type){
+		this.oldSuperType=type;
+	}
+	
+	public double getOldPower(){
+		return this.oldSuperPower;
+	}
+	
+	public void setOldPower(double amount){
+		this.oldSuperPower=amount;
+	}
+	
+	public boolean isSuper(){
+		return this.supernatural;
+	}
+	
+	public void setSuper(boolean natural){
+		this.supernatural = natural;
 	}
 	
 	public boolean isVampire(){
@@ -70,6 +130,10 @@ public class SuperNPlayer implements Comparable<SuperNPlayer>{
 	
 	public void setTruceTimer(int timer){
 		this.truceTimer=timer;
+	}
+	
+	public boolean isOnline(){
+		return SupernaturalsPlugin.instance.getServer().getPlayer(playername) != null;
 	}
 	
 	// -------------------------------------------- //

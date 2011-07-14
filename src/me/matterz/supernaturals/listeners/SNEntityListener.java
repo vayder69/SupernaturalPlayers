@@ -3,6 +3,7 @@ package me.matterz.supernaturals.listeners;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
+import me.matterz.supernaturals.manager.SupernaturalManager;
 import me.matterz.supernaturals.util.EntityUtil;
 
 import org.bukkit.entity.Entity;
@@ -46,7 +47,8 @@ public class SNEntityListener extends EntityListener{
 		//Modify victim player damage
 		if(victim instanceof Player){
 			pVictim = (Player) victim;
-			snpVictim = plugin.getSuperManager().get(pVictim);
+			plugin.getSuperManager();
+			snpVictim = SupernaturalManager.get(pVictim);
 		
 			if(snpVictim.isVampire() && (event.getCause() == DamageCause.DROWNING)){
 				event.setCancelled(true);
@@ -70,14 +72,18 @@ public class SNEntityListener extends EntityListener{
 				return;	
 			
 			pDamager = (Player)damager;
-			snpDamager = plugin.getSuperManager().get(pDamager);
+			plugin.getSuperManager();
+			snpDamager = SupernaturalManager.get(pDamager);
 			
 			damage = event.getDamage();
 			// Modify damage if victim is a vampire
 			
 			if(victim instanceof Player){
 				pVictim = (Player)victim;
-				snpVictim = plugin.getSuperManager().get(pVictim);
+				plugin.getSuperManager();
+				snpVictim = SupernaturalManager.get(pVictim);
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + pDamager.getItemInHand().getType().toString());
 				if(snpVictim.isVampire()){
 					if(SNConfigHandler.woodMaterials.contains(pDamager.getItemInHand().getType().toString())){
 						damage *= SNConfigHandler.woodFactor;
@@ -99,7 +105,8 @@ public class SNEntityListener extends EntityListener{
 			return;	
 		
 		pDamager = (Player)damager;
-		snpDamager = plugin.getSuperManager().get(pDamager);
+		plugin.getSuperManager();
+		snpDamager = SupernaturalManager.get(pDamager);
 		
 		damage = event.getDamage();
 		
@@ -111,7 +118,10 @@ public class SNEntityListener extends EntityListener{
 		// Modify damage if victim is a vampire
 		if(victim instanceof Player){
 			pVictim = (Player)victim;
-			snpVictim = plugin.getSuperManager().get(pVictim);
+			plugin.getSuperManager();
+			snpVictim = SupernaturalManager.get(pVictim);
+			if(SNConfigHandler.debugMode)
+				SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + pDamager.getItemInHand().getType().toString());
 			if(snpVictim.isVampire()){
 				if(SNConfigHandler.woodMaterials.contains(pDamager.getItemInHand().getType().toString())){
 					damage *= SNConfigHandler.woodFactor;
@@ -141,7 +151,8 @@ public class SNEntityListener extends EntityListener{
 			return;
 		}
 		
-		SuperNPlayer snplayer = plugin.getSuperManager().get((Player)event.getTarget());
+		plugin.getSuperManager();
+		SuperNPlayer snplayer = SupernaturalManager.get((Player)event.getTarget());
 		
 		// ... and that player is a vampire ...
 		if(!snplayer.isVampire()) {
@@ -155,5 +166,7 @@ public class SNEntityListener extends EntityListener{
 		
 		// Then the creature will not attack.
 		event.setCancelled(true);
+		if(SNConfigHandler.debugMode)
+			SupernaturalsPlugin.log(EntityUtil.creatureNameFromEntity(event.getEntity()) + " did not attack " + snplayer.getName() + " due to the Truce.");
 	}
 }

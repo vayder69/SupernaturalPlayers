@@ -1,6 +1,9 @@
 package me.matterz.supernaturals.manager;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 
 import org.bukkit.ChatColor;
@@ -21,10 +24,9 @@ import me.matterz.supernaturals.util.SuperNTaskTimer;
 public class SupernaturalManager {
 
 	private SupernaturalsPlugin plugin;
-	private static List<SuperNPlayer> supernaturals;
-	private static List<SuperNPlayer> onlineSupers;
+	private static List<SuperNPlayer> supernaturals = new ArrayList<SuperNPlayer>();
 	
-	private Timer timer;
+	private Timer timer = new Timer();
 	
 	public SupernaturalManager(SupernaturalsPlugin plugin){
 		this.plugin = plugin;
@@ -49,48 +51,119 @@ public class SupernaturalManager {
 			}
 		}
 		
-		SuperNPlayer snplayer = new SuperNPlayer(playername,false,0,true,0);
+		SuperNPlayer snplayer = new SuperNPlayer(playername);
 		supernaturals.add(snplayer);
 		return snplayer;
 	}
 	
-	public SuperNPlayer get(Player player){
+	public static SuperNPlayer get(Player player){
 		for(SuperNPlayer supernatural : supernaturals){
-			if(supernatural.getName()==player.getName()){
+			if(supernatural.getName() == player.getName()){
 				return supernatural;
 			}
 		}
-		
-		SuperNPlayer snplayer = new SuperNPlayer(player.getName(),false,0,true,0);
+		SuperNPlayer snplayer = new SuperNPlayer(player.getName());
 		supernaturals.add(snplayer);
 		return snplayer;
 	}	
-	public static List<SuperNPlayer> findAllOnline() {
-		for(SuperNPlayer supernatural : supernaturals){
-			if(!onlineSupers.contains(supernatural))
-				onlineSupers.add(supernatural);
+	
+	public static Set<SuperNPlayer> findAllOnline() {
+		Set<SuperNPlayer> snplayers = new HashSet<SuperNPlayer>();
+		for (Player player : SupernaturalsPlugin.instance.getServer().getOnlinePlayers()) {
+			snplayers.add(SupernaturalManager.get(player));
 		}
-		return onlineSupers;
+		return snplayers;
 	}
 	
 	// -------------------------------------------- //
 	// 			Supernatural Conversions			//
 	// -------------------------------------------- //
 	
-	public void turn(SuperNPlayer snplayer) {
-		snplayer.setVampire(true);
+	public void curse(SuperNPlayer snplayer, String superType) {
+		String type = superType.toLowerCase();
+		snplayer.setOldType(snplayer.getType());
+		snplayer.setOldPower(snplayer.getPower());
 		
-		this.sendMessage(snplayer, "You are now a vampire!");
-		SupernaturalsPlugin.log(snplayer.getName() + " turned into a vampire.");
+		snplayer.setType(type);
+		snplayer.setPower(0);
+		
+		if(superType.equalsIgnoreCase("human")){
+			snplayer.setSuper(false);
+		}else{
+			if(superType.equalsIgnoreCase("vampire"))
+				snplayer.setVampire(true);
+			else
+				snplayer.setVampire(false);
+		}
+		
+		this.sendMessage(snplayer, "You are now a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
+		SupernaturalsPlugin.log(snplayer.getName() + " turned into a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
 		
 		plugin.saveData();
 	}
 	
-	public void cure(SuperNPlayer snplayer) {
-		snplayer.setVampire(false);
-		this.sendMessage(snplayer, "You have been cured from the vampirism!");
-		SupernaturalsPlugin.log(snplayer.getName() + " was cured and is no longer a vampire.");
+	public void curse(SuperNPlayer snplayer, String superType, int powerLevel) {
+		String type = superType.toLowerCase();
+		snplayer.setOldType(snplayer.getType());
+		snplayer.setOldPower(snplayer.getPower());
+		
+		snplayer.setType(type);
+		snplayer.setPower(powerLevel);
+		
+		if(superType.equalsIgnoreCase("human")){
+			snplayer.setSuper(false);
+		}else{
+			if(superType.equalsIgnoreCase("vampire"))
+				snplayer.setVampire(true);
+			else
+				snplayer.setVampire(false);
+		}
+		
+		this.sendMessage(snplayer, "You are now a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
+		SupernaturalsPlugin.log(snplayer.getName() + " turned into a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
+		
 		plugin.saveData();
+	}
+	
+	public void cure(SuperNPlayer snplayer){
+		snplayer.setOldType(snplayer.getType());
+		snplayer.setOldPower(snplayer.getPower());
+		
+		snplayer.setType("human");
+		snplayer.setPower(0);
+		
+		snplayer.setSuper(false);
+		snplayer.setVampire(false);
+		this.sendMessage(snplayer, "You have been cured of any curses!");
+		SupernaturalsPlugin.log(snplayer.getName() + " was cured of any curses!");
+		plugin.saveData();
+	}
+	
+	public void revert(SuperNPlayer snplayer){
+		String oldType = snplayer.getOldType();
+		double oldPower = snplayer.getOldPower();
+		
+		snplayer.setOldType(snplayer.getType());
+		snplayer.setOldPower(snplayer.getPower());
+		
+		snplayer.setType(oldType);
+		snplayer.setPower(oldPower);
+		
+		if(oldType.equalsIgnoreCase("human")){
+			snplayer.setSuper(false);
+		}else{
+			if(oldType.equalsIgnoreCase("vampire"))
+				snplayer.setVampire(true);
+			else
+				snplayer.setVampire(false);
+		}
+		
+		this.sendMessage(snplayer, "You been reverted to your previous state of being a " 
+				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
+		SupernaturalsPlugin.log(snplayer.getName() + " was reverted to the previous state of being a " 
+				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
+		plugin.saveData();
+		
 	}
 	
 	// -------------------------------------------- //
@@ -99,6 +172,7 @@ public class SupernaturalManager {
 	
 	public void alterPower(SuperNPlayer snplayer, double delta){
 		snplayer.setPower(snplayer.getPower() + delta);
+		plugin.saveData();
 	}
 	
 	public void alterPower(SuperNPlayer snplayer, double delta, String reason){
@@ -113,13 +187,17 @@ public class SupernaturalManager {
 		this.alterPower(snplayer, amount, String.format("from %s", source));
 	}
 	
+	public void gainPowerAdvanceTime(SuperNPlayer snplayer){
+		this.alterPower(snplayer, SNConfigHandler.vampirePowerGainedOverTime);		
+	}
+	
 	// -------------------------------------------- //
 	// 					Jump ability				//
 	// -------------------------------------------- //
 	
 	public void jump(Player player, double deltaSpeed, boolean upOnly) {
 		
-		SuperNPlayer snplayer = this.get(player);
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		
 		if (snplayer.getPower() - SNConfigHandler.jumpBloodCost <= 0) {
 			this.sendMessage(snplayer, "Not enough blood to jump.");
@@ -147,7 +225,7 @@ public class SupernaturalManager {
 	
 	public void useAltarInfect(Player player, Block centerBlock) {
 		
-		SuperNPlayer snplayer = this.get(player);
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		
 		// The altar must be big enough
 		int count = GeometryUtil.countNearby(centerBlock, Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterialSurround), 
@@ -168,6 +246,9 @@ public class SupernaturalManager {
 		if (snplayer.isVampire()) {
 			this.sendMessage(snplayer, "This is of no use to you as you are already a vampire.");
 			return;
+		} else if (snplayer.isSuper()) {
+			this.sendMessage(snplayer, "This is of no use to you as you are already supernatural.");
+			return;
 		}
 		
 		// Is healthy and thus can be infected...
@@ -176,7 +257,7 @@ public class SupernaturalManager {
 			this.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
 			this.sendMessage(snplayer, "The gold draws energy from the obsidian... The energy rushes through you and you feel a bitter cold...");
 			SNConfigHandler.vampireAltarInfectRecipe.removeFromPlayer(player);
-			this.turn(snplayer);
+			this.curse(snplayer, "vampire", 1000);
 		} else {
 			this.sendMessage(snplayer, "To use it you need to collect these ingredients:");
 			this.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
@@ -184,7 +265,7 @@ public class SupernaturalManager {
 	}
 	
 	public void useAltarCure(Player player, Block centerBlock) {		
-		SuperNPlayer snplayer = this.get(player);
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		
 		//Altar must be big enough
 		int count = GeometryUtil.countNearby(centerBlock, Material.getMaterial(SNConfigHandler.vampireAltarCureMaterialSurround), 
@@ -220,16 +301,6 @@ public class SupernaturalManager {
 		{
 			this.sendMessage(snplayer, "To use it you need to collect these ingredients:");
 			this.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
-		}
-	}
-	
-	// -------------------------------------------- //
-	// 				Every Tick						//
-	// -------------------------------------------- //
-	
-	public void advanceTime(SuperNPlayer snplayer, int milliseconds) {
-		if (snplayer.isVampire()) {
-			this.truceBreakAdvanceTime(snplayer, milliseconds);
 		}
 	}
 	
@@ -319,11 +390,19 @@ public class SupernaturalManager {
 	// -------------------------------------------- //
 	
 	public void startTimer(){
-		timer.schedule(new SuperNTaskTimer(plugin), 0, //initial delay
-		        SNConfigHandler.timerInterval); //subsequent rate
+		timer.schedule(new SuperNTaskTimer(plugin),0,SNConfigHandler.timerInterval);
 	}
 	
 	public void cancelTimer(){
 		timer.cancel();
+	}
+	
+	public void advanceTime(SuperNPlayer snplayer, int milliseconds) {
+		if (snplayer.isSuper()){
+			if (snplayer.isVampire()) {
+				this.truceBreakAdvanceTime(snplayer, milliseconds);
+				this.gainPowerAdvanceTime(snplayer);
+			}
+		}
 	}
 }

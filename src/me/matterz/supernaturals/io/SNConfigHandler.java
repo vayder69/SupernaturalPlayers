@@ -1,6 +1,7 @@
 package me.matterz.supernaturals.io;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -15,38 +16,35 @@ public class SNConfigHandler {
 	
 	//Config variables
 	public Configuration config;
+	public static boolean debugMode;
 	public static double vampireDamageFactor;
-	public static List<String> woodMaterials;
-	private List<String> defaultWoodMaterials;
 	public static double woodFactor;
 	public static double vampireDamageReceivedFactor;
-	public static List<String> vampireTruce;
-	private List<String> defaultVampireTruce;
-	public static int truceBreakTime;
-	public static List<String> foodMaterials;
-	private List<String> defaultFoodMaterials;
-	public static List<String> jumpMaterials;
-	private List<String> defaultJumpMaterials;
 	public static double jumpDeltaSpeed;
 	public static double jumpBloodCost;
+	public static double vampireAltarInfectMaterialRadius;
+	public static double vampireAltarCureMaterialRadius;
+	public static int truceBreakTime;
 	public static int maxPower;
+	public static int timerInterval;
+	public static int vampireAltarInfectMaterialSurroundCount;
+	public static int vampireAltarCureMaterialSurroundCount;
+	public static int vampireCombustFromTime;
+	public static int vampireCombustToTime;
+	public static int vampirePowerGainedOverTime;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
-	public static double vampireAltarInfectMaterialRadius;
-	public static int vampireAltarInfectMaterialSurroundCount;
-	public static List<String> vampireAltarInfectMaterials;
-	private List<String> defaultVampireAltarInfectMaterials;
-	public static List<Integer> vampireAltarInfectQuantities;
-	private List<Integer> defaultVampireAltarInfectQuantities;
-	public static int timerInterval;
 	public static String vampireAltarCureMaterialSurround;
-	public static double vampireAltarCureMaterialRadius;
-	public static int vampireAltarCureMaterialSurroundCount;
-	public static List<String> vampireAltarCureMaterials;
-	private List<String> defaultVampireAltarCureMaterials;
-	public static List<Integer> vampireAltarCureQuantities;
-	private List<Integer> defaultVampireAltarCureQuantities;
+	public static List<String> woodMaterials = new ArrayList<String>();
+	public static List<String> vampireTruce = new ArrayList<String>();
+	public static List<String> foodMaterials = new ArrayList<String>();
+	public static List<String> jumpMaterials = new ArrayList<String>();
+	public static List<String> vampireAltarInfectMaterials = new ArrayList<String>();
+	public static List<String> vampireAltarCureMaterials = new ArrayList<String>();
+	public static List<String> supernaturalTypes = new ArrayList<String>();
+	public static List<Integer> vampireAltarCureQuantities = new ArrayList<Integer>();
+	public static List<Integer> vampireAltarInfectQuantities = new ArrayList<Integer>();
 	
 	public static Recipes vampireAltarInfectRecipe = new Recipes();
 	public static Recipes vampireAltarCureRecipe = new Recipes();
@@ -56,75 +54,121 @@ public class SNConfigHandler {
 	}
 	
 	public void getConfiguration(){
-		defaultWoodMaterials.add("STICK");
-		defaultWoodMaterials.add("WOOD_AXE");
-		defaultWoodMaterials.add("WOOD_HOE");
-		defaultWoodMaterials.add("WOOD_PICKAXE");
-		defaultWoodMaterials.add("WOOD_SPADE");
-		defaultWoodMaterials.add("WOOD_SWORD");
-		   
-		defaultVampireTruce.add("CREEPER");
-		defaultVampireTruce.add("GHAST");
-		defaultVampireTruce.add("SKELETON");
-		defaultVampireTruce.add("SPIDER");
-		defaultVampireTruce.add("ZOMBIE");
-		   
-		defaultFoodMaterials.add("APPLE");
-		defaultFoodMaterials.add("BREAD");
-		defaultFoodMaterials.add("COOKED_FISH");
-		defaultFoodMaterials.add("GRILLED_PORK");
-		defaultFoodMaterials.add("GOLDEN_APPLE");
-		defaultFoodMaterials.add("MUSHROOM_SOUP");
-		defaultFoodMaterials.add("RAW_FISH");
-		defaultFoodMaterials.add("PORK");
-		   
-		defaultJumpMaterials.add("RED_ROSE");
-		
-		defaultVampireAltarInfectMaterials.add("MUSHROOM_SOUP");
-		defaultVampireAltarInfectMaterials.add("BONE");
-		defaultVampireAltarInfectMaterials.add("SULPHUR");
-		defaultVampireAltarInfectMaterials.add("REDSTONE");
-		
-		defaultVampireAltarInfectQuantities.add(1);
-		defaultVampireAltarInfectQuantities.add(10);
-		defaultVampireAltarInfectQuantities.add(10);
-		defaultVampireAltarInfectQuantities.add(10);
-		
-		defaultVampireAltarCureMaterials.add("WATER_BUCKET");
-		defaultVampireAltarCureMaterials.add("DIAMOND");
-		defaultVampireAltarCureMaterials.add("SUGAR");
-		defaultVampireAltarCureMaterials.add("WHEAT");
-		
-		defaultVampireAltarCureQuantities.add(1);
-		defaultVampireAltarCureQuantities.add(1);
-		defaultVampireAltarCureQuantities.add(20);
-		defaultVampireAltarCureQuantities.add(20);
 		  
 		config = plugin.getConfiguration();
-		vampireDamageFactor = config.getDouble("VampireDamageFactor", 1.1);
-		woodMaterials = config.getStringList("WoodenMaterials", defaultWoodMaterials);
-		woodFactor = config.getDouble("VampireWoodDamageFactor", 1.5);
-		vampireDamageReceivedFactor = config.getDouble("VampireDamageReceivedFactor", 0.9);
-		vampireTruce = config.getStringList("VampireTruceCreatures", defaultVampireTruce);
-		truceBreakTime = config.getInt("TruceBreakTime", 60000);
-		foodMaterials = config.getStringList("FoodMaterials", defaultFoodMaterials);
-		jumpMaterials = config.getStringList("JumpMaterials", defaultJumpMaterials);
-		jumpDeltaSpeed = config.getDouble("VampireJumpDelta", 3);
-		jumpBloodCost = config.getDouble("VampireJumpBloodCost", 3);
-		maxPower = config.getInt("MaxAllowedPower", 10000);
-		vampireAltarInfectMaterial = config.getString("VampireAltarInfectMaterial","GOLD_BLOCK");
-		vampireAltarCureMaterial = config.getString("VampireAltarCureMaterial","LAPIS_BLOCK");
-		vampireAltarInfectMaterialSurround = config.getString("VampireInfectAltarSurroudingMaterial","OBSIDIAN");
-		vampireAltarInfectMaterialRadius = config.getDouble("VampireInfectAltarSurroundingMaterialRadius",7D);
-		vampireAltarInfectMaterialSurroundCount = config.getInt("VampireInfectAltarMaterialSurroundCount",20);
-		vampireAltarInfectMaterials = config.getStringList("VampireInfectAltarMaterials", defaultVampireAltarInfectMaterials);
-		vampireAltarInfectQuantities = config.getIntList("VampireInfectAltarQuantities", defaultVampireAltarInfectQuantities);
-		timerInterval = config.getInt("TimerInterval", 1000);
-		vampireAltarCureMaterialSurround = config.getString("VampireCureAltarSurroudingMaterial","GLOWSTONE");
-		vampireAltarCureMaterialRadius = config.getDouble("VampireCureAltarSurroundingMaterialRadius", 7D);
-		vampireAltarCureMaterialSurroundCount = config.getInt("VampireCureAltarMaterialSurroundCount",20);
-		vampireAltarCureMaterials = config.getStringList("VampireCureAltarMaterials", defaultVampireAltarCureMaterials);
-		vampireAltarCureQuantities = config.getIntList("VampireCureAltarQuantities", defaultVampireAltarCureQuantities);
+		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 60000);
+		maxPower = config.getInt("Supernatural.MaxAllowedPower", 10000);
+		supernaturalTypes = config.getStringList("Supernatural.Types", null);
+		vampirePowerGainedOverTime = config.getInt("Vampire.PowerGained.OverTime", 1);
+		
+		woodMaterials = config.getStringList("Vampire.Materials.Wooden", null);
+		foodMaterials = config.getStringList("Vampire.Materials.Food", null);
+		
+		jumpMaterials = config.getStringList("Vampire.Jump.Materials", null);
+		jumpDeltaSpeed = config.getDouble("Vampire.Jump.Delta", 3);
+		jumpBloodCost = config.getDouble("Vampire.Jump.BloodCost", 3);
+		
+		vampireDamageFactor = config.getDouble("Vampire.Damage.Factor", 1.1);
+		vampireDamageReceivedFactor = config.getDouble("Vampire.Damage.ReceivedFactor", 0.9);
+		woodFactor = config.getDouble("Vampire.Damage.WoodFactor", 1.5);
+		
+		vampireTruce = config.getStringList("Vampire.Truce.Creatures", null);
+		vampireCombustFromTime = config.getInt("Vampire.Combust.FromTime", 0);
+		vampireCombustToTime = config.getInt("Vampire.Combust.ToTime", 12400);
+		
+		vampireAltarInfectMaterial = config.getString("Vampire.Altar.Infect.Material","GOLD_BLOCK");
+		vampireAltarInfectMaterialSurround = config.getString("Vampire.Altar.Infect.Surrounding.Material","OBSIDIAN");
+		vampireAltarInfectMaterialRadius = config.getDouble("Vampire.Altar.Infect.Surrounding.Radius",7D);
+		vampireAltarInfectMaterialSurroundCount = config.getInt("Vampire.Altar.Infect.Surrounding.Count",20);
+		vampireAltarInfectMaterials = config.getStringList("Vampire.Altar.Infect.Recipe.Materials", null);
+		vampireAltarInfectQuantities = config.getIntList("Vampire.Altar.Infect.Recipe.Quantities", null);
+		
+		vampireAltarCureMaterial = config.getString("Vampire.Altar.Cure.Material","LAPIS_BLOCK");
+		vampireAltarCureMaterialSurround = config.getString("Vampire.Altar.Cure.Surrounding.Material","GLOWSTONE");
+		vampireAltarCureMaterialRadius = config.getDouble("Vampire.Altar.Cure.Surrounding.Radius", 7D);
+		vampireAltarCureMaterialSurroundCount = config.getInt("Vampire.Altar.Cure.Surrounding.Count",20);
+		vampireAltarCureMaterials = config.getStringList("Vampire.Altar.Cure.Recipe.Materials", null);
+		vampireAltarCureQuantities = config.getIntList("Vampire.Altar.Cure.Recipe.Quantities", null);
+		
+		if(supernaturalTypes.size() == 0){
+			supernaturalTypes.add("human");
+			supernaturalTypes.add("vampire");
+			supernaturalTypes.add("werewolf");
+			supernaturalTypes.add("ghoul");
+			supernaturalTypes.add("priest");
+			config.setProperty("Supernatural.Types", supernaturalTypes);
+		}
+		
+		if(woodMaterials.size() == 0){
+			woodMaterials.add("STICK");
+			woodMaterials.add("WOOD_AXE");
+			woodMaterials.add("WOOD_HOE");
+			woodMaterials.add("WOOD_PICKAXE");
+			woodMaterials.add("WOOD_SPADE");
+			woodMaterials.add("WOOD_SWORD");
+			config.setProperty("Vampire.Materials.Wooden", woodMaterials);
+		}
+		
+		if(foodMaterials.size() == 0){
+			foodMaterials.add("APPLE");
+			foodMaterials.add("BREAD");
+			foodMaterials.add("COOKED_FISH");
+			foodMaterials.add("GRILLED_PORK");
+			foodMaterials.add("GOLDEN_APPLE");
+			foodMaterials.add("MUSHROOM_SOUP");
+			foodMaterials.add("RAW_FISH");
+			foodMaterials.add("PORK");
+			config.setProperty("Vampire.Materials.Food", foodMaterials);
+		}
+		
+		if(jumpMaterials.size() == 0){
+			jumpMaterials.add("RED_ROSE");
+			config.setProperty("Vampire.Jump.Materials", jumpMaterials);
+		}
+		
+		if(vampireTruce.size() == 0){
+			vampireTruce.add("CREEPER");
+			vampireTruce.add("GHAST");
+			vampireTruce.add("SKELETON");
+			vampireTruce.add("SPIDER");
+			vampireTruce.add("ZOMBIE");
+			config.setProperty("Vampire.Truce.Creatures", vampireTruce);
+		}
+		
+		if(vampireAltarInfectMaterials.size() == 0){
+			vampireAltarInfectMaterials.add("MUSHROOM_SOUP");
+			vampireAltarInfectMaterials.add("BONE");
+			vampireAltarInfectMaterials.add("SULPHUR");
+			vampireAltarInfectMaterials.add("REDSTONE");
+			config.setProperty("Vampire.Altar.Infect.Recipe.Materials", vampireAltarInfectMaterials);
+		}
+		
+		if(vampireAltarInfectQuantities.size() == 0){
+			vampireAltarInfectQuantities.add(1);
+			vampireAltarInfectQuantities.add(10);
+			vampireAltarInfectQuantities.add(10);
+			vampireAltarInfectQuantities.add(10);
+			config.setProperty("Vampire.Altar.Infect.Recipe.Quantities",vampireAltarInfectQuantities);
+		}
+		
+		if(vampireAltarCureMaterials.size() == 0){
+			vampireAltarCureMaterials.add("WATER_BUCKET");
+			vampireAltarCureMaterials.add("DIAMOND");
+			vampireAltarCureMaterials.add("SUGAR");
+			vampireAltarCureMaterials.add("WHEAT");
+			config.setProperty("Vampire.Altar.Cure.Recipe.Materials", vampireAltarCureMaterials);
+		}
+		
+		if(vampireAltarCureQuantities.size() == 0){
+			vampireAltarCureQuantities.add(1);
+			vampireAltarCureQuantities.add(1);
+			vampireAltarCureQuantities.add(20);
+			vampireAltarCureQuantities.add(20);
+			config.setProperty("Vampire.Altar.Cure.Recipe.Quantities",vampireAltarCureQuantities);
+		}
+		
+		timerInterval = config.getInt("TimerInterval", 30000);
+		debugMode = config.getBoolean("DebugMode", true);
 		config.save();
 		
 		for(int i=0; i<vampireAltarInfectMaterials.size();i++){

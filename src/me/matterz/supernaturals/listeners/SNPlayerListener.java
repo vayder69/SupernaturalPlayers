@@ -3,6 +3,7 @@ package me.matterz.supernaturals.listeners;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
+import me.matterz.supernaturals.manager.SupernaturalManager;
 
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
@@ -29,13 +30,16 @@ public class SNPlayerListener extends PlayerListener{
 			return;
 		}
 		
-		SuperNPlayer snplayer = plugin.getSuperManager().get(event.getPlayer());
+		plugin.getSuperManager();
+		SuperNPlayer snplayer = SupernaturalManager.get(event.getPlayer());
 		Material itemMaterial = event.getMaterial();
 		
 		if(snplayer.isVampire())
 		{
 			if(SNConfigHandler.foodMaterials.contains(itemMaterial.toString()))
 			{
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(snplayer.getName() + " attempted to eat " + itemMaterial.toString());
 				plugin.getSuperManager().sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
 				event.setCancelled(true);
 				return;
@@ -43,6 +47,8 @@ public class SNPlayerListener extends PlayerListener{
 			
 			if (SNConfigHandler.jumpMaterials.contains(event.getMaterial().toString())) 
 			{
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(snplayer.getName() + " used jump with " + itemMaterial.toString());
 				plugin.getSuperManager().jump(event.getPlayer(), SNConfigHandler.jumpDeltaSpeed, false);
 			}
 		}
@@ -54,8 +60,12 @@ public class SNPlayerListener extends PlayerListener{
 		Material blockMaterial = event.getClickedBlock().getType();
 		
 		if (blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterial)) {
+			if(SNConfigHandler.debugMode)
+				SupernaturalsPlugin.log(snplayer.getName() + " used a Vampire Infect Altar.");
 			plugin.getSuperManager().useAltarInfect(event.getPlayer(), event.getClickedBlock());
 		} else if (blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarCureMaterial)) {
+			if(SNConfigHandler.debugMode)
+				SupernaturalsPlugin.log(snplayer.getName() + " used a Vampire Cure Altar.");
 			plugin.getSuperManager().useAltarCure(event.getPlayer(), event.getClickedBlock());
 		}
 	}

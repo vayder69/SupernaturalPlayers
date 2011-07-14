@@ -1,6 +1,7 @@
 package me.matterz.supernaturals.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -11,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 
 public class Recipes{
-	public Map<Material, Integer> materialQuantities;
+	public Map<Material, Integer> materialQuantities = new HashMap<Material, Integer>();
 	
 	public void removeFromPlayer(Player player){
 		Inventory inventory = player.getInventory();
