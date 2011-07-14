@@ -2,14 +2,12 @@ package me.matterz.supernaturals;
 
 import me.matterz.supernaturals.io.SNConfigHandler;
 
-public class SuperNPlayer implements Comparable<SuperNPlayer>{
+public class SuperNPlayer{
 	
 	private String playername;
 	private String superType = "human";
 	private String oldSuperType = "human";
 	private double oldSuperPower = 0;
-	private boolean supernatural = false;
-	private boolean vampire = false;
 	private double superPower = 0;
 	private boolean truce = true;
 	private int truceTimer = 0;
@@ -21,8 +19,6 @@ public class SuperNPlayer implements Comparable<SuperNPlayer>{
 		this.superType = "human";
 		this.oldSuperType = "human";
 		this.oldSuperPower = 0;
-		this.supernatural = false;
-		this.vampire = false;
 		this.superPower = 0;
 		this.truce = true;
 		this.truceTimer = 0;
@@ -33,32 +29,10 @@ public class SuperNPlayer implements Comparable<SuperNPlayer>{
 		this.superType = superType;
 		this.oldSuperType = oldSuperType;
 		this.oldSuperPower = oldSuperPower;		
-		if(superType.equalsIgnoreCase("human")){
-			this.supernatural = false;
-			this.vampire = false;
-		} else {
-			this.supernatural = true;
-			if(superType.equalsIgnoreCase("vampire"))
-				this.vampire = true;
-			else
-				this.vampire = false;
-		}
 		this.superPower = superPower;
 		this.truce = truce;
 		this.truceTimer = truceTimer;
 	}
-	
-	 @Override
-    public int compareTo(SuperNPlayer o) {
-        double oPower = o.getPower();
-
-        if (superPower < oPower)
-            return 1;
-        else if (superPower > oPower)
-            return -1;
-        else
-            return 0;
-    }
 	
 	public String getName(){
 		return this.playername;
@@ -93,19 +67,29 @@ public class SuperNPlayer implements Comparable<SuperNPlayer>{
 	}
 	
 	public boolean isSuper(){
-		return this.supernatural;
-	}
-	
-	public void setSuper(boolean natural){
-		this.supernatural = natural;
+		if(this.getType().equalsIgnoreCase("human"))
+			return false;
+		return true;
 	}
 	
 	public boolean isVampire(){
-		return this.vampire;
+		if(this.getType().equalsIgnoreCase("vampire"))
+			return true;
+		return false;
 	}
 	
-	public void setVampire(boolean vampire){
-		this.vampire = vampire;
+	public boolean isPriest(){
+		if(this.getType().equalsIgnoreCase("priest")){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean hasTruce(){
+		if(this.getType().equalsIgnoreCase("vampire") || this.getType().equalsIgnoreCase("ghoul")){
+			return true;
+		}
+		return false;
 	}
 	
 	public double getPower(){

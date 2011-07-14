@@ -41,6 +41,7 @@ public class SNCommandHelp extends SNCommand{
 			helpMessages.add("/sn save "+ChatColor.WHITE+"- Save data to disk.");
 			helpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
 			helpMessages.add("/sn list "+ChatColor.WHITE+"- List supernaturals on the server.");
+			helpMessages.add("/sn setchurch "+ChatColor.WHITE+"- Sets your current location as the priests' church.");
 			helpMessages.add("/sn burntime [From] [To] "+ChatColor.WHITE+"- Set time in which vampires will burn.");
 		}
 		

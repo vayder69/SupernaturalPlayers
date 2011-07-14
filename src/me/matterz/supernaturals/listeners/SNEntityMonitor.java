@@ -37,7 +37,35 @@ public class SNEntityMonitor extends EntityListener {
 		}
 		
 		if(event instanceof EntityDamageByProjectileEvent){
-			return;
+			EntityDamageByProjectileEvent edbpEvent = (EntityDamageByProjectileEvent)event;
+			
+			// Define local fields
+			Entity victim = event.getEntity();
+			
+			Entity damager = edbpEvent.getDamager();
+			Player pDamager;
+			SuperNPlayer snDamager;
+			
+			//For further interest that attacker must be a player.
+			if(!(damager instanceof Player)){
+				return;
+			}			
+
+			pDamager = (Player)damager;
+			snDamager = SupernaturalManager.get(pDamager);
+			
+			if(victim instanceof Creature){
+				//A vampire attacked a creature
+				Creature cVictim = (Creature)victim;
+				String creatureName = EntityUtil.creatureNameFromEntity(cVictim);
+				
+				//Break truce
+				for(String creature : SNConfigHandler.vampireTruce){
+					if(creatureName.equalsIgnoreCase(creature)){
+						plugin.getSuperManager().truceBreak(snDamager);
+					}
+				}
+			}
 		} else if(!(event instanceof EntityDamageByEntityEvent)){
 			return;
 		}
@@ -65,8 +93,10 @@ public class SNEntityMonitor extends EntityListener {
 			String creatureName = EntityUtil.creatureNameFromEntity(cVictim);
 			
 			//Break truce
-			if(SNConfigHandler.vampireTruce.contains(creatureName)){
-				plugin.getSuperManager().truceBreak(snDamager);
+			for(String creature : SNConfigHandler.vampireTruce){
+				if(creatureName.equalsIgnoreCase(creature)){
+					plugin.getSuperManager().truceBreak(snDamager);
+				}
 			}
 		}
 	}

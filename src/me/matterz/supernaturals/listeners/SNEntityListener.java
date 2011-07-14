@@ -49,7 +49,7 @@ public class SNEntityListener extends EntityListener{
 			pVictim = (Player) victim;
 			snpVictim = SupernaturalManager.get(pVictim);
 		
-			if(snpVictim.isVampire() && (event.getCause() == DamageCause.DROWNING)){
+			if(snpVictim.isVampire() && (event.getCause() == DamageCause.DROWNING) && (snpVictim.getPower() > SNConfigHandler.vampireDrowningPowerMin)){
 				event.setCancelled(true);
 				return;
 			} else if(snpVictim.isVampire() && (event.getCause() == DamageCause.FALL)){
@@ -141,13 +141,7 @@ public class SNEntityListener extends EntityListener{
 			return;
 		}
 		
-		// ... by creature that cares about the truce with vampires ...
-		if(!(SNConfigHandler.vampireTruce.contains(EntityUtil.creatureNameFromEntity(event.getEntity())))){
-			return;
-		}
-		
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)event.getTarget());
-		
 		// ... and that player is a vampire ...
 		if(!snplayer.isVampire()) {
 			return;
@@ -158,9 +152,12 @@ public class SNEntityListener extends EntityListener{
 			return;
 		}
 		
-		// Then the creature will not attack.
-		event.setCancelled(true);
-		if(SNConfigHandler.debugMode)
-			SupernaturalsPlugin.log(EntityUtil.creatureNameFromEntity(event.getEntity()) + " did not attack " + snplayer.getName() + " due to the Truce.");
-	}
+		// ... by creature that cares about the truce with vampires ...
+		for(String creatureName : SNConfigHandler.vampireTruce){
+			if(creatureName.equalsIgnoreCase(EntityUtil.creatureNameFromEntity(event.getEntity()))){
+				// Then the creature will not attack.
+				event.setCancelled(true);
+			}
+		}
+	}	
 }

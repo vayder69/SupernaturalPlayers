@@ -35,6 +35,6 @@ public class SNCommandPower extends SNCommand {
 		SupernaturalsPlugin.instance.getSuperManager();
 		SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
 				
-		this.sendMessage("Your current power level is: " + snplayer.getPower());
+		this.sendMessage("Your current power level is: " + (int) snplayer.getPower());
 	}
 }

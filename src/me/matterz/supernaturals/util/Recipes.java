@@ -14,12 +14,13 @@ import org.bukkit.inventory.ItemStack;
 public class Recipes{
 	public Map<Material, Integer> materialQuantities = new HashMap<Material, Integer>();
 	
+	@SuppressWarnings("deprecation")
 	public void removeFromPlayer(Player player){
 		Inventory inventory = player.getInventory();
 		for(Material material: this.materialQuantities.keySet()){
 			inventory.removeItem(new ItemStack(material.getId(), this.materialQuantities.get(material)));
 		}
-		inventory.notifyAll();
+		player.updateInventory();
 	}
 	
 	public boolean playerHasEnough(Player player){

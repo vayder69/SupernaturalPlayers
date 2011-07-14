@@ -28,6 +28,10 @@ public class SNConfigHandler {
 	public static double jumpBloodCost;
 	public static double vampireAltarInfectMaterialRadius;
 	public static double vampireAltarCureMaterialRadius;
+	public static double vampireTimePowerGained;
+	public static double vampireTimeHealthGained;
+	public static double vampireHealthCost;
+	public static int vampireHealingPowerMin;
 	public static int truceBreakTime;
 	public static int maxPower;
 	public static int timerInterval;
@@ -35,11 +39,16 @@ public class SNConfigHandler {
 	public static int vampireAltarCureMaterialSurroundCount;
 	public static int vampireCombustFromTime;
 	public static int vampireCombustToTime;
-	public static int vampirePowerGainedOverTime;
 	public static int vampireAltarInfectStartingPower;
 	public static int vampireDeathPowerPenalty;
 	public static int vampireKillPowerGain;
 	public static int vampireCombustFireTicks;
+	public static int vampireDrowningPowerMin;
+	public static int priestChurchLocationX;
+	public static int priestChurchLocationY;
+	public static int priestChurchLocationZ;
+	public static int priestLightRadius;
+	public static int priestLightIntensity;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -117,7 +126,11 @@ public class SNConfigHandler {
 		vampireTruce = config.getStringList("Vampire.Truce.Creatures", null);
 		vampireCombustFromTime = config.getInt("Vampire.Combust.FromTime", 0);
 		vampireCombustToTime = config.getInt("Vampire.Combust.ToTime", 12400);
-		vampirePowerGainedOverTime = config.getInt("Vampire.PowerGained.OverTime", 1);
+		vampireTimePowerGained = config.getDouble("Vampire.Time.PowerGained", 1.0);
+		vampireTimeHealthGained = config.getDouble("Vampire.Time.HealthGained", 0.1);
+		vampireHealthCost = config.getDouble("Vampire.Healing.Cost",3);
+		vampireHealingPowerMin = config.getInt("Vampire.Power.HealingMin", 1000);
+		vampireDrowningPowerMin = config.getInt("Vampire.Power.DrowningMin", 1000);
 		vampireAltarInfectStartingPower = config.getInt("Vampire.Altar.Infect.StartingPower", 1000);
 		
 		vampireAltarInfectMaterial = config.getString("Vampire.Altar.Infect.Material","GOLD_BLOCK");
@@ -133,6 +146,13 @@ public class SNConfigHandler {
 		vampireAltarCureMaterialSurroundCount = config.getInt("Vampire.Altar.Cure.Surrounding.Count",20);
 		vampireAltarCureMaterials = config.getStringList("Vampire.Altar.Cure.Recipe.Materials", null);
 		vampireAltarCureQuantities = config.getIntList("Vampire.Altar.Cure.Recipe.Quantities", null);
+		
+		priestChurchLocationX = config.getInt("Priest.Church.Location.X", 0);
+		priestChurchLocationY = config.getInt("Priest.Church.Location.Y", 80);
+		priestChurchLocationZ = config.getInt("Priest.Church.Location.Z", 0);
+		
+		priestLightRadius = config.getInt("Priest.Light.Radius", 10);
+		priestLightIntensity = config.getInt("Priest.Light.Intensity", 15);
 		
 		if(supernaturalTypes.size() == 0){
 			supernaturalTypes.add("human");
@@ -211,7 +231,7 @@ public class SNConfigHandler {
 			config.setProperty("Vampire.Altar.Cure.Recipe.Quantities",vampireAltarCureQuantities);
 		}
 		
-		timerInterval = config.getInt("TimerInterval", 30000);
+		timerInterval = config.getInt("TimerInterval", 3000);
 		debugMode = config.getBoolean("DebugMode", true);
 		config.save();
 		

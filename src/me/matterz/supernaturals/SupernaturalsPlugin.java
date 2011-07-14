@@ -17,9 +17,11 @@ import me.matterz.supernaturals.commands.SNCommandHelp;
 import me.matterz.supernaturals.commands.SNCommandList;
 import me.matterz.supernaturals.commands.SNCommandSave;
 import me.matterz.supernaturals.commands.SNCommandCurse;
+import me.matterz.supernaturals.commands.SNCommandSetChurch;
 import me.matterz.supernaturals.commands.SNCommandVersion;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.io.SNPlayerHandler;
+import me.matterz.supernaturals.light.LightMapManager;
 import me.matterz.supernaturals.listeners.SNEntityListener;
 import me.matterz.supernaturals.listeners.SNEntityMonitor;
 import me.matterz.supernaturals.listeners.SNPlayerListener;
@@ -51,6 +53,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	private final SNEntityMonitor entityMonitor = new SNEntityMonitor(this);
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
+	private LightMapManager lightManager = new LightMapManager();
 	
 	public List<SNCommand> commands = new ArrayList<SNCommand>();
 	
@@ -66,6 +69,10 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	public SNConfigHandler getConfigManager(){
 		return snConfig;
+	}
+	
+	public LightMapManager getLightManager(){
+		return lightManager;
 	}
 	
 	// -------------------------------------------- //
@@ -95,17 +102,22 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandList());
 		commands.add(new SNCommandVersion());
 		commands.add(new SNCommandBurnTimes());
+		commands.add(new SNCommandSetChurch());
 		commands.add(new SNCommandPowerGain());
 		
 		PluginManager pm = getServer().getPluginManager();
+		
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.High, this);
 		pm.registerEvent(Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Normal, this);
+		pm.registerEvent(Type.PLAYER_MOVE, this.playerListener, Priority.High, this);
+		
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
 		pm.registerEvent(Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
-		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityMonitor, Priority.High, this);
+		
+		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.ENTITY_DEATH, this.entityMonitor, Priority.Monitor, this);
 		
         PluginDescriptionFile pdfFile = this.getDescription();
