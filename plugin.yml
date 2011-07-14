@@ -1,0 +1,8 @@
+name: SupernaturalPlayers
+main: me.matterz.supernaturals.SupernaturalsPlugin
+version: 0.1.0
+author: Matterz
+commands:
+  sn:
+    description: Supernatural commands
+    usage: /<command> - lists commands
