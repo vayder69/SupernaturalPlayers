@@ -21,6 +21,7 @@ import me.matterz.supernaturals.commands.SNCommandVersion;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.io.SNPlayerHandler;
 import me.matterz.supernaturals.listeners.SNEntityListener;
+import me.matterz.supernaturals.listeners.SNEntityMonitor;
 import me.matterz.supernaturals.listeners.SNPlayerListener;
 import me.matterz.supernaturals.manager.SNCommand;
 import me.matterz.supernaturals.manager.SupernaturalManager;
@@ -47,6 +48,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	private final SNEntityListener entityListener = new SNEntityListener(this);
 	private final SNPlayerListener playerListener = new SNPlayerListener(this);
+	private final SNEntityMonitor entityMonitor = new SNEntityMonitor(this);
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
 	
@@ -96,11 +98,15 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandPowerGain());
 		
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Normal, this);
+		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.High, this);
 		pm.registerEvent(Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this);
+		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerListener, Priority.Normal, this);
+		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
 		pm.registerEvent(Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
+		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityMonitor, Priority.High, this);
+		pm.registerEvent(Type.ENTITY_DEATH, this.entityMonitor, Priority.Monitor, this);
 		
         PluginDescriptionFile pdfFile = this.getDescription();
         log(pdfFile.getName() + " version " + pdfFile.getVersion() + " enabled.");

@@ -47,7 +47,6 @@ public class SNEntityListener extends EntityListener{
 		//Modify victim player damage
 		if(victim instanceof Player){
 			pVictim = (Player) victim;
-			plugin.getSuperManager();
 			snpVictim = SupernaturalManager.get(pVictim);
 		
 			if(snpVictim.isVampire() && (event.getCause() == DamageCause.DROWNING)){
@@ -72,7 +71,6 @@ public class SNEntityListener extends EntityListener{
 				return;	
 			
 			pDamager = (Player)damager;
-			plugin.getSuperManager();
 			snpDamager = SupernaturalManager.get(pDamager);
 			
 			damage = event.getDamage();
@@ -80,14 +78,13 @@ public class SNEntityListener extends EntityListener{
 			
 			if(victim instanceof Player){
 				pVictim = (Player)victim;
-				plugin.getSuperManager();
 				snpVictim = SupernaturalManager.get(pVictim);
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + pDamager.getItemInHand().getType().toString());
 				if(snpVictim.isVampire()){
 					if(SNConfigHandler.woodMaterials.contains(pDamager.getItemInHand().getType().toString())){
 						damage *= SNConfigHandler.woodFactor;
-						plugin.getSuperManager().sendMessage(snpVictim, "Vampires have a weakness to wood!");
+						SupernaturalManager.sendMessage(snpVictim, "Vampires have a weakness to wood!");
 					}else{
 						damage *= SNConfigHandler.vampireDamageReceivedFactor;
 					}
@@ -105,7 +102,6 @@ public class SNEntityListener extends EntityListener{
 			return;	
 		
 		pDamager = (Player)damager;
-		plugin.getSuperManager();
 		snpDamager = SupernaturalManager.get(pDamager);
 		
 		damage = event.getDamage();
@@ -118,14 +114,13 @@ public class SNEntityListener extends EntityListener{
 		// Modify damage if victim is a vampire
 		if(victim instanceof Player){
 			pVictim = (Player)victim;
-			plugin.getSuperManager();
 			snpVictim = SupernaturalManager.get(pVictim);
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + pDamager.getItemInHand().getType().toString());
 			if(snpVictim.isVampire()){
 				if(SNConfigHandler.woodMaterials.contains(pDamager.getItemInHand().getType().toString())){
 					damage *= SNConfigHandler.woodFactor;
-					plugin.getSuperManager().sendMessage(snpVictim, "Vampires have a weakness to wood!");
+					SupernaturalManager.sendMessage(snpVictim, "Vampires have a weakness to wood!");
 				}else{
 					damage *= SNConfigHandler.vampireDamageReceivedFactor;
 				}
@@ -151,7 +146,6 @@ public class SNEntityListener extends EntityListener{
 			return;
 		}
 		
-		plugin.getSuperManager();
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)event.getTarget());
 		
 		// ... and that player is a vampire ...

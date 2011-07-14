@@ -4,6 +4,7 @@ import java.util.TimerTask;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
+import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 
 public class SuperNTaskTimer extends TimerTask {
@@ -20,6 +21,9 @@ public class SuperNTaskTimer extends TimerTask {
 		long delta = ((now+(long)0.01) - lastRunTime);
 		this.lastRunTime = now;
 		
+		if(SNConfigHandler.debugMode){
+			SupernaturalsPlugin.log("Advanced time with " + delta + " milliseconds");
+		}
 		// Tick each online player
 		for(SuperNPlayer snplayer : SupernaturalManager.findAllOnline()) {
 			plugin.getSuperManager().advanceTime(snplayer, (int) delta);

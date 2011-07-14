@@ -7,7 +7,10 @@ import me.matterz.supernaturals.manager.SupernaturalManager;
 
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
 
 public class SNPlayerListener extends PlayerListener{
@@ -29,8 +32,7 @@ public class SNPlayerListener extends PlayerListener{
 		if(!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)){
 			return;
 		}
-		
-		plugin.getSuperManager();
+	
 		SuperNPlayer snplayer = SupernaturalManager.get(event.getPlayer());
 		Material itemMaterial = event.getMaterial();
 		
@@ -40,7 +42,7 @@ public class SNPlayerListener extends PlayerListener{
 			{
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(snplayer.getName() + " attempted to eat " + itemMaterial.toString());
-				plugin.getSuperManager().sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
+				SupernaturalManager.sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
 				event.setCancelled(true);
 				return;
 			}
@@ -49,7 +51,9 @@ public class SNPlayerListener extends PlayerListener{
 			{
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(snplayer.getName() + " used jump with " + itemMaterial.toString());
-				plugin.getSuperManager().jump(event.getPlayer(), SNConfigHandler.jumpDeltaSpeed, false);
+				SupernaturalManager.jump(event.getPlayer(), SNConfigHandler.jumpDeltaSpeed, false);
+				event.setCancelled(true);
+				return;
 			}
 		}
 		
@@ -69,4 +73,27 @@ public class SNPlayerListener extends PlayerListener{
 			plugin.getSuperManager().useAltarCure(event.getPlayer(), event.getClickedBlock());
 		}
 	}
+	
+	@Override
+	public void onPlayerAnimation(PlayerAnimationEvent event) {
+		SuperNPlayer snplayer = SupernaturalManager.get(event.getPlayer());
+		if (!snplayer.isVampire()) {
+			return;
+		}
+			
+		if(event.getAnimationType() == PlayerAnimationType.ARM_SWING && SNConfigHandler.jumpMaterials.contains(event.getPlayer().getItemInHand().getType().toString())) {
+			SupernaturalManager.jump(event.getPlayer(), SNConfigHandler.jumpDeltaSpeed, true);
+			if(SNConfigHandler.debugMode)
+				SupernaturalsPlugin.log(snplayer.getName() + " used jump with " + event.getPlayer().getItemInHand().getType().toString());
+		}
+	}
+	
+	@Override
+	public void onPlayerKick(PlayerKickEvent event) {
+        if ((event.getLeaveMessage().contains("Flying")) || (event.getReason().contains("Flying"))) {
+            event.setCancelled(true);
+            if(SNConfigHandler.debugMode)
+            	SupernaturalsPlugin.log(event.getPlayer().getName() + " was not kicked for flying.");
+        }
+    }
 }

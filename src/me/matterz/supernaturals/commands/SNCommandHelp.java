@@ -37,7 +37,7 @@ public class SNCommandHelp extends SNCommand{
 		if(SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions2)){
 			helpMessages.add("/sn cure [PlayerName] "+ChatColor.WHITE+"- Cure a player.");
 			helpMessages.add("/sn curse [PlayerName]  [SupernaturalType] "+ChatColor.WHITE+"- Turn a player into vampire.");
-			helpMessages.add("/sn powergain [Playername][blood] "+ChatColor.WHITE+"- Give power to a player.");
+			helpMessages.add("/sn powergain [Playername] [Power] "+ChatColor.WHITE+"- Give power to a player.");
 			helpMessages.add("/sn save "+ChatColor.WHITE+"- Save data to disk.");
 			helpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
 			helpMessages.add("/sn list "+ChatColor.WHITE+"- List supernaturals on the server.");

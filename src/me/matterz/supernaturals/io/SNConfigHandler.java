@@ -2,7 +2,9 @@ package me.matterz.supernaturals.io;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.util.config.Configuration;
@@ -17,6 +19,8 @@ public class SNConfigHandler {
 	//Config variables
 	public Configuration config;
 	public static boolean debugMode;
+	public static boolean vampireKillSpreadCurse;
+	public static boolean vampireBurnInSunlight;
 	public static double vampireDamageFactor;
 	public static double woodFactor;
 	public static double vampireDamageReceivedFactor;
@@ -32,6 +36,10 @@ public class SNConfigHandler {
 	public static int vampireCombustFromTime;
 	public static int vampireCombustToTime;
 	public static int vampirePowerGainedOverTime;
+	public static int vampireAltarInfectStartingPower;
+	public static int vampireDeathPowerPenalty;
+	public static int vampireKillPowerGain;
+	public static int vampireCombustFireTicks;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -46,8 +54,38 @@ public class SNConfigHandler {
 	public static List<Integer> vampireAltarCureQuantities = new ArrayList<Integer>();
 	public static List<Integer> vampireAltarInfectQuantities = new ArrayList<Integer>();
 	
+	public static Map<Material,Double> materialOpacity = new HashMap<Material,Double>();
+	
 	public static Recipes vampireAltarInfectRecipe = new Recipes();
 	public static Recipes vampireAltarCureRecipe = new Recipes();
+	
+	static{
+		materialOpacity.put(Material.AIR, 0D);
+		materialOpacity.put(Material.SAPLING, 0.3D);
+		materialOpacity.put(Material.LEAVES, 0.3D);
+		materialOpacity.put(Material.GLASS, 0.5D);
+		materialOpacity.put(Material.YELLOW_FLOWER, 0.1D);
+		materialOpacity.put(Material.RED_ROSE, 0.1D);
+		materialOpacity.put(Material.BROWN_MUSHROOM, 0.1D);
+		materialOpacity.put(Material.RED_MUSHROOM, 0.1D);
+		materialOpacity.put(Material.TORCH, 0.1D);
+		materialOpacity.put(Material.FIRE, 0D);
+		materialOpacity.put(Material.MOB_SPAWNER, 0.3D);
+		materialOpacity.put(Material.REDSTONE_WIRE, 0D);
+		materialOpacity.put(Material.CROPS, 0.2D);
+		materialOpacity.put(Material.SIGN, 0.1D);
+		materialOpacity.put(Material.SIGN_POST, 0.2D);
+		materialOpacity.put(Material.LEVER, 0.1D);
+		materialOpacity.put(Material.STONE_PLATE, 0D);
+		materialOpacity.put(Material.WOOD_PLATE, 0D);
+		materialOpacity.put(Material.REDSTONE_TORCH_OFF, 0.1D);
+		materialOpacity.put(Material.REDSTONE_TORCH_ON, 0.1D);
+		materialOpacity.put(Material.STONE_BUTTON, 0D);
+		materialOpacity.put(Material.SUGAR_CANE_BLOCK, 0.3D);
+		materialOpacity.put(Material.FENCE, 0.2D);
+		materialOpacity.put(Material.DIODE_BLOCK_OFF, 0D);
+		materialOpacity.put(Material.DIODE_BLOCK_ON, 0D);
+	}
 	
 	public SNConfigHandler(SupernaturalsPlugin instance){
 		SNConfigHandler.plugin = instance;
@@ -59,22 +97,28 @@ public class SNConfigHandler {
 		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 60000);
 		maxPower = config.getInt("Supernatural.MaxAllowedPower", 10000);
 		supernaturalTypes = config.getStringList("Supernatural.Types", null);
-		vampirePowerGainedOverTime = config.getInt("Vampire.PowerGained.OverTime", 1);
 		
 		woodMaterials = config.getStringList("Vampire.Materials.Wooden", null);
 		foodMaterials = config.getStringList("Vampire.Materials.Food", null);
 		
 		jumpMaterials = config.getStringList("Vampire.Jump.Materials", null);
 		jumpDeltaSpeed = config.getDouble("Vampire.Jump.Delta", 3);
-		jumpBloodCost = config.getDouble("Vampire.Jump.BloodCost", 3);
+		jumpBloodCost = config.getDouble("Vampire.Jump.PowerCost", 3);
 		
+		vampireKillSpreadCurse = config.getBoolean("Vampire.Kill.SpreadCurse",true);
+		vampireKillPowerGain = config.getInt("Vampire.Kill.PowerGain", 100);
+		vampireDeathPowerPenalty = config.getInt("Vampire.Death.PowerPenalty", 200);
 		vampireDamageFactor = config.getDouble("Vampire.Damage.Factor", 1.1);
 		vampireDamageReceivedFactor = config.getDouble("Vampire.Damage.ReceivedFactor", 0.9);
 		woodFactor = config.getDouble("Vampire.Damage.WoodFactor", 1.5);
+		vampireBurnInSunlight = config.getBoolean("Vampire.Burn.InSunlight", true);
+		vampireCombustFireTicks = config.getInt("Vampire.Burn.FireTicks", 1);
 		
 		vampireTruce = config.getStringList("Vampire.Truce.Creatures", null);
 		vampireCombustFromTime = config.getInt("Vampire.Combust.FromTime", 0);
 		vampireCombustToTime = config.getInt("Vampire.Combust.ToTime", 12400);
+		vampirePowerGainedOverTime = config.getInt("Vampire.PowerGained.OverTime", 1);
+		vampireAltarInfectStartingPower = config.getInt("Vampire.Altar.Infect.StartingPower", 1000);
 		
 		vampireAltarInfectMaterial = config.getString("Vampire.Altar.Infect.Material","GOLD_BLOCK");
 		vampireAltarInfectMaterialSurround = config.getString("Vampire.Altar.Infect.Surrounding.Material","OBSIDIAN");

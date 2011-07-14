@@ -34,7 +34,6 @@ public class SNCommandList extends SNCommand {
 		
 		List<String> vampires = new ArrayList<String>();
 		
-		SupernaturalsPlugin.instance.getSuperManager();
 		for (SuperNPlayer snplayer : SupernaturalsPlugin.instance.getSuperManager().getSupernaturals()) {
 			if (snplayer.isVampire()) {
 				vampires.add(snplayer.getName());
