@@ -33,15 +33,20 @@ public class LightUtil {
 				for (int z = -(radius+2); z <= (radius+2); z++){
 					
 					if(Math.abs(x)<radius && Math.abs(y)<radius && Math.abs(z)<radius){
-						int currentInt = world.getHandle().getLightLevel(LocationX+x, LocationY+y, LocationZ+z);
 						Vector origin = new Vector(LocationX, LocationY, LocationZ);
 						Vector v = new Vector(LocationX + x, LocationY + y, LocationZ + z);
 						
 						int newIntensity;
+						int currentInt;
 						
 						Location blockLocation = new Location(world, LocationX+x, LocationY+y, LocationZ+z);
 						String locationString = (world.getName()+":"+blockLocation.getBlockX()+":"+blockLocation.getBlockY()+":"+blockLocation.getBlockZ());
-						lightMap.put(locationString, currentInt);
+						if(!lightMap.containsKey(locationString)) {
+							currentInt = world.getHandle().getLightLevel(LocationX+x, LocationY+y, LocationZ+z);
+							lightMap.put(locationString, currentInt);
+						} else {
+							currentInt = lightMap.get(locationString);
+						}
 						
 						if (v.isInSphere(origin, radius)){
 							double distanceSq = v.distanceSquared(origin);
@@ -57,23 +62,11 @@ public class LightUtil {
 						Location blockLocation = new Location(world, LocationX+x, LocationY+y, LocationZ+z);
 						String locationString = (world.getName()+":"+blockLocation.getBlockX()+":"+blockLocation.getBlockY()+":"+blockLocation.getBlockZ());
 						if(lightMap.containsKey(locationString)){
-							world.getHandle().b(EnumSkyBlock.BLOCK, LocationX + x, LocationY + y, LocationZ + z, lightMap.get(locationString));
-							lightMap.remove(locationString);
+							world.getHandle().b(EnumSkyBlock.BLOCK, LocationX + x, LocationY + y, LocationZ + z, lightMap.remove(locationString));
 						}
 					}
 				}
 			}
 		}
-	}
-	
-	public static void deluminate(Player player, Location location){
-		double LocationX = location.getX();
-		double LocationY = location.getY();
-		double LocationZ = location.getZ();
-		Location footLocation = new Location(player.getWorld(), LocationX, (LocationY-1), LocationZ);
-		int blockTypeId = footLocation.getBlock().getTypeId();
-		Byte blockData = footLocation.getBlock().getData();
-		footLocation.getBlock().setType(Material.BEDROCK);
-		footLocation.getBlock().setTypeIdAndData(blockTypeId, blockData, true);
 	}
 }
