@@ -7,7 +7,6 @@ import me.matterz.supernaturals.io.SNConfigHandler;
 import net.minecraft.server.EnumSkyBlock;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -32,33 +31,28 @@ public class LightUtil {
 			for (int y = -(radius+2); y <= (radius+2); y++){
 				for (int z = -(radius+2); z <= (radius+2); z++){
 					
-					if(Math.abs(x)<radius && Math.abs(y)<radius && Math.abs(z)<radius){
-						Vector origin = new Vector(LocationX, LocationY, LocationZ);
-						Vector v = new Vector(LocationX + x, LocationY + y, LocationZ + z);
-						
+					Vector origin = new Vector(LocationX, LocationY, LocationZ);
+					Vector v = new Vector(LocationX + x, LocationY + y, LocationZ + z);
+
+					if(v.isInSphere(origin, radius)){
 						int newIntensity;
-						int currentInt;
-						
+						int oldInt;
+
 						Location blockLocation = new Location(world, LocationX+x, LocationY+y, LocationZ+z);
 						String locationString = (world.getName()+":"+blockLocation.getBlockX()+":"+blockLocation.getBlockY()+":"+blockLocation.getBlockZ());
 						if(!lightMap.containsKey(locationString)) {
-							currentInt = world.getHandle().getLightLevel(LocationX+x, LocationY+y, LocationZ+z);
-							lightMap.put(locationString, currentInt);
-						} else {
-							currentInt = lightMap.get(locationString);
+							oldInt = world.getHandle().getLightLevel(LocationX+x, LocationY+y, LocationZ+z);
+							lightMap.put(locationString, oldInt);
+						}else{
+							oldInt = lightMap.get(locationString);
 						}
-						
-						if (v.isInSphere(origin, radius)){
-							double distanceSq = v.distanceSquared(origin);
-							newIntensity = (int)(((intensity - Math.sqrt(distanceSq) * falloff) * 100.0D + 0.5D) / 100.0D);
-						 }else{
-							 newIntensity = currentInt;
-						}
-						int worldIntensity = world.getHandle().getLightLevel(LocationX + x, LocationY + y, LocationZ + z);
-						if (newIntensity > worldIntensity) {
+
+						double distanceSq = v.distanceSquared(origin);
+						newIntensity = (int)(((intensity - Math.sqrt(distanceSq) * falloff) * 100.0D + 0.5D) / 100.0D);
+						if(newIntensity > oldInt){
 							world.getHandle().b(EnumSkyBlock.BLOCK, LocationX + x, LocationY + y, LocationZ + z, newIntensity);
 						}
-					} else {
+					}else{
 						Location blockLocation = new Location(world, LocationX+x, LocationY+y, LocationZ+z);
 						String locationString = (world.getName()+":"+blockLocation.getBlockX()+":"+blockLocation.getBlockY()+":"+blockLocation.getBlockZ());
 						if(lightMap.containsKey(locationString)){
