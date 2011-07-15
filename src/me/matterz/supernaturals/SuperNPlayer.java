@@ -85,6 +85,20 @@ public class SuperNPlayer{
 		return false;
 	}
 	
+	public boolean isWere(){
+		if(this.getType().equalsIgnoreCase("werewolf")){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isGhoul(){
+		if(this.getType().equalsIgnoreCase("ghoul")){
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean hasTruce(){
 		if(this.getType().equalsIgnoreCase("vampire") || this.getType().equalsIgnoreCase("ghoul")){
 			return true;

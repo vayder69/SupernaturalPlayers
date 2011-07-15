@@ -27,9 +27,9 @@ public class LightUtil {
 		
 		CraftWorld world = (CraftWorld) player.getWorld();
 		
-		for (int x = -(radius+2); x <= (radius+2); x++){
-			for (int y = -(radius+2); y <= (radius+2); y++){
-				for (int z = -(radius+2); z <= (radius+2); z++){
+		for(int x = -(radius+3); x <= (radius+3); x++){
+			for(int y = -(radius+3); y <= (radius+3); y++){
+				for(int z = -(radius+3); z <= (radius+3); z++){
 					
 					Vector origin = new Vector(LocationX, LocationY, LocationZ);
 					Vector v = new Vector(LocationX + x, LocationY + y, LocationZ + z);
@@ -54,7 +54,7 @@ public class LightUtil {
 						}else{
                             world.getHandle().b(EnumSkyBlock.BLOCK, LocationX + x, LocationY + y, LocationZ + z, oldInt);
 						}
-					}else{
+					}else if(v.isInSphere(origin,(radius+2))){
 						Location blockLocation = new Location(world, LocationX+x, LocationY+y, LocationZ+z);
 						String locationString = (world.getName()+":"+blockLocation.getBlockX()+":"+blockLocation.getBlockY()+":"+blockLocation.getBlockZ());
 						if(lightMap.containsKey(locationString)){

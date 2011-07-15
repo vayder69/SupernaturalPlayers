@@ -227,7 +227,7 @@ public class SupernaturalManager {
 		if (snplayer.isVampire()) {
 			SupernaturalManager.sendMessage(snplayer, "This is of no use to you as you are already a vampire.");
 			return;
-		} else if (snplayer.isSuper()) {
+		} else if (snplayer.isSuper()  && !snplayer.isPriest()) {
 			SupernaturalManager.sendMessage(snplayer, "This is of no use to you as you are already supernatural.");
 			return;
 		}
@@ -264,7 +264,7 @@ public class SupernaturalManager {
 		SupernaturalManager.sendMessage(snplayer, "This altar looks pure and clean.");
 		
 		// If healthy
-		if ( !snplayer.isVampire()) {
+		if (!snplayer.isVampire()) {
 			SupernaturalManager.sendMessage(snplayer, "It can probably cure curses, but you feel fine.");
 			return;
 		}
@@ -317,16 +317,11 @@ public class SupernaturalManager {
 				continue;
 			}
 			
-			String creatureName = EntityUtil.creatureNameFromEntity(entity);
-			
-			for(String cName : SNConfigHandler.vampireTruce){
-				if(cName.equalsIgnoreCase(creatureName)){
-					Creature creature = (Creature)entity;
-					LivingEntity target = creature.getTarget();
-					
-					if((target != null && creature.getTarget().equals(player))){
-						creature.setTarget(null);
-					}
+			if(SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(entity))){
+				Creature creature = (Creature)entity;
+				LivingEntity target = creature.getTarget();
+				if((target != null && creature.getTarget().equals(player))){
+					creature.setTarget(null);
 				}
 			}
 		}

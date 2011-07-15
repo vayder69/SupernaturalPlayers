@@ -57,13 +57,10 @@ public class SNEntityMonitor extends EntityListener {
 			if(victim instanceof Creature){
 				//A vampire attacked a creature
 				Creature cVictim = (Creature)victim;
-				String creatureName = EntityUtil.creatureNameFromEntity(cVictim);
 				
-				//Break truce
-				for(String creature : SNConfigHandler.vampireTruce){
-					if(creatureName.equalsIgnoreCase(creature)){
-						plugin.getSuperManager().truceBreak(snDamager);
-					}
+				//Break vampire truce
+				if(snDamager.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(cVictim))){
+					plugin.getSuperManager().truceBreak(snDamager);
 				}
 			}
 		} else if(!(event instanceof EntityDamageByEntityEvent)){
@@ -90,46 +87,59 @@ public class SNEntityMonitor extends EntityListener {
 		if(victim instanceof Creature){
 			//A vampire attacked a creature
 			Creature cVictim = (Creature)victim;
-			String creatureName = EntityUtil.creatureNameFromEntity(cVictim);
 			
-			//Break truce
-			for(String creature : SNConfigHandler.vampireTruce){
-				if(creatureName.equalsIgnoreCase(creature)){
-					plugin.getSuperManager().truceBreak(snDamager);
-				}
+			//Break vampire truce
+			if(snDamager.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(cVictim))){
+				plugin.getSuperManager().truceBreak(snDamager);
 			}
 		}
 	}
 	
-	@Override
 	public void onEntityDeath(EntityDeathEvent event){
+		
 		Entity entity = event.getEntity();
+		
 		if(entity instanceof Creature){
 			Event e = entity.getLastDamageCause();
+			Entity damager = null;
 			if(e instanceof EntityDamageByEntityEvent){
-				Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
-				if(damager instanceof Player){
-					Player pDamager = (Player) damager;
-					SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
-					if(snDamager.isVampire()){
-						SupernaturalManager.alterPower(snDamager, 100, "Creature death!");
-					}
-				}
+				damager = ((EntityDamageByEntityEvent) e).getDamager();
+				
 			} else if(e instanceof EntityDamageByProjectileEvent){
-				Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
+				damager = ((EntityDamageByEntityEvent) e).getDamager();
+			}
+			if(damager!=null){
 				if(damager instanceof Player){
 					Player pDamager = (Player) damager;
 					SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
 					if(snDamager.isVampire()){
-						SupernaturalManager.alterPower(snDamager, 100, "Creature death!");
+						SupernaturalManager.alterPower(snDamager, SNConfigHandler.vampireKillPowerCreatureGain, "Creature death!");
+					} else if(snDamager.isGhoul()){
+						SupernaturalManager.alterPower(snDamager, SNConfigHandler.ghoulKillPowerCreatureGain, "Creature death!");
+					} else if(snDamager.isWere()){
+						SupernaturalManager.alterPower(snDamager, SNConfigHandler.wereKillPowerCreatureGain, "Creature death!");
 					}
 				}
 			}
 		}
+		
 		if(!(entity instanceof Player)) {
 			return;
 		}
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)entity);
+		
+		if(snplayer.isSuper()){
+			if(snplayer.isVampire()){
+				SupernaturalManager.alterPower(snplayer, SNConfigHandler.vampireDeathPowerPenalty, "You died!");
+			} else if(snplayer.isGhoul()){
+				SupernaturalManager.alterPower(snplayer, SNConfigHandler.ghoulDeathPowerPenalty, "You died!");
+			} else if(snplayer.isWere()){
+				SupernaturalManager.alterPower(snplayer, SNConfigHandler.wereDeathPowerPenalty, "You died!");
+			} else if(snplayer.isPriest()){
+				SupernaturalManager.alterPower(snplayer, SNConfigHandler.priestDeathPowerPenalty, "You died!");
+			}
+		}
+		
 		Entity damager = null;
 		Event e = entity.getLastDamageCause();
 		if(e instanceof EntityDamageByEntityEvent){
@@ -142,13 +152,25 @@ public class SNEntityMonitor extends EntityListener {
 			Player pDamager = (Player) damager;
 			SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
 			if(snDamager.isVampire()){
-				SupernaturalManager.alterPower(snDamager, SNConfigHandler.vampireKillPowerGain, "Creature death!");
+				SupernaturalManager.alterPower(snDamager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
 				if(SNConfigHandler.vampireKillSpreadCurse && (snplayer.getType().equalsIgnoreCase("human") || snplayer.getType().equalsIgnoreCase("priest")))
 				{
 					SupernaturalManager.sendMessage(snplayer, "You feel your heart stop! You have contracted vampirism.");
 					plugin.getSuperManager().curse(snplayer, "vampire");
-				} else if(snplayer.isVampire()){
-					SupernaturalManager.alterPower(snplayer, SNConfigHandler.vampireDeathPowerPenalty, "You died!");
+				}
+			} else if(snDamager.isGhoul()){
+				SupernaturalManager.alterPower(snDamager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
+				if(SNConfigHandler.ghoulKillSpreadCurse && (snplayer.getType().equalsIgnoreCase("human") || snplayer.getType().equalsIgnoreCase("priest")))
+				{
+					SupernaturalManager.sendMessage(snplayer, "Your body dies... You feel a deep hatred for the living.");
+					plugin.getSuperManager().curse(snplayer, "ghoul");
+				}
+			} else if(snDamager.isWere()){
+				SupernaturalManager.alterPower(snDamager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
+				if(SNConfigHandler.wereKillSpreadCurse && (snplayer.getType().equalsIgnoreCase("human") || snplayer.getType().equalsIgnoreCase("priest")))
+				{
+					SupernaturalManager.sendMessage(snplayer, "Your basic nature changes... You feel more in touch with your animal side.");
+					plugin.getSuperManager().curse(snplayer, "werewolf");
 				}
 			}
 		}

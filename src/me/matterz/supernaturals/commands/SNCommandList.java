@@ -33,17 +33,29 @@ public class SNCommandList extends SNCommand {
 		}
 		
 		List<String> vampires = new ArrayList<String>();
+		List<String> werewolves = new ArrayList<String>();
+		List<String> ghouls = new ArrayList<String>();
+		List<String> priests = new ArrayList<String>();
 		
 		for (SuperNPlayer snplayer : SupernaturalsPlugin.instance.getSuperManager().getSupernaturals()) {
 			if (snplayer.isVampire()) {
 				vampires.add(snplayer.getName());
+			}else if(snplayer.isPriest()){
+				priests.add(snplayer.getName());
+			}else if(snplayer.isWere()){
+				werewolves.add(snplayer.getName());
+			}else if(snplayer.isGhoul()){
+				ghouls.add(snplayer.getName());
 			}
 		}
 		
 		// Create Messages
 		List<String> messages = new ArrayList<String>();
 		messages.add(" ");
-		messages.add("= Vampires: "+ ChatColor.WHITE + TextUtil.implode(vampires, ", "));
+		messages.add("Vampires: "+ ChatColor.WHITE + TextUtil.implode(vampires, ", "));
+		messages.add("Werewolves: "+ ChatColor.WHITE + TextUtil.implode(werewolves, ", "));
+		messages.add("Ghouls: "+ ChatColor.WHITE + TextUtil.implode(ghouls, ", "));
+		messages.add("Priest: "+ ChatColor.WHITE + TextUtil.implode(priests, ", "));
 		
 		// Send them
 		this.sendMessage(messages);
