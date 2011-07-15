@@ -24,6 +24,7 @@ public class SNConfigHandler {
 	public static boolean wereKillSpreadCurse;
 	public static boolean vampireBurnInSunlight;
 	public static boolean wolfTruce;
+	public static double spreadChance;
 	public static double vampireDamageFactor;
 	public static double ghoulDamageFactor;
 	public static double woodFactor;
@@ -151,6 +152,7 @@ public class SNConfigHandler {
 		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 30000);
 		maxPower = config.getInt("Supernatural.MaxAllowedPower", 10000);
 		supernaturalTypes = config.getStringList("Supernatural.Types", null);
+		spreadChance = config.getDouble("Supernatural.SpreadChance", 0.6);
 		
 		woodMaterialsString = config.getStringList("Vampire.Materials.Wooden", null);
 		foodMaterialsString = config.getStringList("Vampire.Materials.Food", null);

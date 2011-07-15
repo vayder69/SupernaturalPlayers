@@ -102,6 +102,7 @@ public class SupernaturalManager {
 		
 		SupernaturalManager.sendMessage(snplayer, "You are now a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
 		SupernaturalsPlugin.log(snplayer.getName() + " turned into a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
+		this.updateName(snplayer);
 		
 		plugin.saveData();
 	}
@@ -174,26 +175,29 @@ public class SupernaturalManager {
 				this.alterPower(damager, SNConfigHandler.wereKillPowerCreatureGain, "Creature death!");
 			}
 		}else{
-			if(damager.isVampire()){
-				this.alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
-				if(SNConfigHandler.vampireKillSpreadCurse && !victim.isSuper())
-				{
-					SupernaturalManager.sendMessage(victim, "You feel your heart stop! You have contracted vampirism.");
-					this.curse(victim, "vampire");
-				}
-			} else if(damager.isGhoul()){
-				this.alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
-				if(SNConfigHandler.ghoulKillSpreadCurse && !victim.isSuper())
-				{
-					SupernaturalManager.sendMessage(victim, "Your body dies... You feel a deep hatred for the living.");
-					this.curse(victim, "ghoul");
-				}
-			} else if(damager.isWere()){
-				this.alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
-				if(SNConfigHandler.wereKillSpreadCurse && !victim.isSuper())
-				{
-					SupernaturalManager.sendMessage(victim, "Your basic nature changes... You feel more in touch with your animal side.");
-					this.curse(victim, "werewolf");
+			double random = Math.random();
+			if(random>SNConfigHandler.spreadChance){
+				if(damager.isVampire()){
+					this.alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
+					if(SNConfigHandler.vampireKillSpreadCurse && !victim.isSuper())
+					{
+						SupernaturalManager.sendMessage(victim, "You feel your heart stop! You have contracted vampirism.");
+						this.curse(victim, "vampire");
+					}
+				} else if(damager.isGhoul()){
+					this.alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
+					if(SNConfigHandler.ghoulKillSpreadCurse && !victim.isSuper())
+					{
+						SupernaturalManager.sendMessage(victim, "Your body dies... You feel a deep hatred for the living.");
+						this.curse(victim, "ghoul");
+					}
+				} else if(damager.isWere()){
+					this.alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
+					if(SNConfigHandler.wereKillSpreadCurse && !victim.isSuper())
+					{
+						SupernaturalManager.sendMessage(victim, "Your basic nature changes... You feel more in touch with your animal side.");
+						this.curse(victim, "werewolf");
+					}
 				}
 			}
 		}
@@ -216,7 +220,7 @@ public class SupernaturalManager {
 			
 			if(damager!=null){
 				double random = Math.random();
-				if(random>0.5){
+				if(random>SNConfigHandler.spreadChance){
 					if((damager instanceof Ghast) && player.getWorld().getEnvironment().equals(Environment.NETHER)){
 						this.curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
 						SupernaturalManager.sendMessage(snplayer, "You have been transformed into a Ghoul!");
@@ -327,6 +331,32 @@ public class SupernaturalManager {
 		for(String message : messages) {
 			SupernaturalManager.sendMessage(snplayer, message);
 		}
+	}
+	
+	public void updateName(SuperNPlayer snplayer){
+		Player player = plugin.getServer().getPlayer(snplayer.getName());
+		String name = player.getName();
+		String displayname = player.getDisplayName().trim();
+		String updatedname;
+		ChatColor color;
+		
+		if(snplayer.isPriest())
+			color=ChatColor.GOLD;
+		else if(snplayer.isVampire())
+			color=ChatColor.DARK_PURPLE;
+		else if(snplayer.isGhoul())
+			color=ChatColor.DARK_RED;
+		else if(snplayer.isWere())
+			color=ChatColor.BLUE;
+		else
+			color=ChatColor.WHITE;
+		
+		if(displayname.contains("§."+name)){
+			updatedname = displayname.replaceFirst(" §."+name, " "+color+name);
+		} else
+			updatedname = displayname.replaceFirst(name, color+name);
+		
+		player.setDisplayName(updatedname);
 	}
 	
 	// -------------------------------------------- //
