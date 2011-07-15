@@ -40,16 +40,22 @@ public class SNPlayerListener extends PlayerListener{
 		SuperNPlayer snplayer = SupernaturalManager.get(event.getPlayer());
 		Material itemMaterial = event.getMaterial();
 		
-		if(snplayer.isVampire())
-		{
-			if(SNConfigHandler.foodMaterials.contains(itemMaterial)){
+		if(SNConfigHandler.foodMaterials.contains(itemMaterial)){
+			if(snplayer.isVampire())
+			{
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(snplayer.getName() + " attempted to eat " + itemMaterial.toString());
 				SupernaturalManager.sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
 				event.setCancelled(true);
 				return;
+			} else if(snplayer.isWere())
+			{
+				plugin.getSuperManager().alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
 			}
 		}
+		
 		
 		if ( action != Action.RIGHT_CLICK_BLOCK) {
 			return;
@@ -73,7 +79,7 @@ public class SNPlayerListener extends PlayerListener{
 		Player player = event.getPlayer();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		ItemStack item = player.getItemInHand();
-		if(event.getAnimationType() == PlayerAnimationType.ARM_SWING){
+		if(event.getAnimationType().equals(PlayerAnimationType.ARM_SWING)){
 			if (snplayer.isVampire()) {
 				if(SNConfigHandler.jumpMaterials.contains(item.getType())){
 					plugin.getVampireManager().jump(player, SNConfigHandler.jumpDeltaSpeed, true);
@@ -82,6 +88,10 @@ public class SNPlayerListener extends PlayerListener{
 			}else if(snplayer.isWere()){
 				if(item.getType().toString().equals(SNConfigHandler.wolfMaterial)){
 					plugin.getWereManager().summon(player);
+				}
+			} else if(snplayer.isGhoul()){
+				if(item.getType().toString().equals(SNConfigHandler.ghoulMaterial)){
+					plugin.getGhoulManager().summon(player);
 				}
 			}
 		}
@@ -94,8 +104,7 @@ public class SNPlayerListener extends PlayerListener{
 		}
 		Location oldLocation = event.getFrom();
 		Location newLocation = event.getTo();
-	
-		
+
 		if(oldLocation.getBlock().equals(newLocation.getBlock())){
 			return;
 		}
@@ -107,6 +116,8 @@ public class SNPlayerListener extends PlayerListener{
 			if(SNConfigHandler.jumpMaterials.contains(event.getPlayer().getItemInHand().getType())){
 				plugin.getVampireManager().jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
 			}
+		} else if(snplayer.isGhoul()){
+			plugin.getGhoulManager().move(event.getPlayer());
 		}
 	}
 	

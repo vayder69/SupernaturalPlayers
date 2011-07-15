@@ -137,13 +137,6 @@ public class SuperNPlayer{
 		return false;
 	}
 	
-	public boolean hasTruce(){
-		if(this.getType().equalsIgnoreCase("vampire") || this.getType().equalsIgnoreCase("ghoul")){
-			return true;
-		}
-		return false;
-	}
-	
 	public boolean isOnline(){
 		return SupernaturalsPlugin.instance.getServer().getPlayer(playername) != null;
 	}

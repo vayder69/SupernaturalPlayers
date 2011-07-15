@@ -7,17 +7,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.matterz.supernaturals.commands.SNCommandAdminHelp;
+import me.matterz.supernaturals.commands.SNCommandAdmin;
+import me.matterz.supernaturals.commands.SNCommandClasses;
 import me.matterz.supernaturals.commands.SNCommandReload;
 import me.matterz.supernaturals.commands.SNCommandPower;
 import me.matterz.supernaturals.commands.SNCommandCure;
-import me.matterz.supernaturals.commands.SNCommandPowerGain;
 import me.matterz.supernaturals.commands.SNCommandHelp;
 import me.matterz.supernaturals.commands.SNCommandList;
 import me.matterz.supernaturals.commands.SNCommandSave;
 import me.matterz.supernaturals.commands.SNCommandConvert;
 import me.matterz.supernaturals.commands.SNCommandSetChurch;
-import me.matterz.supernaturals.commands.SNCommandVersion;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.io.SNPlayerHandler;
 import me.matterz.supernaturals.listeners.SNEntityListener;
@@ -116,16 +115,15 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		
 		// Add the commands
 		commands.add(new SNCommandHelp());
-		commands.add(new SNCommandAdminHelp());
+		commands.add(new SNCommandAdmin());
 		commands.add(new SNCommandPower());
 		commands.add(new SNCommandReload());
 		commands.add(new SNCommandSave());
 		commands.add(new SNCommandConvert());
 		commands.add(new SNCommandCure());
 		commands.add(new SNCommandList());
-		commands.add(new SNCommandVersion());
+		commands.add(new SNCommandClasses());
 		commands.add(new SNCommandSetChurch());
-		commands.add(new SNCommandPowerGain());
 		
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.High, this);

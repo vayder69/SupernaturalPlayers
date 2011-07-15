@@ -7,11 +7,21 @@ import java.util.Set;
 import java.util.Timer;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World.Environment;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageByProjectileEvent;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
+import me.matterz.supernaturals.util.EntityUtil;
 import me.matterz.supernaturals.util.SuperNTaskTimer;
 
 public class SupernaturalManager {
@@ -189,18 +199,119 @@ public class SupernaturalManager {
 		}
 	}
 	
-	public void deathEvent(SuperNPlayer snplayer){
-		if(!snplayer.isHuman()){
+	public void deathEvent(Player player){
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		if(!snplayer.isSuper()){
+			if(snplayer.isPriest()){
+				this.alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
+			}
+			
+			Entity damager = null;
+			Event e = player.getLastDamageCause();
+			if(e instanceof EntityDamageByEntityEvent){
+				damager = ((EntityDamageByEntityEvent) e).getDamager();
+			} else if(e instanceof EntityDamageByProjectileEvent){
+				damager = ((EntityDamageByEntityEvent) e).getDamager();	
+			}
+			
+			if(damager!=null){
+				double random = Math.random();
+				if(random>0.5){
+					if((damager instanceof Ghast) && player.getWorld().getEnvironment().equals(Environment.NETHER)){
+						this.curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
+						SupernaturalManager.sendMessage(snplayer, "You have been transformed into a Ghoul!");
+					}else if((damager instanceof Wolf)){
+						if(!(((Wolf)damager).isTamed()) && this.worldTimeIsNight(player)){
+							this.curse(snplayer, "werewolf", SNConfigHandler.werePowerStart);
+							SupernaturalManager.sendMessage(snplayer, "You have mutated into a werewolf!");
+						}
+					}
+				}
+			}
+		}else{
 			if(snplayer.isVampire()){
 				this.alterPower(snplayer, -SNConfigHandler.vampireDeathPowerPenalty, "You died!");
 			} else if(snplayer.isGhoul()){
 				this.alterPower(snplayer, -SNConfigHandler.ghoulDeathPowerPenalty, "You died!");
 			} else if(snplayer.isWere()){
 				this.alterPower(snplayer, -SNConfigHandler.wereDeathPowerPenalty, "You died!");
-			} else if(snplayer.isPriest()){
-				this.alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
 			}
 		}
+	}
+	
+	// -------------------------------------------- //
+	// 		Monster Truce Feature (Passive)			//
+	// -------------------------------------------- //
+	
+	public boolean truceIsBroken(SuperNPlayer snplayer) {
+		return snplayer.getTruce();
+	}
+	
+	public void truceBreak(SuperNPlayer snplayer) {
+		if(!snplayer.isSuper()){
+			snplayer.setTruce(true);
+			return;
+		}
+		if(snplayer.getTruce()) {
+			SupernaturalManager.sendMessage(snplayer, "You temporarily broke your truce with monsters!");
+		}
+		snplayer.setTruce(false);
+		snplayer.setTruceTimer(SNConfigHandler.truceBreakTime);
+	}
+	
+	public void truceRestore(SuperNPlayer snplayer){
+		SupernaturalManager.sendMessage(snplayer, "Your truce with monsters has been restored!");
+		snplayer.setTruce(true);
+		snplayer.setTruceTimer(0);
+		
+		// Untarget the player.
+		Player player = plugin.getServer().getPlayer(snplayer.getName());
+		for(LivingEntity entity : player.getWorld().getLivingEntities()){
+			if(!(entity instanceof Creature)){
+				continue;
+			}
+			
+			if(snplayer.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(entity))){
+				Creature creature = (Creature)entity;
+				LivingEntity target = creature.getTarget();
+				if((target != null && creature.getTarget().equals(player))){
+					creature.setTarget(null);
+				}
+			} else if(snplayer.isGhoul() && SNConfigHandler.ghoulTruce.contains(EntityUtil.creatureTypeFromEntity(entity))){
+				Creature creature = (Creature)entity;
+				LivingEntity target = creature.getTarget();
+				if((target != null && creature.getTarget().equals(player))){
+					creature.setTarget(null);
+				}
+			} else if(snplayer.isWere() && SNConfigHandler.wolfTruce && EntityUtil.creatureNameFromEntity(entity).equalsIgnoreCase("wolf")){
+				Creature creature = (Creature)entity;
+				LivingEntity target = creature.getTarget();
+				if((target != null && creature.getTarget().equals(player))){
+					creature.setTarget(null);
+				}
+			}
+		}
+	}
+	
+	public void truceBreakAdvanceTime(SuperNPlayer snplayer, int milliseconds){
+		if(snplayer.getTruce()){
+			return;
+		}
+		
+		this.truceBreakTimeLeftAlter(snplayer, -milliseconds);
+	}
+	
+	public int truceBreakTimeLeftGet(SuperNPlayer snplayer){
+		return snplayer.getTruceTimer();
+	}
+	
+	private void truceBreakTimeLeftAlter(SuperNPlayer snplayer, int delta){
+		if ((snplayer.getTruceTimer() + delta) < 0) {
+			this.truceRestore(snplayer);
+		} else {
+			snplayer.setTruceTimer(snplayer.getTruceTimer() + delta);
+		}
+		plugin.saveData();
 	}
 	
 	// -------------------------------------------- //
@@ -222,6 +333,15 @@ public class SupernaturalManager {
 	// 					TimeKeeping					//
 	// -------------------------------------------- //
 	
+	public boolean worldTimeIsNight(Player player) {
+		long time = player.getWorld().getTime() % 24000;
+		
+		if (time < 0 || time > 12400) 
+			return true;
+		
+		return false; 
+	}
+	
 	public void startTimer(){
 		timer.schedule(new SuperNTaskTimer(plugin),0,100);
 	}
@@ -237,25 +357,30 @@ public class SupernaturalManager {
 			taskCounter = 0;
 		}
 		
-		if (snplayer.isVampire()) {
+		if(snplayer.isVampire()) {
 			if(taskCounter%10==0)
 				plugin.getVampireManager().moveAdvanceTime(snplayer);
-			if(((int)taskCounter)%30==0){
+			if(taskCounter%30==0){
 				plugin.getVampireManager().combustAdvanceTime(player, 3000);
-				plugin.getVampireManager().truceBreakAdvanceTime(snplayer, 3000);
 				plugin.getVampireManager().gainPowerAdvanceTime(snplayer, 3000);
 			}else if(taskCounter==0){
 				plugin.getVampireManager().regenAdvanceTime(player, 30000);
 			}
+		}else if(snplayer.isGhoul()){
+			if(taskCounter%30==0){
+				plugin.getGhoulManager().regenAdvanceTime(player, 3000);
+			}
+		}else if(snplayer.isWere()){
+			if(taskCounter%30==0){
+				plugin.getGhoulManager().regenAdvanceTime(player, 3000);
+			}
 		}
-	}
-	
-	public boolean worldTimeIsNight(Player player) {
-		long time = player.getWorld().getTime() % 24000;
 		
-		if (time < 0 || time > 12400) 
-			return true;
+		if(snplayer.isSuper()){
+			if(taskCounter%30==0){
+				this.truceBreakAdvanceTime(snplayer, 3000);
+			}
+		}
 		
-		return false; 
 	}
 }

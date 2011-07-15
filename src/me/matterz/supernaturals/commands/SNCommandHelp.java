@@ -25,7 +25,7 @@ public class SNCommandHelp extends SNCommand{
 		helpMessages.add("*** "+ChatColor.WHITE+"Supernatural Help "+ChatColor.RED+"***");
 		helpMessages.add("/sn power "+ChatColor.WHITE+"- Show current power level.");
 		helpMessages.add("/sn list "+ChatColor.WHITE+"- List supernaturals on the server.");
-		helpMessages.add("/sn version "+ChatColor.WHITE+"- Show plugin version.");
+		helpMessages.add("/sn classes "+ChatColor.WHITE+"- Show the list of available Super-classes");
 	}
 	
 	@Override
@@ -35,14 +35,7 @@ public class SNCommandHelp extends SNCommand{
 		Player senderPlayer = (Player) sender;
 		
 		if(SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions2)){
-			helpMessages.add("/sn cure [PlayerName] "+ChatColor.WHITE+"- Cure a player.");
-			helpMessages.add("/sn convert [PlayerName]  [SupernaturalType] "+ChatColor.WHITE+"- Turn a player into vampire.");
-			helpMessages.add("/sn powergain [Playername] [Power] "+ChatColor.WHITE+"- Give power to a player.");
-			helpMessages.add("/sn save "+ChatColor.WHITE+"- Save data to disk.");
-			helpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
-			helpMessages.add("/sn list "+ChatColor.WHITE+"- List supernaturals on the server.");
-			helpMessages.add("/sn setchurch "+ChatColor.WHITE+"- Sets your current location as the priests' church.");
-			helpMessages.add("/sn burntime [From] [To] "+ChatColor.WHITE+"- Set time during which vampires will burn.");
+			helpMessages.add("/sn admin "+ChatColor.WHITE+"- Show admin commands");
 		}
 		
 		if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions)){

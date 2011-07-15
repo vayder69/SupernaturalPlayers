@@ -20,7 +20,7 @@ public class SNCommandConvert extends SNCommand {
 		requiredParameters.add("playername");
 		requiredParameters.add("supernaturalType");
 		permissions = "supernatural.admin.command.curse";
-		helpNameAndParams = "curse [playername] [supernaturalType]";
+		helpNameAndParams = "convert [playername] [supernaturalType]";
 		helpDescription = "Instantly turn a player into a supernatural.";
 	}
 	

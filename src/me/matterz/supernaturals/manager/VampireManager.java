@@ -5,15 +5,12 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
-import me.matterz.supernaturals.util.EntityUtil;
 import me.matterz.supernaturals.util.GeometryUtil;
 
 public class VampireManager{
@@ -115,7 +112,7 @@ public class VampireManager{
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
 			SupernaturalManager.sendMessage(snplayer, "The gold draws energy from the obsidian... The energy rushes through you and you feel a bitter cold...");
 			SNConfigHandler.vampireAltarInfectRecipe.removeFromPlayer(player);
-			plugin.getSuperManager().curse(snplayer, "vampire", SNConfigHandler.vampireAltarInfectStartingPower);
+			plugin.getSuperManager().curse(snplayer, "vampire", SNConfigHandler.vampirePowerStart);
 		} else {
 			SupernaturalManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
@@ -160,74 +157,6 @@ public class VampireManager{
 			SupernaturalManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
 		}
-	}
-	
-	
-	// -------------------------------------------- //
-	// 		Monster Truce Feature (Passive)			//
-	// -------------------------------------------- //
-	
-	public boolean truceIsBroken(SuperNPlayer snplayer) {
-		return snplayer.getTruce();
-	}
-	
-	public void truceBreak(SuperNPlayer snplayer) {
-		if(!snplayer.hasTruce()){
-			snplayer.setTruce(true);
-			return;
-		}
-		if(snplayer.getTruce()) {
-			SupernaturalManager.sendMessage(snplayer, "You temporarily broke your truce with monsters!");
-		}
-		snplayer.setTruce(false);
-		snplayer.setTruceTimer(SNConfigHandler.truceBreakTime);
-	}
-	
-	public void truceRestore(SuperNPlayer snplayer){
-		SupernaturalManager.sendMessage(snplayer, "Your truce with monsters has been restored!");
-		snplayer.setTruce(true);
-		snplayer.setTruceTimer(0);
-		
-		// Untarget the player.
-		Player player = plugin.getServer().getPlayer(snplayer.getName());
-		for(LivingEntity entity : player.getWorld().getLivingEntities()){
-			if(!(entity instanceof Creature)){
-				continue;
-			}
-			
-			if(SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(entity))){
-				Creature creature = (Creature)entity;
-				LivingEntity target = creature.getTarget();
-				if((target != null && creature.getTarget().equals(player))){
-					creature.setTarget(null);
-				}
-			}
-		}
-	}
-	
-	public void truceBreakAdvanceTime(SuperNPlayer snplayer, int milliseconds){
-		if(snplayer.getTruce()){
-			return;
-		}
-		
-		this.truceBreakTimeLeftAlter(snplayer, -milliseconds);
-	}
-	
-	public int truceBreakTimeLeftGet(SuperNPlayer snplayer){
-		return snplayer.getTruceTimer();
-	}
-	
-	private void truceBreakTimeLeftSet(SuperNPlayer snplayer, int milliseconds){
-		if (milliseconds < 0) {
-			this.truceRestore(snplayer);
-		} else {
-			snplayer.setTruceTimer(milliseconds);
-		}
-		plugin.saveData();
-	}
-	
-	private void truceBreakTimeLeftAlter(SuperNPlayer snplayer, int delta){
-		this.truceBreakTimeLeftSet(snplayer, snplayer.getTruceTimer() + delta);
 	}
 	
 	// -------------------------------------------- //
@@ -305,7 +234,7 @@ public class VampireManager{
 		Material material = player.getLocation().getBlock().getType();
 		World playerWorld = player.getWorld();
 		
-		if ((player.getWorld().getEnvironment() == Environment.NETHER) 
+		if ((player.getWorld().getEnvironment().equals(Environment.NETHER)) 
 				|| plugin.getSuperManager().worldTimeIsNight(player) || this.isUnderRoof(player) || material == Material.STATIONARY_WATER
 				|| material == Material.WATER || playerWorld.hasStorm() || playerWorld.isThundering())
 		{

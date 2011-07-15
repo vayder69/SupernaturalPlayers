@@ -70,6 +70,11 @@ public class SNEntityListener extends EntityListener{
 					event.setCancelled(true);
 					return;
 				}
+			} else if(snpVictim.isWere()){
+				if(event.getCause() == DamageCause.FALL){
+					event.setDamage((int)(event.getDamage()*SNConfigHandler.wereDamageFall));
+					return;
+				}
 			}
 		}
 		
@@ -94,7 +99,7 @@ public class SNEntityListener extends EntityListener{
 		//Modify damage if damager is a supernatural
 		if(snpDamager.isVampire()){
 			damage *= SNConfigHandler.vampireDamageFactor;
-		} else if (snpDamager.isGhoul()){
+		} else if(snpDamager.isGhoul()){
 			if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
 				if(SNConfigHandler.debugMode){
 					SupernaturalsPlugin.log(pDamager.getName() + " was forced to drop "+item.getType().toString());
@@ -103,6 +108,10 @@ public class SNEntityListener extends EntityListener{
 				}else{
 					damage *= SNConfigHandler.ghoulDamageFactor;
 				}
+			}
+		} else if(snpDamager.isWere()){
+			if(plugin.getSuperManager().worldTimeIsNight(pDamager)){
+				damage *= SNConfigHandler.wereDamageFactor;
 			}
 		}
 		
@@ -120,9 +129,19 @@ public class SNEntityListener extends EntityListener{
 					damage *= SNConfigHandler.vampireDamageReceivedFactor;
 				}
 			}else if(snpVictim.isGhoul()){
-				damage *= SNConfigHandler.ghoulDamageReceivedFactor;
-			}			
+				if(SNConfigHandler.ghoulWeaponImmunity.contains(item.getType())){
+					damage = 0;
+					SupernaturalManager.sendMessage(snpDamager, "Ghouls are immune to that weapon!");
+				}else{
+					damage *= SNConfigHandler.ghoulDamageReceivedFactor;
+				}
+			}else if(snpDamager.isWere()){
+				if(plugin.getSuperManager().worldTimeIsNight(pDamager)){
+					damage *= SNConfigHandler.wereDamageReceivedFactor;
+				}
+			}		
 		}
+		
 		event.setDamage(Math.round(damage));
 	}
 	
@@ -145,6 +164,10 @@ public class SNEntityListener extends EntityListener{
 		
 		// ... by creature that cares about the truce with vampires ...
 		if(snplayer.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(event.getEntity()))){
+			event.setCancelled(true);
+		} else if(snplayer.isGhoul() && SNConfigHandler.ghoulTruce.contains(EntityUtil.creatureTypeFromEntity(event.getEntity()))){
+			event.setCancelled(true);
+		} else if(snplayer.isWere() && SNConfigHandler.wolfTruce && EntityUtil.creatureNameFromEntity(event.getEntity()).equalsIgnoreCase("wolf")){
 			event.setCancelled(true);
 		}
 	}	

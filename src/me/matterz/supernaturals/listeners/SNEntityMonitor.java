@@ -53,7 +53,9 @@ public class SNEntityMonitor extends EntityListener {
 				
 				//Break vampire truce
 				if(snDamager.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(cVictim))){
-					plugin.getVampireManager().truceBreak(snDamager);
+					plugin.getSuperManager().truceBreak(snDamager);
+				} else if(snDamager.isGhoul() && SNConfigHandler.ghoulTruce.contains(EntityUtil.creatureTypeFromEntity(cVictim))){
+					plugin.getSuperManager().truceBreak(snDamager);
 				}
 			}
 		} else if(!(event instanceof EntityDamageByEntityEvent)){
@@ -82,7 +84,9 @@ public class SNEntityMonitor extends EntityListener {
 			
 			//Break vampire truce
 			if(snDamager.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(cVictim))){
-				plugin.getVampireManager().truceBreak(snDamager);
+				plugin.getSuperManager().truceBreak(snDamager);
+			} else if(snDamager.isGhoul() && SNConfigHandler.ghoulTruce.contains(EntityUtil.creatureTypeFromEntity(cVictim))){
+				plugin.getSuperManager().truceBreak(snDamager);
 			}
 		}
 	}
@@ -115,7 +119,7 @@ public class SNEntityMonitor extends EntityListener {
 		}
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)entity);
 		
-		plugin.getSuperManager().deathEvent(snplayer);
+		plugin.getSuperManager().deathEvent((Player) entity);
 		
 		Entity damager = null;
 		Event e = entity.getLastDamageCause();
