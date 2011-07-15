@@ -108,12 +108,6 @@ public class SNPlayerListener extends PlayerListener{
 		}
 		
 		Location newLocation = event.getTo();
-		Location oldLocation = event.getFrom();
-		
-		if(newLocation.getBlockX()==oldLocation.getBlockX())
-			if(newLocation.getBlockY()==oldLocation.getBlockY())
-				if(newLocation.getBlockZ()==oldLocation.getBlockZ())
-					return;
 		
 		LightUtil.illuminate(player,newLocation);
 	}
@@ -130,6 +124,8 @@ public class SNPlayerListener extends PlayerListener{
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(event.getPlayer().getName() + " was not kicked for flying.");
 			} 
-		}	
+		} else {
+			LightUtil.purgePlayer(event.getPlayer());
+		}
 	}
 }

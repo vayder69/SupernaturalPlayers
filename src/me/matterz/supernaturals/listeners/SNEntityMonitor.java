@@ -130,13 +130,13 @@ public class SNEntityMonitor extends EntityListener {
 		
 		if(snplayer.isSuper()){
 			if(snplayer.isVampire()){
-				SupernaturalManager.alterPower(snplayer, SNConfigHandler.vampireDeathPowerPenalty, "You died!");
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.vampireDeathPowerPenalty, "You died!");
 			} else if(snplayer.isGhoul()){
-				SupernaturalManager.alterPower(snplayer, SNConfigHandler.ghoulDeathPowerPenalty, "You died!");
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.ghoulDeathPowerPenalty, "You died!");
 			} else if(snplayer.isWere()){
-				SupernaturalManager.alterPower(snplayer, SNConfigHandler.wereDeathPowerPenalty, "You died!");
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.wereDeathPowerPenalty, "You died!");
 			} else if(snplayer.isPriest()){
-				SupernaturalManager.alterPower(snplayer, SNConfigHandler.priestDeathPowerPenalty, "You died!");
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
 			}
 		}
 		
