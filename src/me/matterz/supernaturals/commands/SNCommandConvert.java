@@ -11,9 +11,9 @@ import me.matterz.supernaturals.manager.SupernaturalManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class SNCommandCurse extends SNCommand {
+public class SNCommandConvert extends SNCommand {
 
-	public SNCommandCurse() {	
+	public SNCommandConvert() {	
 		requiredParameters = new ArrayList<String>();
 		optionalParameters = new ArrayList<String>();
 		senderMustBePlayer = false;

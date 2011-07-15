@@ -11,6 +11,7 @@ public class SuperNPlayer{
 	private double superPower = 0;
 	private boolean truce = true;
 	private int truceTimer = 0;
+	private boolean move = true;
 	
 	public SuperNPlayer(){}
 	
@@ -22,17 +23,12 @@ public class SuperNPlayer{
 		this.superPower = 0;
 		this.truce = true;
 		this.truceTimer = 0;
+		this.move = true;
 	}
 	
-	public SuperNPlayer(String playername, String superType, double superPower, String oldSuperType, double oldSuperPower, boolean truce, int truceTimer){
-		this.playername = playername;
-		this.superType = superType;
-		this.oldSuperType = oldSuperType;
-		this.oldSuperPower = oldSuperPower;		
-		this.superPower = superPower;
-		this.truce = truce;
-		this.truceTimer = truceTimer;
-	}
+	// -------------------------------------------- //
+	// 					Parameters					//
+	// -------------------------------------------- //
 	
 	public String getName(){
 		return this.playername;
@@ -66,7 +62,49 @@ public class SuperNPlayer{
 		this.oldSuperPower=amount;
 	}
 	
+	public double getPower(){
+		return this.superPower;
+	}
+	
+	public void setPower(double amount){
+		this.superPower = this.limitDouble(amount);
+	}
+	
+	public boolean getTruce(){
+		return this.truce;
+	}
+	
+	public void setTruce(boolean truce){
+		this.truce = truce;
+	}
+	
+	public int getTruceTimer(){
+		return this.truceTimer;
+	}
+	
+	public void setTruceTimer(int timer){
+		this.truceTimer=timer;
+	}
+	
+	public boolean getMove(){
+		return this.move;
+	}
+	
+	public void setMove(boolean move){
+		this.move = move;
+	}
+	
+	// -------------------------------------------- //
+	// 					Booleans					//
+	// -------------------------------------------- //
+	
 	public boolean isSuper(){
+		if(this.getType().equalsIgnoreCase("human") || this.getType().equalsIgnoreCase("priest"))
+			return false;
+		return true;
+	}
+	
+	public boolean isHuman(){
 		if(this.getType().equalsIgnoreCase("human"))
 			return false;
 		return true;
@@ -104,30 +142,6 @@ public class SuperNPlayer{
 			return true;
 		}
 		return false;
-	}
-	
-	public double getPower(){
-		return this.superPower;
-	}
-	
-	public void setPower(double amount){
-		this.superPower = this.limitDouble(amount);
-	}
-	
-	public boolean getTruce(){
-		return this.truce;
-	}
-	
-	public void setTruce(boolean truce){
-		this.truce = truce;
-	}
-	
-	public int getTruceTimer(){
-		return this.truceTimer;
-	}
-	
-	public void setTruceTimer(int timer){
-		this.truceTimer=timer;
 	}
 	
 	public boolean isOnline(){

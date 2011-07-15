@@ -22,7 +22,8 @@ public class SuperNTaskTimer extends TimerTask {
 		
 		// Tick each online player
 		for(SuperNPlayer snplayer : SupernaturalManager.findAllOnline()) {
-			plugin.getSuperManager().advanceTime(snplayer, (int) delta);
+			plugin.getSuperManager().advanceTime(snplayer, (int)delta);
 		}
+		plugin.getPriestManager().priestLight();
 	}
 }

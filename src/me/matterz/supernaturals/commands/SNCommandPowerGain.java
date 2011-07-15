@@ -45,6 +45,6 @@ public class SNCommandPowerGain extends SNCommand
 		this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " has been powered up!");
 		SupernaturalsPlugin.instance.getSuperManager();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		SupernaturalManager.alterPower(snplayer, powerGain);
+		SupernaturalsPlugin.instance.getSuperManager().alterPower(snplayer, powerGain);
 	}
 }

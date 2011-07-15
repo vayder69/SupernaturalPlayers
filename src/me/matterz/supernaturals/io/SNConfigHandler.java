@@ -24,11 +24,14 @@ public class SNConfigHandler {
 	public static boolean wereKillSpreadCurse;
 	public static boolean vampireBurnInSunlight;
 	public static double vampireDamageFactor;
+	public static double ghoulDamageFactor;
 	public static double woodFactor;
 	public static double vampireDamageReceivedFactor;
 	public static double ghoulDamageReceivedFactor;
 	public static double jumpDeltaSpeed;
-	public static double jumpBloodCost;
+	public static double dashDeltaSpeed;
+	public static int jumpBloodCost;
+	public static int dashBloodCost;
 	public static double vampireAltarInfectMaterialRadius;
 	public static double vampireAltarCureMaterialRadius;
 	public static double vampireTimePowerGained;
@@ -37,11 +40,8 @@ public class SNConfigHandler {
 	public static int vampireHealingPowerMin;
 	public static int truceBreakTime;
 	public static int maxPower;
-	public static int timerInterval;
 	public static int vampireAltarInfectMaterialSurroundCount;
 	public static int vampireAltarCureMaterialSurroundCount;
-	public static int vampireCombustFromTime;
-	public static int vampireCombustToTime;
 	public static int vampireAltarInfectStartingPower;
 	public static int vampireDeathPowerPenalty;
 	public static int ghoulDeathPowerPenalty;
@@ -62,17 +62,22 @@ public class SNConfigHandler {
 	public static int priestChurchLocationZ;
 	public static int priestLightRadius;
 	public static int priestLightIntensity;
+	public static int werePowerSummonMin;
+	public static int werePowerSummonCost;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
 	public static String vampireAltarCureMaterialSurround;
+	public static String wolfMaterial;
 	public static List<String> supernaturalTypes = new ArrayList<String>();
 	
 	public static List<Material> woodMaterials = new ArrayList<Material>();
 	public static List<CreatureType> vampireTruce = new ArrayList<CreatureType>();
 	public static List<Material> foodMaterials = new ArrayList<Material>();
 	public static List<Material> jumpMaterials = new ArrayList<Material>();
+	public static List<Material> ghoulWeapons = new ArrayList<Material>();
 	
+	private static List<String> ghoulWeaponsString = new ArrayList<String>();
 	private static List<String> woodMaterialsString = new ArrayList<String>();
 	private static List<String> vampireTruceString = new ArrayList<String>();
 	private static List<String> foodMaterialsString = new ArrayList<String>();
@@ -125,7 +130,8 @@ public class SNConfigHandler {
 	}
 	
 	public void loadValues(Configuration config){
-		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 60000);
+		debugMode = config.getBoolean("DebugMode", true);
+		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 30000);
 		maxPower = config.getInt("Supernatural.MaxAllowedPower", 10000);
 		supernaturalTypes = config.getStringList("Supernatural.Types", null);
 		
@@ -134,8 +140,10 @@ public class SNConfigHandler {
 		
 		jumpMaterialsString = config.getStringList("Vampire.Jump.Materials", null);
 		
-		jumpDeltaSpeed = config.getDouble("Vampire.Jump.Delta", 3);
-		jumpBloodCost = config.getDouble("Vampire.Power.Jump.Cost", 3);
+		jumpDeltaSpeed = config.getDouble("Vampire.Jump.Delta", 1.5);
+		jumpBloodCost = config.getInt("Vampire.Power.Jump.Cost", 10);
+		dashBloodCost = config.getInt("Vampire.Power.Dash.Cost", 10);
+		dashDeltaSpeed = config.getDouble("Vampire.Dash.Delta", 3);
 		
 		vampireKillSpreadCurse = config.getBoolean("Vampire.Kill.SpreadCurse",true);
 		vampireKillPowerCreatureGain = config.getInt("Vampire.Power.Kill.CreatureGain", 10);
@@ -148,8 +156,6 @@ public class SNConfigHandler {
 		vampireCombustFireTicks = config.getInt("Vampire.Burn.FireTicks", 1);
 		
 		vampireTruceString = config.getStringList("Vampire.Truce.Creatures", null);
-		vampireCombustFromTime = config.getInt("Vampire.Combust.FromTime", 0);
-		vampireCombustToTime = config.getInt("Vampire.Combust.ToTime", 12400);
 		vampireTimePowerGained = config.getDouble("Vampire.Time.PowerGained", 1.0);
 		vampireTimeHealthGained = config.getDouble("Vampire.Time.HealthGained", 0.1);
 		vampireHealthCost = config.getDouble("Vampire.Power.Healing.Cost",3);
@@ -186,11 +192,16 @@ public class SNConfigHandler {
 		ghoulDeathPowerPenalty = config.getInt("Ghoul.Power.Death.Penalty", 200);
 		ghoulDrowningPowerMin = config.getInt("Ghoul.Power.Drowning.Min", 1000);
 		ghoulDamageReceivedFactor = config.getDouble("Ghoul.Damage.RecievedFactor", 0.5);
+		ghoulWeaponsString = config.getStringList("Ghoul.WeaponsDisabled", null);
+		ghoulDamageFactor = config.getDouble("Ghoul.Damage.Factor", 2);
 		
 		wereDeathPowerPenalty = config.getInt("Were.Power.Death.Penalty", 200);
 		wereKillPowerCreatureGain = config.getInt("Were.Power.Kill.CreatureGain", 10);
 		wereKillPowerPlayerGain = config.getInt("Were.Power.Kill.PlayerGain", 100);
+		werePowerSummonMin = config.getInt("Were.Power.Summon.Min", 1000);
 		wereKillSpreadCurse = config.getBoolean("Were.Kill.SpreadCurse", true);
+		wolfMaterial = config.getString("Were.Summon.Material", "PORK");
+		werePowerSummonCost = config.getInt("Were.Power.Summon.Cost", 200);
 		
 		
 		if(supernaturalTypes.size() == 0){
@@ -209,6 +220,7 @@ public class SNConfigHandler {
 			woodMaterialsString.add("WOOD_PICKAXE");
 			woodMaterialsString.add("WOOD_SPADE");
 			woodMaterialsString.add("WOOD_SWORD");
+			woodMaterialsString.add("BOW");
 			config.setProperty("Vampire.Materials.Wooden", woodMaterialsString);
 		}
 		
@@ -270,8 +282,36 @@ public class SNConfigHandler {
 			config.setProperty("Vampire.Altar.Cure.Recipe.Quantities",vampireAltarCureQuantities);
 		}
 		
-		timerInterval = config.getInt("TimerInterval", 3000);
-		debugMode = config.getBoolean("DebugMode", true);
+		if(ghoulWeaponsString.size() == 0){
+			ghoulWeaponsString.add("BOW");
+			ghoulWeaponsString.add("STICK");
+			ghoulWeaponsString.add("WOOD_SWORD");
+			ghoulWeaponsString.add("WOOD_PICKAXE");
+			ghoulWeaponsString.add("WOOD_SPADE");
+			ghoulWeaponsString.add("WOOD_AXE");
+			ghoulWeaponsString.add("WOOD_HOE");
+			ghoulWeaponsString.add("STONE_SWORD");
+			ghoulWeaponsString.add("STONE_PICKAXE");
+			ghoulWeaponsString.add("STONE_SPADE");
+			ghoulWeaponsString.add("STONE_AXE");
+			ghoulWeaponsString.add("STONE_HOE");
+			ghoulWeaponsString.add("IRON_SWORD");
+			ghoulWeaponsString.add("IRON_PICKAXE");
+			ghoulWeaponsString.add("IRON_SPADE");
+			ghoulWeaponsString.add("IRON_AXE");
+			ghoulWeaponsString.add("IRON_HOE");
+			ghoulWeaponsString.add("GOLD_SWORD");
+			ghoulWeaponsString.add("GOLD_PICKAXE");
+			ghoulWeaponsString.add("GOLD_SPADE");
+			ghoulWeaponsString.add("GOLD_AXE");
+			ghoulWeaponsString.add("GOLD_HOE");
+			ghoulWeaponsString.add("DIAMOND_SWORD");
+			ghoulWeaponsString.add("DIAMOND_PICKAXE");
+			ghoulWeaponsString.add("DIAMOND_SPADE");
+			ghoulWeaponsString.add("DIAMOND_AXE");
+			ghoulWeaponsString.add("DIAMOND_HOE");
+		}
+
 		config.save();
 		
 		for(String wood : woodMaterialsString){
@@ -288,6 +328,10 @@ public class SNConfigHandler {
 		
 		for(String jump : jumpMaterialsString){
 			jumpMaterials.add(Material.getMaterial(jump));
+		}
+		
+		for(String weapon : ghoulWeaponsString){
+			ghoulWeapons.add(Material.getMaterial(weapon));
 		}
 		
 		for(int i=0; i<vampireAltarInfectMaterialsString.size();i++){

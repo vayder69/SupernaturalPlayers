@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class SNEntityListener extends EntityListener{
 
@@ -51,7 +52,7 @@ public class SNEntityListener extends EntityListener{
 			if(snpVictim.isVampire()){
 				if(event.getCause() == DamageCause.DROWNING){
 					if(snpVictim.getPower() > SNConfigHandler.vampireDrowningPowerMin){
-						SupernaturalManager.alterPower(snpVictim, SNConfigHandler.vampireDrowningCost, "Water!");
+						plugin.getSuperManager().alterPower(snpVictim, SNConfigHandler.vampireDrowningCost, "Water!");
 						event.setCancelled(true);
 						return;
 					}
@@ -71,78 +72,57 @@ public class SNEntityListener extends EntityListener{
 				}
 			}
 		}
-			
-		//Modify attack damage events
-		if(event.getCause() != DamageCause.ENTITY_ATTACK){
-			return;
-		}
 		
-		//Projectile event handling
+		//player damager events
 		if(event instanceof EntityDamageByProjectileEvent){
 			edbpEvent = (EntityDamageByProjectileEvent) event;
 			damager = edbpEvent.getDamager();
-			if(!(damager instanceof Player))
-				return;	
-			
-			pDamager = (Player)damager;
-			snpDamager = SupernaturalManager.get(pDamager);
-			
 			damage = event.getDamage();
-			
-			// Modify damage if victim is a vampire
-			if(victim instanceof Player){
-				pVictim = (Player)victim;
-				snpVictim = SupernaturalManager.get(pVictim);
-				if(SNConfigHandler.debugMode)
-					SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + pDamager.getItemInHand().getType().toString());
-				if(snpVictim.isVampire()){
-					if(SNConfigHandler.woodMaterials.contains(pDamager.getItemInHand().getType())){
-						damage *= SNConfigHandler.woodFactor;
-						SupernaturalManager.sendMessage(snpVictim, "Vampires have a weakness to wood!");
-					}else{
-						damage *= SNConfigHandler.vampireDamageReceivedFactor;
-					}
-				} else if(snpVictim.isGhoul()){
-					damage *= SNConfigHandler.ghoulDamageReceivedFactor;
-				}
-			}
-			
-		//Melee event handling
-		}else if(!(event instanceof EntityDamageByEntityEvent)){
+		}else if(event instanceof EntityDamageByEntityEvent){
+			edbeEvent = (EntityDamageByEntityEvent) event;
+			damager = edbeEvent.getDamager();
+			damage = event.getDamage();
+		} else
 			return;
-		}
-		
-		edbeEvent = (EntityDamageByEntityEvent) event;
-		damager = edbeEvent.getDamager();
 		if(!(damager instanceof Player))
 			return;	
-		
+			
 		pDamager = (Player)damager;
 		snpDamager = SupernaturalManager.get(pDamager);
+		ItemStack item = pDamager.getItemInHand();
 		
-		damage = event.getDamage();
-		
-		//Modify damage if damager is a vampire
+		//Modify damage if damager is a supernatural
 		if(snpDamager.isVampire()){
 			damage *= SNConfigHandler.vampireDamageFactor;
+		} else if (snpDamager.isGhoul()){
+			if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
+				if(SNConfigHandler.debugMode){
+					SupernaturalsPlugin.log(pDamager.getName() + " was forced to drop "+item.getType().toString());
+					SupernaturalManager.sendMessage(snpDamager, "Ghouls do no damage with weapons!");
+					damage=0;
+				}else{
+					damage *= SNConfigHandler.ghoulDamageFactor;
+				}
+			}
 		}
 		
-		// Modify damage if victim is a vampire
+		// Modify damage if victim is a supernatural
 		if(victim instanceof Player){
 			pVictim = (Player)victim;
 			snpVictim = SupernaturalManager.get(pVictim);
 			if(SNConfigHandler.debugMode)
-				SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + pDamager.getItemInHand().getType().toString());
+				SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + item.getType().toString());
 			if(snpVictim.isVampire()){
-				if(SNConfigHandler.woodMaterials.contains(pDamager.getItemInHand().getType().toString())){
+				if(SNConfigHandler.woodMaterials.contains(item.getType())){
 					damage *= SNConfigHandler.woodFactor;
 					SupernaturalManager.sendMessage(snpVictim, "Vampires have a weakness to wood!");
 				}else{
 					damage *= SNConfigHandler.vampireDamageReceivedFactor;
 				}
-			}
+			}else if(snpVictim.isGhoul()){
+				damage *= SNConfigHandler.ghoulDamageReceivedFactor;
+			}			
 		}
-		
 		event.setDamage(Math.round(damage));
 	}
 	
@@ -151,25 +131,20 @@ public class SNEntityListener extends EntityListener{
 		if(event.isCancelled()){
 			return;
 		}
-		
-		// If a player is targeted...
+
 		if(!(event.getTarget() instanceof Player)){
 			return;
 		}
 		
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)event.getTarget());
-		// ... and that player is a vampire ...
-		if(!snplayer.isVampire()) {
-			return;
-		}
+
 		
-		// ... that has not recently done something to break the truce...
 		if(!snplayer.getTruce()) {
 			return;
 		}
 		
 		// ... by creature that cares about the truce with vampires ...
-		if(SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(event.getEntity()))){
+		if(snplayer.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(event.getEntity()))){
 			event.setCancelled(true);
 		}
 	}	

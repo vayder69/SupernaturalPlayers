@@ -1,8 +1,7 @@
-package me.matterz.supernaturals.util;
+package me.matterz.supernaturals.manager;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimerTask;
 
 import net.minecraft.server.EnumSkyBlock;
 
@@ -15,19 +14,17 @@ import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 
-public class LightTaskTimer extends TimerTask {
+public class PriestManager {
 	
-	private	SupernaturalsPlugin plugin;
-	
-	private Map<SuperNPlayer, String> playerList = new HashMap<SuperNPlayer, String>();
+private SupernaturalsPlugin plugin;
 
-	public LightTaskTimer(SupernaturalsPlugin plugin){
-		this.plugin = plugin;
+	private Map<SuperNPlayer, String> playerList = new HashMap<SuperNPlayer, String>();
+	
+	public PriestManager(SupernaturalsPlugin plugin) {
+		this.plugin=plugin;
 	}
 	
-	@Override
-	public void run() {
-		
+	public void priestLight(){
 		// Adjust each Priest
 		for(SuperNPlayer snplayer : plugin.getSuperManager().getSupernaturals()) {
 			if(snplayer.isPriest()){
@@ -96,4 +93,5 @@ public class LightTaskTimer extends TimerTask {
 			}
 		}
 	}
+
 }

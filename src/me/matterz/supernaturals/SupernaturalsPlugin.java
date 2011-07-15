@@ -10,13 +10,12 @@ import java.util.logging.Logger;
 import me.matterz.supernaturals.commands.SNCommandAdminHelp;
 import me.matterz.supernaturals.commands.SNCommandReload;
 import me.matterz.supernaturals.commands.SNCommandPower;
-import me.matterz.supernaturals.commands.SNCommandBurnTimes;
 import me.matterz.supernaturals.commands.SNCommandCure;
 import me.matterz.supernaturals.commands.SNCommandPowerGain;
 import me.matterz.supernaturals.commands.SNCommandHelp;
 import me.matterz.supernaturals.commands.SNCommandList;
 import me.matterz.supernaturals.commands.SNCommandSave;
-import me.matterz.supernaturals.commands.SNCommandCurse;
+import me.matterz.supernaturals.commands.SNCommandConvert;
 import me.matterz.supernaturals.commands.SNCommandSetChurch;
 import me.matterz.supernaturals.commands.SNCommandVersion;
 import me.matterz.supernaturals.io.SNConfigHandler;
@@ -25,8 +24,12 @@ import me.matterz.supernaturals.listeners.SNEntityListener;
 import me.matterz.supernaturals.listeners.SNEntityMonitor;
 import me.matterz.supernaturals.listeners.SNPlayerListener;
 import me.matterz.supernaturals.listeners.SNPlayerMonitor;
+import me.matterz.supernaturals.manager.GhoulManager;
+import me.matterz.supernaturals.manager.PriestManager;
 import me.matterz.supernaturals.manager.SNCommand;
 import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.VampireManager;
+import me.matterz.supernaturals.manager.WereManager;
 import me.matterz.supernaturals.util.TextUtil;
 
 import org.bukkit.ChatColor;
@@ -54,6 +57,10 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	private final SNPlayerMonitor playerMonitor = new SNPlayerMonitor(this);
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
+	private VampireManager vampManager = new VampireManager(this);
+	private PriestManager priestManager = new PriestManager(this);
+	private WereManager wereManager = new WereManager(this);
+	private GhoulManager ghoulManager = new GhoulManager(this);
 	
 	public List<SNCommand> commands = new ArrayList<SNCommand>();
 	
@@ -63,12 +70,32 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		SupernaturalsPlugin.instance = this;
 	}
 	
+	// -------------------------------------------- //
+	// 					Managers					//
+	// -------------------------------------------- //
+	
 	public SupernaturalManager getSuperManager(){
 		return superManager;
 	}
 	
 	public SNConfigHandler getConfigManager(){
 		return snConfig;
+	}
+	
+	public VampireManager getVampireManager(){
+		return vampManager;
+	}
+	
+	public PriestManager getPriestManager(){
+		return priestManager;
+	}
+	
+	public WereManager getWereManager(){
+		return wereManager;
+	}
+	
+	public GhoulManager getGhoulManager(){
+		return ghoulManager;
 	}
 	
 	// -------------------------------------------- //
@@ -93,11 +120,10 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandPower());
 		commands.add(new SNCommandReload());
 		commands.add(new SNCommandSave());
-		commands.add(new SNCommandCurse());
+		commands.add(new SNCommandConvert());
 		commands.add(new SNCommandCure());
 		commands.add(new SNCommandList());
 		commands.add(new SNCommandVersion());
-		commands.add(new SNCommandBurnTimes());
 		commands.add(new SNCommandSetChurch());
 		commands.add(new SNCommandPowerGain());
 		
@@ -106,8 +132,8 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerListener, Priority.Normal, this);
-		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Normal, this);
-		pm.registerEvent(Type.PLAYER_MOVE, this.playerListener, Priority.High, this);
+		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Low, this);
+		pm.registerEvent(Type.PLAYER_MOVE, this.playerListener, Priority.Highest, this);
 		
 		pm.registerEvent(Type.PLAYER_QUIT, this.playerMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.PLAYER_TELEPORT, this.playerMonitor, Priority.Monitor, this);
