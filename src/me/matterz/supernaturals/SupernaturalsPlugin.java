@@ -102,7 +102,6 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandPowerGain());
 		
 		PluginManager pm = getServer().getPluginManager();
-		
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.High, this);
 		pm.registerEvent(Type.PLAYER_CHAT, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this);
@@ -192,6 +191,9 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	}
 	
 	public void reloadData(){
+		if(SNConfigHandler.debugMode){
+			SupernaturalsPlugin.log("Reloading config and data...");
+		}
 		File file = new File(getDataFolder(), "data.yml");
 		superManager.setSupernaturals(SNPlayerHandler.load(file));
         

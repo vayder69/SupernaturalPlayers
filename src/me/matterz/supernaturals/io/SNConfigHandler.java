@@ -1,6 +1,5 @@
 package me.matterz.supernaturals.io;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,9 +119,12 @@ public class SNConfigHandler {
 		SNConfigHandler.plugin = instance;
 	}
 	
-	public void getConfiguration(){
-		  
+	public void getConfiguration(){ 
 		config = plugin.getConfiguration();
+		this.loadValues(config);
+	}
+	
+	public void loadValues(Configuration config){
 		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 60000);
 		maxPower = config.getInt("Supernatural.MaxAllowedPower", 10000);
 		supernaturalTypes = config.getStringList("Supernatural.Types", null);
@@ -174,8 +176,8 @@ public class SNConfigHandler {
 		priestChurchLocationY = config.getInt("Priest.Church.Location.Y", 80);
 		priestChurchLocationZ = config.getInt("Priest.Church.Location.Z", 0);
 		
-		priestLightRadius = config.getInt("Priest.Light.Radius", 3);
-		priestLightIntensity = config.getInt("Priest.Light.Intensity", 15);
+		priestLightRadius = config.getInt("Priest.Light.Radius", 2);
+		priestLightIntensity = config.getInt("Priest.Light.Intensity", 8);
 		priestDeathPowerPenalty = config.getInt("Priest.Death.PowerPenalty", 200);
 		
 		ghoulKillSpreadCurse = config.getBoolean("Ghoul.Kill.SpreadCurse", true);
@@ -318,6 +320,10 @@ public class SNConfigHandler {
 	}
 	
 	public void reloadConfig(){
-		config = new Configuration(new File(plugin.getDataFolder().getPath() + "/config.yml"));
+		if(SNConfigHandler.debugMode){
+			SupernaturalsPlugin.log("Reloaded configuration file");
+		}
+		config.load();
+		this.loadValues(config);
 	}
 }

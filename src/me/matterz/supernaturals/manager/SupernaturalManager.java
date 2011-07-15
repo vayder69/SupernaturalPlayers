@@ -22,6 +22,7 @@ import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.util.EntityUtil;
 import me.matterz.supernaturals.util.GeometryUtil;
+import me.matterz.supernaturals.util.LightTaskTimer;
 import me.matterz.supernaturals.util.SuperNTaskTimer;
 
 public class SupernaturalManager {
@@ -31,6 +32,7 @@ public class SupernaturalManager {
 	private transient int taskCounter = 0;
 	
 	private Timer timer = new Timer();
+	private Timer timer2 = new Timer();
 	
 	public SupernaturalManager(SupernaturalsPlugin plugin){
 		this.plugin = plugin;
@@ -489,6 +491,14 @@ public class SupernaturalManager {
 	}
 	
 	// -------------------------------------------- //
+	// 					Lighting					//
+	// -------------------------------------------- //
+	
+	public void lightAdvanceTime(Player player){
+		
+	}
+	
+	// -------------------------------------------- //
 	// 					Messages					//
 	// -------------------------------------------- //
 	
@@ -509,10 +519,12 @@ public class SupernaturalManager {
 	
 	public void startTimer(){
 		timer.schedule(new SuperNTaskTimer(plugin),0,SNConfigHandler.timerInterval);
+		timer2.schedule(new LightTaskTimer(plugin),0,100);
 	}
 	
 	public void cancelTimer(){
 		timer.cancel();
+		timer2.cancel();
 	}
 	
 	public void advanceTime(SuperNPlayer snplayer, int milliseconds) {
@@ -520,10 +532,6 @@ public class SupernaturalManager {
 		taskCounter++;
 		if(taskCounter >= 10){
 			taskCounter = 0;
-		}
-		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Advance Time with " + milliseconds + " milliseconds  and " + taskCounter 
-					+ " counts for " + snplayer.getName() + " " + player.getName());
 		}
 		if (snplayer.isSuper()){
 			if (snplayer.isVampire()) {

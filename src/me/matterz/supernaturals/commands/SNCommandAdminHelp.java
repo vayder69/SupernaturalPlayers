@@ -30,7 +30,7 @@ public class SNCommandAdminHelp extends SNCommand{
 		adminHelpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
 		adminHelpMessages.add("/sn list "+ChatColor.WHITE+"- List supernaturals on the server.");
 		adminHelpMessages.add("/sn setchurch "+ChatColor.WHITE+"- Sets your current location as the priests' church.");
-		adminHelpMessages.add("/sn burntime [From] [To] "+ChatColor.WHITE+"- Set time in which vampires will burn.");
+		adminHelpMessages.add("/sn burntime [From] [To] "+ChatColor.WHITE+"- Set time during which vampires will burn.");
 	}
 	
 	@Override
@@ -41,7 +41,6 @@ public class SNCommandAdminHelp extends SNCommand{
 			this.sendMessage(adminHelpMessages);
 		} else {
 			this.sendMessage("You do not have permissions to use this command.");
-		}
-		
+		}	
 	}
 }

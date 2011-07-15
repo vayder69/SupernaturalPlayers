@@ -42,7 +42,7 @@ public class SNCommandHelp extends SNCommand{
 			helpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
 			helpMessages.add("/sn list "+ChatColor.WHITE+"- List supernaturals on the server.");
 			helpMessages.add("/sn setchurch "+ChatColor.WHITE+"- Sets your current location as the priests' church.");
-			helpMessages.add("/sn burntime [From] [To] "+ChatColor.WHITE+"- Set time in which vampires will burn.");
+			helpMessages.add("/sn burntime [From] [To] "+ChatColor.WHITE+"- Set time during which vampires will burn.");
 		}
 		
 		if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions)){

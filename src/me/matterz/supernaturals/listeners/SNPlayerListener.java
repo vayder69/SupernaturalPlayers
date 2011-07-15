@@ -4,18 +4,14 @@ import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
-import me.matterz.supernaturals.util.LightUtil;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 public class SNPlayerListener extends PlayerListener{
 
@@ -95,22 +91,11 @@ public class SNPlayerListener extends PlayerListener{
 		}
 	}
 	
-	@Override
-	public void onPlayerMove(PlayerMoveEvent event){
-		if(event.isCancelled()){
-			return;
-		}
-		Player player = event.getPlayer();
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		
-		if(!snplayer.isPriest()){
-			return;
-		}
-		
-		Location newLocation = event.getTo();
-		
-		LightUtil.illuminate(player,newLocation);
-	}
+//	@Override
+//	public void onPlayerMove(PlayerMoveEvent event){
+//		if(event.isCancelled()){
+//			return;
+//	}
 	
 	@Override
 	public void onPlayerKick(PlayerKickEvent event) {
@@ -124,8 +109,6 @@ public class SNPlayerListener extends PlayerListener{
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(event.getPlayer().getName() + " was not kicked for flying.");
 			} 
-		} else {
-			LightUtil.purgePlayer(event.getPlayer());
 		}
 	}
 }
