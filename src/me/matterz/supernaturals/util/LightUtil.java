@@ -51,6 +51,8 @@ public class LightUtil {
 						newIntensity = (int)(((intensity - Math.sqrt(distanceSq) * falloff) * 100.0D + 0.5D) / 100.0D);
 						if(newIntensity > oldInt){
 							world.getHandle().b(EnumSkyBlock.BLOCK, LocationX + x, LocationY + y, LocationZ + z, newIntensity);
+						}else{
+                            world.getHandle().b(EnumSkyBlock.BLOCK, LocationX + x, LocationY + y, LocationZ + z, oldInt);
 						}
 					}else{
 						Location blockLocation = new Location(world, LocationX+x, LocationY+y, LocationZ+z);
