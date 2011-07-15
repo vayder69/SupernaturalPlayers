@@ -21,7 +21,6 @@ import me.matterz.supernaturals.commands.SNCommandSetChurch;
 import me.matterz.supernaturals.commands.SNCommandVersion;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.io.SNPlayerHandler;
-import me.matterz.supernaturals.light.LightMapManager;
 import me.matterz.supernaturals.listeners.SNEntityListener;
 import me.matterz.supernaturals.listeners.SNEntityMonitor;
 import me.matterz.supernaturals.listeners.SNPlayerListener;
@@ -53,7 +52,6 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	private final SNEntityMonitor entityMonitor = new SNEntityMonitor(this);
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
-	private LightMapManager lightManager = new LightMapManager();
 	
 	public List<SNCommand> commands = new ArrayList<SNCommand>();
 	
@@ -69,10 +67,6 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	public SNConfigHandler getConfigManager(){
 		return snConfig;
-	}
-	
-	public LightMapManager getLightManager(){
-		return lightManager;
 	}
 	
 	// -------------------------------------------- //

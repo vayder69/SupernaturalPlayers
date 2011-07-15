@@ -107,9 +107,15 @@ public class SNPlayerListener extends PlayerListener{
 		if(!snplayer.isPriest()){
 			return;
 		}
-		Location newLocation = event.getTo();
 		
-		//LightUtil.deluminate(player);
+		Location newLocation = event.getTo();
+		Location oldLocation = event.getFrom();
+		
+		if(newLocation.getBlockX()==oldLocation.getBlockX())
+			if(newLocation.getBlockY()==oldLocation.getBlockY())
+				if(newLocation.getBlockZ()==oldLocation.getBlockZ())
+					return;
+		
 		LightUtil.illuminate(player,newLocation);
 	}
 	
