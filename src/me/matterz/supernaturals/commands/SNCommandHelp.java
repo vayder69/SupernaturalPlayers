@@ -22,7 +22,6 @@ public class SNCommandHelp extends SNCommand{
 	}
 	
 	static{
-		helpMessages.add("/sn admin "+ChatColor.WHITE+"- Show admin commands");
 		helpMessages.add("*** "+ChatColor.WHITE+"Supernatural Help "+ChatColor.RED+"***");
 		helpMessages.add("/sn power "+ChatColor.WHITE+"- Show current power level.");
 		helpMessages.add("/sn list "+ChatColor.WHITE+"- List supernaturals on the server.");
@@ -35,8 +34,10 @@ public class SNCommandHelp extends SNCommand{
 		String permissions2 = "supernatural.command.adminhelp";
 		Player senderPlayer = (Player) sender;
 		
-		if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions2)){
-			helpMessages.remove(0);
+		if(SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions2)){
+			if(helpMessages.size()==4){
+				helpMessages.add("/sn admin "+ChatColor.WHITE+"- Show list of admin-only commands");
+			}
 		}
 		
 		if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions)){

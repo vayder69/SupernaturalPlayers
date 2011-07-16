@@ -1,5 +1,9 @@
 package me.matterz.supernaturals.manager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -11,6 +15,8 @@ import me.matterz.supernaturals.io.SNConfigHandler;
 public class WereManager {
 	
 private SupernaturalsPlugin plugin;
+
+private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNPlayer>();
 	
 	public WereManager(SupernaturalsPlugin plugin) {
 		this.plugin=plugin;
@@ -26,9 +32,35 @@ private SupernaturalsPlugin plugin;
 			Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
 			wolf.setTamed(true);
 			wolf.setOwner(player);
-			plugin.getSuperManager().alterPower(snplayer, SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
+			wolvesMap.put(wolf, snplayer);
+			plugin.getSuperManager().alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " summoned a wolf pet!");
+		}else{
+			SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
+		}
+	}
+	
+	public static HashMap<Wolf, SuperNPlayer> getWolves(){
+		return wolvesMap;
+	}
+	
+	public static void removeWolf(Wolf wolf){
+		if(wolvesMap.containsKey(wolf)){
+			wolvesMap.remove(wolf);
+		}
+	}
+	
+	public static void removePlayer(SuperNPlayer player){
+		List<Wolf> removeWolf = new ArrayList<Wolf>();
+		for(Wolf wolf : wolvesMap.keySet()){
+			if(wolvesMap.get(wolf).equals(player)){
+				wolf.setTamed(false);
+				removeWolf.add(wolf);
+			}
+		}
+		for(Wolf wolf : removeWolf){
+			wolvesMap.remove(wolf);
 		}
 	}
 	
@@ -40,6 +72,10 @@ private SupernaturalsPlugin plugin;
 		if(!plugin.getSuperManager().worldTimeIsNight(player)){
 			return;
 		}
+		
+		if(player.isDead())
+			return;
+		
 		int currentHealth = player.getHealth();
 		
 		// Only regenerate if hurt.

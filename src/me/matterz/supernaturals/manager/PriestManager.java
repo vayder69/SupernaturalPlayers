@@ -37,7 +37,7 @@ private SupernaturalsPlugin plugin;
 			Player pVictim = (Player) victim;
 			SuperNPlayer snvictim = SupernaturalManager.get(pVictim);
 			if(snvictim.isSuper()){
-				pVictim.setFireTicks(SNConfigHandler.priestDamageFireTicks);
+				pVictim.setFireTicks(pVictim.getMaxFireTicks());
 				damage *= SNConfigHandler.priestDamageFactorAttack;
 			} else{
 				damage *= SNConfigHandler.priestDamageFactorAttack;

@@ -5,14 +5,15 @@ import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -33,34 +34,14 @@ public class SNPlayerListener extends PlayerListener{
 		}
 		
 		Action action = event.getAction();
-		Player player = event.getPlayer();
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		Material itemMaterial = event.getMaterial();
-		
-		if(snplayer.isPriest()){
-			ItemStack helmet = player.getInventory().getHelmet();
-			ItemStack chest = player.getInventory().getChestplate();
-			ItemStack leggings = player.getInventory().getLeggings();
-			ItemStack boots = player.getInventory().getBoots();
-			if(helmet!=null || chest!=null || leggings!=null || boots!=null){
-				player.getInventory().setArmorContents(null);
-				World world = player.getWorld();
-				if(helmet!=null){
-					world.dropItem(player.getLocation(), helmet);
-				}else if(chest!=null){
-					world.dropItem(player.getLocation(), chest);
-				}else if(leggings!=null){
-					world.dropItem(player.getLocation(), leggings);
-				}else if(boots!=null){
-					world.dropItem(player.getLocation(), boots);
-				}
-				SupernaturalManager.sendMessage(snplayer, "Priests cannot wear armor!");
-			}
-		}
 		
 		if(!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)){
 			return;
 		}
+		
+		Player player = event.getPlayer();
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		Material itemMaterial = event.getMaterial();
 		
 		if(SNConfigHandler.foodMaterials.contains(itemMaterial)){
 			if(snplayer.isVampire())
@@ -70,11 +51,11 @@ public class SNPlayerListener extends PlayerListener{
 				SupernaturalManager.sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
 				event.setCancelled(true);
 				return;
-			} else if(snplayer.isWere())
-			{
+			}else if(snplayer.isWere()){
 				plugin.getSuperManager().alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
+				return;
 			}
 		}
 		
@@ -115,6 +96,8 @@ public class SNPlayerListener extends PlayerListener{
 				if(item.getType().toString().equals(SNConfigHandler.ghoulMaterial)){
 					plugin.getGhoulManager().summon(player);
 				}
+			} else if(snplayer.isPriest()){
+				player.getInventory().setArmorContents(null);
 			}
 		}
 	}
@@ -127,7 +110,7 @@ public class SNPlayerListener extends PlayerListener{
 		Location oldLocation = event.getFrom();
 		Location newLocation = event.getTo();
 
-		if(oldLocation.getBlock().equals(newLocation.getBlock())){
+		if(oldLocation.equals(newLocation)){
 			return;
 		}
 		
@@ -138,8 +121,6 @@ public class SNPlayerListener extends PlayerListener{
 			if(SNConfigHandler.jumpMaterials.contains(event.getPlayer().getItemInHand().getType())){
 				plugin.getVampireManager().jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
 			}
-		} else if(snplayer.isGhoul()){
-			plugin.getGhoulManager().move(event.getPlayer());
 		}
 	}
 	
@@ -156,5 +137,29 @@ public class SNPlayerListener extends PlayerListener{
 					SupernaturalsPlugin.log(event.getPlayer().getName() + " was not kicked for flying as a vampire.");
 			} 
 		}
+	}
+	
+	@Override
+	public void onPlayerJoin(PlayerJoinEvent event){	    
+		Player player = event.getPlayer();
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		
+		if(snplayer.isHuman()){
+			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.WHITE+player.getName()));
+			plugin.getServer().broadcastMessage(ChatColor.WHITE + "Human " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+		}else if(snplayer.isVampire()){
+			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.DARK_PURPLE+player.getName()));
+			plugin.getServer().broadcastMessage(ChatColor.DARK_PURPLE + "Vampire " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+		} else if(snplayer.isWere()){
+			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.BLUE+player.getName()));
+			plugin.getServer().broadcastMessage(ChatColor.BLUE + "Werewolf " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+		} else if(snplayer.isGhoul()){
+			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.DARK_RED+player.getName()));
+			plugin.getServer().broadcastMessage(ChatColor.DARK_RED + "Ghoul " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+		} else if(snplayer.isPriest()){
+			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GOLD+player.getName()));
+			plugin.getServer().broadcastMessage(ChatColor.GOLD + "Priest " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+		}
+		
 	}
 }

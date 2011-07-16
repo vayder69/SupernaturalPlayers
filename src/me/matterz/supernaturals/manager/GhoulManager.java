@@ -2,7 +2,6 @@ package me.matterz.supernaturals.manager;
 
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
@@ -17,22 +16,13 @@ private SupernaturalsPlugin plugin;
 	}
 	
 	// -------------------------------------------- //
-	// 					Movement					//
-	// -------------------------------------------- //
-	
-	public void move(Player player){
-		Vector vjadd = player.getLocation().getDirection();
-		vjadd.normalize();
-		vjadd.multiply(SNConfigHandler.ghoulMoveSpeed);
-		
-		player.setVelocity(player.getVelocity().add(vjadd));
-	}
-	
-	// -------------------------------------------- //
 	// 			Regenerate Feature					//
 	// -------------------------------------------- //
 	
 	public void regenAdvanceTime(Player player, int milliseconds){
+		if(player.isDead())
+			return;
+		
 		int currentHealth = player.getHealth();
 		
 		// Only regenerate if hurt.
@@ -61,10 +51,12 @@ private SupernaturalsPlugin plugin;
 	public void summon(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonMin)){
-			player.getWorld().spawnCreature(player.getLocation(), CreatureType.PIG_ZOMBIE);
-			plugin.getSuperManager().alterPower(snplayer, SNConfigHandler.ghoulPowerSummonCost, "Summoning PigZombie!");
+			player.getWorld().spawnCreature(player.getLocation(), CreatureType.ZOMBIE);
+			plugin.getSuperManager().alterPower(snplayer, -SNConfigHandler.ghoulPowerSummonCost, "Summoning a Zombie!");
 			if(SNConfigHandler.debugMode)
-				SupernaturalsPlugin.log(snplayer.getName() + " summoned a PigZombie pet!");
+				SupernaturalsPlugin.log(snplayer.getName() + " summoned a Zombie!");
+		} else {
+			SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
 		}
 	}
 }

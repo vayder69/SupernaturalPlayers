@@ -218,8 +218,8 @@ public class SNConfigHandler {
 		ghoulDamageReceivedFactor = config.getDouble("Ghoul.DamageFactor.Defense", 0.5);
 		ghoulWeaponsString = config.getStringList("Ghoul.Weapon.Disabled", null);
 		ghoulTruceString = config.getStringList("Ghoul.TruceString", null);
-		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.Attack", 2);
-		ghoulMoveSpeed = config.getDouble("Ghoul.Move.Speed", 0.8);
+		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.Attack", 3);
+		ghoulMoveSpeed = config.getDouble("Ghoul.Move.Speed", 0.9);
 		ghoulHealthGained = config.getDouble("Ghoul.Time.HealthGained", 0.5);
 		ghoulMaterial = config.getString("Ghoul.Summon.Material", "PORK");
 		ghoulPowerSummonMin = config.getInt("Ghoul.Power.Summon.Min", 5000);
@@ -366,7 +366,8 @@ public class SNConfigHandler {
 			ghoulTruceString.add("CREEPER");
 			ghoulTruceString.add("SKELETON");
 			ghoulTruceString.add("ZOMBIE");
-			ghoulTruceString.add("PIGZOMBIE");
+			ghoulTruceString.add("PIG_ZOMBIE");
+			ghoulTruceString.add("GIANT");
 			config.setProperty("ghoul.Truce.Creatures", ghoulTruceString);
 		}
 
@@ -381,7 +382,15 @@ public class SNConfigHandler {
 		}
 		
 		for(String creature : vampireTruceString){
-			vampireTruce.add(CreatureType.fromName(creature));
+			CreatureType cType = CreatureType.valueOf(creature);
+			if(cType!=null)
+				vampireTruce.add(cType);
+		}
+		
+		for(String creature : ghoulTruceString){
+			CreatureType cType = CreatureType.valueOf(creature);
+			if(cType!=null)
+				ghoulTruce.add(cType);
 		}
 		
 		for(String jump : jumpMaterialsString){

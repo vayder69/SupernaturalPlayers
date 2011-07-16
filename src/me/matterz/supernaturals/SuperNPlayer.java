@@ -106,8 +106,8 @@ public class SuperNPlayer{
 	
 	public boolean isHuman(){
 		if(this.getType().equalsIgnoreCase("human"))
-			return false;
-		return true;
+			return true;
+		return false;
 	}
 	
 	public boolean isVampire(){

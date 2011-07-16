@@ -4,11 +4,13 @@ import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.WereManager;
 import me.matterz.supernaturals.util.EntityUtil;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByProjectileEvent;
@@ -110,6 +112,9 @@ public class SNEntityMonitor extends EntityListener {
 					SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
 					plugin.getSuperManager().killEvent(snDamager, null);
 				}
+			}
+			if(entity instanceof Wolf){
+				WereManager.removeWolf((Wolf) entity);
 			}
 			return;
 		}

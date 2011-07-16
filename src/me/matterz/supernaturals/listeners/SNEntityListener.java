@@ -52,7 +52,7 @@ public class SNEntityListener extends EntityListener{
 			if(snpVictim.isVampire()){
 				if(event.getCause() == DamageCause.DROWNING){
 					if(snpVictim.getPower() > SNConfigHandler.vampireDrowningPowerMin){
-						plugin.getSuperManager().alterPower(snpVictim, SNConfigHandler.vampireDrowningCost, "Water!");
+						plugin.getSuperManager().alterPower(snpVictim, -SNConfigHandler.vampireDrowningCost, "Water!");
 						event.setCancelled(true);
 						return;
 					}
@@ -101,14 +101,12 @@ public class SNEntityListener extends EntityListener{
 			damage *= SNConfigHandler.vampireDamageFactor;
 		} else if(snpDamager.isGhoul()){
 			if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
-				if(SNConfigHandler.debugMode){
 					SupernaturalsPlugin.log(pDamager.getName() + " was forced to drop "+item.getType().toString());
 					SupernaturalManager.sendMessage(snpDamager, "Ghouls do no damage with weapons!");
 					damage=0;
-				}else{
+			}else{
 					damage *= SNConfigHandler.ghoulDamageFactor;
 				}
-			}
 		} else if(snpDamager.isWere()){
 			if(plugin.getSuperManager().worldTimeIsNight(pDamager)){
 				damage *= SNConfigHandler.wereDamageFactor;

@@ -163,10 +163,10 @@ public class VampireManager{
 	// 			Regenerate Feature					//
 	// -------------------------------------------- //
 	
-	public void regenAdvanceTime(Player player, int milliseconds){
-		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Regen Event: player " + player.getName());
-		}
+	public void regenAdvanceTime(Player player, int milliseconds){		
+		if(player.isDead())
+			return;
+		
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		int currentHealth = player.getHealth();
 		

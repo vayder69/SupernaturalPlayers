@@ -105,7 +105,7 @@ public class SupernaturalManager {
 		
 		this.updateName(snplayer);
 		if(snplayer.getOldType().equals("werewolf"))
-			this.releasePets(plugin.getServer().getPlayer(snplayer.getName()));
+			WereManager.removePlayer(snplayer);
 		
 		plugin.saveData();
 	}
@@ -123,7 +123,7 @@ public class SupernaturalManager {
 		
 		this.updateName(snplayer);
 		if(snplayer.getOldType().equals("werewolf"))
-			this.releasePets(plugin.getServer().getPlayer(snplayer.getName()));
+			WereManager.removePlayer(snplayer);
 		
 		SupernaturalManager.sendMessage(snplayer, "You have been restored to humanity!");
 		SupernaturalsPlugin.log(snplayer.getName() + " was restored to humanity!");
@@ -146,7 +146,7 @@ public class SupernaturalManager {
 		
 		this.updateName(snplayer);
 		if(snplayer.getOldType().equals("werewolf"))
-			this.releasePets(plugin.getServer().getPlayer(snplayer.getName()));
+			WereManager.removePlayer(snplayer);
 		
 		SupernaturalManager.sendMessage(snplayer, "You been reverted to your previous state of being a " 
 				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
@@ -154,16 +154,6 @@ public class SupernaturalManager {
 				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
 		plugin.saveData();
 		
-	}
-	
-	public void releasePets(Player player){
-		for(Entity entity : plugin.getServer().getWorld(player.getName()).getEntities()){
-			if(entity instanceof Wolf){
-				if(((Wolf) entity).getOwner().equals(player)){
-					((Wolf) entity).setTamed(false);
-				}
-			}
-		}
 	}
 	
 	// -------------------------------------------- //
@@ -394,7 +384,7 @@ public class SupernaturalManager {
 	}
 	
 	public void startTimer(){
-		timer.schedule(new SuperNTaskTimer(plugin),0,100);
+		timer.schedule(new SuperNTaskTimer(plugin),0,200);
 	}
 	
 	public void cancelTimer(){
@@ -404,31 +394,31 @@ public class SupernaturalManager {
 	public void advanceTime(SuperNPlayer snplayer, int milliseconds) {
 		Player player = plugin.getServer().getPlayer(snplayer.getName());
 		taskCounter++;
-		if(taskCounter>= 300){
+		if(taskCounter>= 150){
 			taskCounter = 0;
 		}
 		
 		if(snplayer.isVampire()) {
-			if(taskCounter%10==0)
+			if(taskCounter%5==0)
 				plugin.getVampireManager().moveAdvanceTime(snplayer);
-			if(taskCounter%30==0){
+			if(taskCounter%15==0){
 				plugin.getVampireManager().combustAdvanceTime(player, 3000);
 				plugin.getVampireManager().gainPowerAdvanceTime(snplayer, 3000);
 			}else if(taskCounter==0){
 				plugin.getVampireManager().regenAdvanceTime(player, 30000);
 			}
 		}else if(snplayer.isGhoul()){
-			if(taskCounter%30==0){
+			if(taskCounter%15==0){
 				plugin.getGhoulManager().regenAdvanceTime(player, 3000);
 			}
 		}else if(snplayer.isWere()){
-			if(taskCounter%30==0){
+			if(taskCounter%15==0){
 				plugin.getWereManager().regenAdvanceTime(player, 3000);
 			}
 		}
 		
 		if(snplayer.isSuper()){
-			if(taskCounter%30==0){
+			if(taskCounter%15==0){
 				this.truceBreakAdvanceTime(snplayer, 3000);
 			}
 		}

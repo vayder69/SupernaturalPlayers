@@ -22,7 +22,6 @@ import me.matterz.supernaturals.io.SNPlayerHandler;
 import me.matterz.supernaturals.listeners.SNEntityListener;
 import me.matterz.supernaturals.listeners.SNEntityMonitor;
 import me.matterz.supernaturals.listeners.SNPlayerListener;
-import me.matterz.supernaturals.listeners.SNPlayerMonitor;
 import me.matterz.supernaturals.manager.GhoulManager;
 import me.matterz.supernaturals.manager.PriestManager;
 import me.matterz.supernaturals.manager.SNCommand;
@@ -53,7 +52,6 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	private final SNEntityListener entityListener = new SNEntityListener(this);
 	private final SNPlayerListener playerListener = new SNPlayerListener(this);
 	private final SNEntityMonitor entityMonitor = new SNEntityMonitor(this);
-	private final SNPlayerMonitor playerMonitor = new SNPlayerMonitor(this);
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
 	private VampireManager vampManager = new VampireManager(this);
@@ -130,8 +128,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Low, this);
 		pm.registerEvent(Type.PLAYER_MOVE, this.playerListener, Priority.Highest, this);
-		
-		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
+		pm.registerEvent(Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this);
 		
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
 		pm.registerEvent(Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
@@ -146,7 +143,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 
 	    loadData();
 	    superManager.startTimer();
-	    setupPermissions();
+	    setupPermissions();	    
 	}
 	
 	// -------------------------------------------- //
