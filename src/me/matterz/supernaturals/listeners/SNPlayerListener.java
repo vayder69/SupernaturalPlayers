@@ -7,6 +7,7 @@ import me.matterz.supernaturals.manager.SupernaturalManager;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -32,13 +33,34 @@ public class SNPlayerListener extends PlayerListener{
 		}
 		
 		Action action = event.getAction();
+		Player player = event.getPlayer();
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		Material itemMaterial = event.getMaterial();
+		
+		if(snplayer.isPriest()){
+			ItemStack helmet = player.getInventory().getHelmet();
+			ItemStack chest = player.getInventory().getChestplate();
+			ItemStack leggings = player.getInventory().getLeggings();
+			ItemStack boots = player.getInventory().getBoots();
+			if(helmet!=null || chest!=null || leggings!=null || boots!=null){
+				player.getInventory().setArmorContents(null);
+				World world = player.getWorld();
+				if(helmet!=null){
+					world.dropItem(player.getLocation(), helmet);
+				}else if(chest!=null){
+					world.dropItem(player.getLocation(), chest);
+				}else if(leggings!=null){
+					world.dropItem(player.getLocation(), leggings);
+				}else if(boots!=null){
+					world.dropItem(player.getLocation(), boots);
+				}
+				SupernaturalManager.sendMessage(snplayer, "Priests cannot wear armor!");
+			}
+		}
 		
 		if(!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)){
 			return;
 		}
-	
-		SuperNPlayer snplayer = SupernaturalManager.get(event.getPlayer());
-		Material itemMaterial = event.getMaterial();
 		
 		if(SNConfigHandler.foodMaterials.contains(itemMaterial)){
 			if(snplayer.isVampire())
@@ -66,11 +88,11 @@ public class SNPlayerListener extends PlayerListener{
 		if (blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterial)) {
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " triggerd a Vampire Infect Altar.");
-			plugin.getVampireManager().useAltarInfect(event.getPlayer(), event.getClickedBlock());
+			plugin.getVampireManager().useAltarInfect(player, event.getClickedBlock());
 		} else if (blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarCureMaterial)) {
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " triggerd a Vampire Cure Altar.");
-			plugin.getVampireManager().useAltarCure(event.getPlayer(), event.getClickedBlock());
+			plugin.getVampireManager().useAltarCure(player, event.getClickedBlock());
 		}
 	}
 	

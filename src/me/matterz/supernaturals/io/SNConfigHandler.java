@@ -43,6 +43,7 @@ public class SNConfigHandler {
 	public static double wereDamageFall;
 	public static double wereDamageFactor;
 	public static double wereDamageReceivedFactor;
+	public static double priestDamageFactorAttack;
 	public static int jumpBloodCost;
 	public static int dashBloodCost;
 	public static int vampireHealingPowerMin;
@@ -77,6 +78,7 @@ public class SNConfigHandler {
 	public static int werePowerFood;
 	public static int ghoulPowerSummonMin;
 	public static int ghoulPowerSummonCost;
+	public static int priestDamageFireTicks;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -204,6 +206,8 @@ public class SNConfigHandler {
 		priestLightRadius = config.getInt("Priest.Light.Radius", 2);
 		priestLightIntensity = config.getInt("Priest.Light.Intensity", 8);
 		priestDeathPowerPenalty = config.getInt("Priest.Death.PowerPenalty", 200);
+		priestDamageFireTicks = config.getInt("Priest.DamageFactor.FireTicks", 10);
+		priestDamageFactorAttack = config.getDouble("Priest.DamageFactor.Attack", 0.5);
 		
 		ghoulPowerStart = config.getInt("Ghoul.Power.Start", 1000);
 		ghoulKillSpreadCurse = config.getBoolean("Ghoul.Kill.SpreadCurse", true);
@@ -211,7 +215,7 @@ public class SNConfigHandler {
 		ghoulKillPowerPlayerGain = config.getInt("Ghoul.Power.Kill.PlayerGain", 100);
 		ghoulDeathPowerPenalty = config.getInt("Ghoul.Power.Death.Penalty", 200);
 		ghoulDrowningPowerMin = config.getInt("Ghoul.Power.Drowning.Min", 1000);
-		ghoulDamageReceivedFactor = config.getDouble("Ghoul.DamageFactor.Defence", 0.5);
+		ghoulDamageReceivedFactor = config.getDouble("Ghoul.DamageFactor.Defense", 0.5);
 		ghoulWeaponsString = config.getStringList("Ghoul.Weapon.Disabled", null);
 		ghoulTruceString = config.getStringList("Ghoul.TruceString", null);
 		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.Attack", 2);

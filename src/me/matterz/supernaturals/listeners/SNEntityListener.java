@@ -18,10 +18,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class SNEntityListener extends EntityListener{
 
-	public static SupernaturalsPlugin plugin;
+	private SupernaturalsPlugin plugin;
 	
 	public SNEntityListener(SupernaturalsPlugin instance){
-		SNEntityListener.plugin = instance;
+		this.plugin = instance;
 	}
 	
 	@Override
@@ -113,6 +113,8 @@ public class SNEntityListener extends EntityListener{
 			if(plugin.getSuperManager().worldTimeIsNight(pDamager)){
 				damage *= SNConfigHandler.wereDamageFactor;
 			}
+		} else if(snpDamager.isPriest()){
+			damage = plugin.getPriestManager().priestAttack(pDamager, victim, damage);
 		}
 		
 		// Modify damage if victim is a supernatural

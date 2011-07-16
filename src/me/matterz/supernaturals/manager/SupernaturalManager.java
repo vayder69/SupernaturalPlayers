@@ -26,7 +26,7 @@ import me.matterz.supernaturals.util.SuperNTaskTimer;
 
 public class SupernaturalManager {
 
-	protected SupernaturalsPlugin plugin;
+	private SupernaturalsPlugin plugin;
 	
 	private static List<SuperNPlayer> supernaturals = new ArrayList<SuperNPlayer>();
 	private transient int taskCounter = 0;
@@ -102,7 +102,10 @@ public class SupernaturalManager {
 		
 		SupernaturalManager.sendMessage(snplayer, "You are now a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
 		SupernaturalsPlugin.log(snplayer.getName() + " turned into a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
+		
 		this.updateName(snplayer);
+		if(snplayer.getOldType().equals("werewolf"))
+			this.releasePets(plugin.getServer().getPlayer(snplayer.getName()));
 		
 		plugin.saveData();
 	}
@@ -117,6 +120,10 @@ public class SupernaturalManager {
 		snplayer.setTruce(true);
 		snplayer.setMove(true);
 		snplayer.setTruceTimer(0);
+		
+		this.updateName(snplayer);
+		if(snplayer.getOldType().equals("werewolf"))
+			this.releasePets(plugin.getServer().getPlayer(snplayer.getName()));
 		
 		SupernaturalManager.sendMessage(snplayer, "You have been restored to humanity!");
 		SupernaturalsPlugin.log(snplayer.getName() + " was restored to humanity!");
@@ -137,12 +144,26 @@ public class SupernaturalManager {
 		snplayer.setMove(true);
 		snplayer.setTruceTimer(0);
 		
+		this.updateName(snplayer);
+		if(snplayer.getOldType().equals("werewolf"))
+			this.releasePets(plugin.getServer().getPlayer(snplayer.getName()));
+		
 		SupernaturalManager.sendMessage(snplayer, "You been reverted to your previous state of being a " 
 				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
 		SupernaturalsPlugin.log(snplayer.getName() + " was reverted to the previous state of being a " 
 				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
 		plugin.saveData();
 		
+	}
+	
+	public void releasePets(Player player){
+		for(Entity entity : plugin.getServer().getWorld(player.getName()).getEntities()){
+			if(entity instanceof Wolf){
+				if(((Wolf) entity).getOwner().equals(player)){
+					((Wolf) entity).setTamed(false);
+				}
+			}
+		}
 	}
 	
 	// -------------------------------------------- //
@@ -402,7 +423,7 @@ public class SupernaturalManager {
 			}
 		}else if(snplayer.isWere()){
 			if(taskCounter%30==0){
-				plugin.getGhoulManager().regenAdvanceTime(player, 3000);
+				plugin.getWereManager().regenAdvanceTime(player, 3000);
 			}
 		}
 		

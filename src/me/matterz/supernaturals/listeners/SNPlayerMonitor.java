@@ -11,10 +11,10 @@ import org.bukkit.event.player.PlayerListener;
 
 public class SNPlayerMonitor extends PlayerListener {
 	
-public static SupernaturalsPlugin plugin;
+private SupernaturalsPlugin plugin;
 	
 	public SNPlayerMonitor(SupernaturalsPlugin instance){
-		SNPlayerListener.plugin = instance;
+		this.plugin = instance;
 	}
 	
 	public void onPlayerJoin(PlayerJoinEvent event){

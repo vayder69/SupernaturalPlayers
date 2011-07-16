@@ -7,6 +7,8 @@ import net.minecraft.server.EnumSkyBlock;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -23,6 +25,30 @@ private SupernaturalsPlugin plugin;
 	public PriestManager(SupernaturalsPlugin plugin) {
 		this.plugin=plugin;
 	}
+	
+	// -------------------------------------------- //
+	// 					Damage						//
+	// -------------------------------------------- //
+	
+	public float priestAttack(Player priest, Entity victim, float damage){
+		if(victim instanceof Animals){
+			damage = 0;
+		} else if(victim instanceof Player){
+			Player pVictim = (Player) victim;
+			SuperNPlayer snvictim = SupernaturalManager.get(pVictim);
+			if(snvictim.isSuper()){
+				pVictim.setFireTicks(SNConfigHandler.priestDamageFireTicks);
+				damage *= SNConfigHandler.priestDamageFactorAttack;
+			} else{
+				damage *= SNConfigHandler.priestDamageFactorAttack;
+			}
+		}
+		return damage;
+	}
+	
+	// -------------------------------------------- //
+	// 					Lighting					//
+	// -------------------------------------------- //
 	
 	public void priestLight(){
 		// Adjust each Priest

@@ -40,10 +40,6 @@ private SupernaturalsPlugin plugin;
 		if(!plugin.getSuperManager().worldTimeIsNight(player)){
 			return;
 		}
-		
-		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Regen Event: player " + player.getName());
-		}
 		int currentHealth = player.getHealth();
 		
 		// Only regenerate if hurt.
@@ -61,7 +57,7 @@ private SupernaturalsPlugin plugin;
 			targetHealth = 20;
 		player.setHealth(targetHealth);
 		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Regen Event: player " + player.getName() + " gained " + healthDelta + " health.");
+			SupernaturalsPlugin.log("Regen Were Event: player " + player.getName() + " gained " + healthDelta + " health.");
 		}
 	}
 }

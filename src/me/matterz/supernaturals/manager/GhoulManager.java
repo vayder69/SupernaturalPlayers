@@ -33,9 +33,6 @@ private SupernaturalsPlugin plugin;
 	// -------------------------------------------- //
 	
 	public void regenAdvanceTime(Player player, int milliseconds){
-		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Regen Event: player " + player.getName());
-		}
 		int currentHealth = player.getHealth();
 		
 		// Only regenerate if hurt.
@@ -53,7 +50,7 @@ private SupernaturalsPlugin plugin;
 			targetHealth = 20;
 		player.setHealth(targetHealth);
 		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Regen Event: player " + player.getName() + " gained " + healthDelta + " health.");
+			SupernaturalsPlugin.log("Regen Ghoul Event: player " + player.getName() + " gained " + healthDelta + " health.");
 		}
 	}
 	
