@@ -37,7 +37,7 @@ public class SNCommandSetChurch extends SNCommand {
 		SNConfigHandler.priestChurchLocationX = (int) currentX;
 		SNConfigHandler.priestChurchLocationY = (int) currentY;
 		SNConfigHandler.priestChurchLocationZ = (int) currentZ;
-		SupernaturalsPlugin.instance.getConfigManager().saveConfig();
+		SupernaturalsPlugin.saveData();
 				
 		this.sendMessage("Church location set.");
 	}

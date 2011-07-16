@@ -110,7 +110,7 @@ public class SNEntityMonitor extends EntityListener {
 				if(damager instanceof Player){
 					Player pDamager = (Player) damager;
 					SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
-					plugin.getSuperManager().killEvent(snDamager, null);
+					SupernaturalManager.killEvent(snDamager, null);
 				}
 			}
 			if(entity instanceof Wolf){
@@ -124,7 +124,7 @@ public class SNEntityMonitor extends EntityListener {
 		}
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)entity);
 		
-		plugin.getSuperManager().deathEvent((Player) entity);
+		SupernaturalManager.deathEvent((Player) entity);
 		
 		Entity damager = null;
 		Event e = entity.getLastDamageCause();
@@ -138,7 +138,7 @@ public class SNEntityMonitor extends EntityListener {
 			if(damager instanceof Player){
 				Player pDamager = (Player) damager;
 				SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
-				plugin.getSuperManager().killEvent(snDamager, snplayer);
+				SupernaturalManager.killEvent(snDamager, snplayer);
 			}
 		}
 	}

@@ -50,29 +50,26 @@ public class SNEntityListener extends EntityListener{
 			pVictim = (Player) victim;
 			snpVictim = SupernaturalManager.get(pVictim);
 			if(snpVictim.isVampire()){
-				if(event.getCause() == DamageCause.DROWNING){
+				if(event.getCause().equals(DamageCause.DROWNING)){
 					if(snpVictim.getPower() > SNConfigHandler.vampireDrowningPowerMin){
-						plugin.getSuperManager().alterPower(snpVictim, -SNConfigHandler.vampireDrowningCost, "Water!");
+						SupernaturalManager.alterPower(snpVictim, -SNConfigHandler.vampireDrowningCost, "Water!");
 						event.setCancelled(true);
 						return;
+					}else{
+						SupernaturalManager.sendMessage(snpVictim, "Not enough power to prevent water damage!");
 					}
-				} else if(event.getCause() == DamageCause.FALL){
-					event.setCancelled(true);
-					return;
-				}
-			} else if(snpVictim.isGhoul()){
-				if(event.getCause() == DamageCause.DROWNING){
-					if(snpVictim.getPower() > SNConfigHandler.ghoulDrowningPowerMin){
+				}else if(event.getCause().equals(DamageCause.FALL)){
 						event.setCancelled(true);
 						return;
-					}
-				} else if(event.getCause() == DamageCause.FALL){
-					event.setCancelled(true);
-					return;
 				}
-			} else if(snpVictim.isWere()){
-				if(event.getCause() == DamageCause.FALL){
+			}else if(snpVictim.isWere()){
+				if(event.getCause().equals(DamageCause.FALL)){
 					event.setDamage((int)(event.getDamage()*SNConfigHandler.wereDamageFall));
+					return;
+				}
+			}else if(snpVictim.isGhoul()){
+				if(event.getCause().equals(DamageCause.FALL)){
+					event.setCancelled(true);
 					return;
 				}
 			}
@@ -101,15 +98,21 @@ public class SNEntityListener extends EntityListener{
 			damage *= SNConfigHandler.vampireDamageFactor;
 		} else if(snpDamager.isGhoul()){
 			if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
-					SupernaturalsPlugin.log(pDamager.getName() + " was forced to drop "+item.getType().toString());
+					SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
 					SupernaturalManager.sendMessage(snpDamager, "Ghouls do no damage with weapons!");
 					damage=0;
 			}else{
 					damage *= SNConfigHandler.ghoulDamageFactor;
 				}
 		} else if(snpDamager.isWere()){
-			if(plugin.getSuperManager().worldTimeIsNight(pDamager)){
-				damage *= SNConfigHandler.wereDamageFactor;
+			if(SupernaturalManager.worldTimeIsNight(pDamager)){
+				if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
+					SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
+					SupernaturalManager.sendMessage(snpDamager, "Werewolves cannot use weapons at night!");
+					damage=0;
+				}else{
+					damage *= SNConfigHandler.wereDamageFactor;
+				}
 			}
 		} else if(snpDamager.isPriest()){
 			damage = plugin.getPriestManager().priestAttack(pDamager, victim, damage);
@@ -136,12 +139,11 @@ public class SNEntityListener extends EntityListener{
 					damage *= SNConfigHandler.ghoulDamageReceivedFactor;
 				}
 			}else if(snpDamager.isWere()){
-				if(plugin.getSuperManager().worldTimeIsNight(pDamager)){
+				if(SupernaturalManager.worldTimeIsNight(pDamager)){
 					damage *= SNConfigHandler.wereDamageReceivedFactor;
 				}
 			}		
 		}
-		
 		event.setDamage(Math.round(damage));
 	}
 	
@@ -150,19 +152,16 @@ public class SNEntityListener extends EntityListener{
 		if(event.isCancelled()){
 			return;
 		}
-
 		if(!(event.getTarget() instanceof Player)){
 			return;
 		}
 		
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)event.getTarget());
 
-		
 		if(!snplayer.getTruce()) {
 			return;
 		}
 		
-		// ... by creature that cares about the truce with vampires ...
 		if(snplayer.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(event.getEntity()))){
 			event.setCancelled(true);
 		} else if(snplayer.isGhoul() && SNConfigHandler.ghoulTruce.contains(EntityUtil.creatureTypeFromEntity(event.getEntity()))){

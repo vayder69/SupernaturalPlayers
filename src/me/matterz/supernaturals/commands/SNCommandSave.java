@@ -20,7 +20,7 @@ public class SNCommandSave extends SNCommandReload {
 			this.sendMessage("You do not have permissions to use this command.");
 			return;
 		}
-		SupernaturalsPlugin.instance.saveData();
+		SupernaturalsPlugin.saveData();
 		this.sendMessage("All config/player data has been saved!");
 	}
 }

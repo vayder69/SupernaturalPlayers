@@ -54,12 +54,14 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	private final SNEntityMonitor entityMonitor = new SNEntityMonitor(this);
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
-	private VampireManager vampManager = new VampireManager(this);
+	private VampireManager vampManager = new VampireManager();
 	private PriestManager priestManager = new PriestManager(this);
-	private WereManager wereManager = new WereManager(this);
-	private GhoulManager ghoulManager = new GhoulManager(this);
+	private WereManager wereManager = new WereManager();
+	private GhoulManager ghoulManager = new GhoulManager();
 	
 	public List<SNCommand> commands = new ArrayList<SNCommand>();
+	
+	private static File dataFolder;
 	
 	public static PermissionHandler permissionHandler;
 	
@@ -127,7 +129,6 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.High, this);
 		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerListener, Priority.Normal, this);
 		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Low, this);
-		pm.registerEvent(Type.PLAYER_MOVE, this.playerListener, Priority.Highest, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this);
 		
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
@@ -139,7 +140,9 @@ public class SupernaturalsPlugin extends JavaPlugin {
         PluginDescriptionFile pdfFile = this.getDescription();
         log(pdfFile.getName() + " version " + pdfFile.getVersion() + " enabled.");
         
-        snConfig.getConfiguration();
+        dataFolder = getDataFolder();
+        
+        SNConfigHandler.getConfiguration();
 
 	    loadData();
 	    superManager.startTimer();
@@ -194,26 +197,26 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	// 				Data Management					//
 	// -------------------------------------------- //
 	
-	public void saveData(){
-		File file = new File(getDataFolder(), "data.yml");
-        SNPlayerHandler.save(superManager.getSupernaturals(), file);
+	public static void saveData(){
+		File file = new File(dataFolder, "data.yml");
+        SNPlayerHandler.save(SupernaturalManager.getSupernaturals(), file);
         
-        snConfig.saveConfig();
+        SNConfigHandler.saveConfig();
 	}
 	
-	public void loadData(){
-		File file = new File(getDataFolder(), "data.yml");
-		superManager.setSupernaturals(SNPlayerHandler.load(file));
+	public static void loadData(){
+		File file = new File(dataFolder, "data.yml");
+		SupernaturalManager.setSupernaturals(SNPlayerHandler.load(file));
 	}
 	
-	public void reloadData(){
+	public static void reloadData(){
 		if(SNConfigHandler.debugMode){
 			SupernaturalsPlugin.log("Reloading config and data...");
 		}
-		File file = new File(getDataFolder(), "data.yml");
-		superManager.setSupernaturals(SNPlayerHandler.load(file));
+		File file = new File(dataFolder, "data.yml");
+		SupernaturalManager.setSupernaturals(SNPlayerHandler.load(file));
         
-        snConfig.reloadConfig();
+		SNConfigHandler.reloadConfig();
 	}
 	
 	// -------------------------------------------- //

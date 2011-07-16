@@ -1,5 +1,7 @@
 package me.matterz.supernaturals.listeners;
 
+import java.util.List;
+
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
@@ -8,6 +10,8 @@ import me.matterz.supernaturals.manager.SupernaturalManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -16,7 +20,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SNPlayerListener extends PlayerListener{
@@ -52,25 +55,30 @@ public class SNPlayerListener extends PlayerListener{
 				event.setCancelled(true);
 				return;
 			}else if(snplayer.isWere()){
-				plugin.getSuperManager().alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
+				SupernaturalManager.alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
 				return;
 			}
+		}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){
+			if(snplayer.isVampire()){
+				plugin.getVampireManager().jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
+				event.setCancelled(true);
+				return;
+			}
 		}
 		
-		
-		if ( action != Action.RIGHT_CLICK_BLOCK) {
+		if (action != Action.RIGHT_CLICK_BLOCK){
 			return;
 		}
 		
 		Material blockMaterial = event.getClickedBlock().getType();
 		
-		if (blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterial)) {
+		if(blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterial)) {
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " triggerd a Vampire Infect Altar.");
 			plugin.getVampireManager().useAltarInfect(player, event.getClickedBlock());
-		} else if (blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarCureMaterial)) {
+		}else if (blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarCureMaterial)) {
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " triggerd a Vampire Cure Altar.");
 			plugin.getVampireManager().useAltarCure(player, event.getClickedBlock());
@@ -78,48 +86,56 @@ public class SNPlayerListener extends PlayerListener{
 	}
 	
 	@Override
-	public void onPlayerAnimation(PlayerAnimationEvent event) {
+	public void onPlayerAnimation(PlayerAnimationEvent event){
 		Player player = event.getPlayer();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		ItemStack item = player.getItemInHand();
 		if(event.getAnimationType().equals(PlayerAnimationType.ARM_SWING)){
-			if (snplayer.isVampire()) {
-				if(SNConfigHandler.jumpMaterials.contains(item.getType())){
+			if(snplayer.isVampire()){
+				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){
 					plugin.getVampireManager().jump(player, SNConfigHandler.jumpDeltaSpeed, true);
-					return;
 				}
 			}else if(snplayer.isWere()){
-				if(item.getType().toString().equals(SNConfigHandler.wolfMaterial)){
+				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfMaterial)){
 					plugin.getWereManager().summon(player);
+					if(item.getAmount()==1){
+						player.setItemInHand(null);
+					}else{
+						item.setAmount(player.getItemInHand().getAmount()-1);
+					}
 				}
-			} else if(snplayer.isGhoul()){
-				if(item.getType().toString().equals(SNConfigHandler.ghoulMaterial)){
+			}else if(snplayer.isGhoul()){
+				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.ghoulMaterial)){
 					plugin.getGhoulManager().summon(player);
+					if(item.getAmount()==1){
+						player.setItemInHand(null);
+					}else{
+						item.setAmount(player.getItemInHand().getAmount()-1);
+					}
 				}
-			} else if(snplayer.isPriest()){
-				player.getInventory().setArmorContents(null);
-			}
-		}
-	}
-	
-	@Override
-	public void onPlayerMove(PlayerMoveEvent event){
-		if(event.isCancelled()){
-			return;
-		}
-		Location oldLocation = event.getFrom();
-		Location newLocation = event.getTo();
-
-		if(oldLocation.equals(newLocation)){
-			return;
-		}
-		
-		Player player = event.getPlayer();
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		
-		if(snplayer.isVampire()){
-			if(SNConfigHandler.jumpMaterials.contains(event.getPlayer().getItemInHand().getType())){
-				plugin.getVampireManager().jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
+			}else if(snplayer.isPriest()){
+				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.priestMaterial)){
+					List<Block> blocks = player.getLineOfSight(null, 20);
+					List<Entity> entities = player.getNearbyEntities(21, 21, 21);
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log(snplayer.getName() + " is attempting to use banish...");
+					for(Block block : blocks){
+						for(Entity entity : entities){
+							if(entity instanceof Player){
+								Player victim = (Player) entity;
+								Location location = victim.getLocation();
+								Location feetLocation = new Location(location.getWorld(), location.getX(), location.getY()-1, location.getZ());
+								Location groundLocation = new Location(location.getWorld(), location.getX(), location.getY()-2, location.getZ());
+								if(location.getBlock().equals(block) || feetLocation.getBlock().equals(block) || groundLocation.getBlock().equals(block)){
+									if(SNConfigHandler.debugMode)
+										SupernaturalsPlugin.log(victim.getName()+" is targetted by banish.");
+									plugin.getPriestManager().banish(player, victim);
+									return;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -131,7 +147,7 @@ public class SNPlayerListener extends PlayerListener{
 		}
 		if ((event.getLeaveMessage().contains("Flying")) || (event.getReason().contains("Flying"))) {
 			SuperNPlayer snplayer = SupernaturalManager.get(event.getPlayer());
-			if(snplayer.isVampire()&& SNConfigHandler.jumpMaterials.contains(event.getPlayer().getItemInHand().getType())){
+			if(snplayer.isVampire()&& event.getPlayer().getItemInHand().getType().toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){
 				event.setCancelled(true);
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log(event.getPlayer().getName() + " was not kicked for flying as a vampire.");

@@ -47,7 +47,6 @@ public class SNCommandConvert extends SNCommand {
 			return;
 		}
 		
-		SupernaturalsPlugin.instance.getSuperManager();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		
 		if(snplayer.getType().equalsIgnoreCase(superType)){
@@ -56,11 +55,11 @@ public class SNCommandConvert extends SNCommand {
 		}else if(snplayer.getOldType().equalsIgnoreCase(superType)){
 			this.sendMessage(ChatColor.WHITE + player.getName() + ChatColor.RED + " was turned BACK into a " 
 					+ ChatColor.WHITE + superType +ChatColor.RED + " !");
-			SupernaturalsPlugin.instance.getSuperManager().revert(snplayer);
+			SupernaturalManager.revert(snplayer);
 		}else{
 			this.sendMessage(ChatColor.WHITE + player.getName() + ChatColor.RED + " was turned into a " 
 					+ ChatColor.WHITE + superType +ChatColor.RED + " !");
-			SupernaturalsPlugin.instance.getSuperManager().curse(snplayer, superType);
+			SupernaturalManager.curse(snplayer, superType);
 		}
 	}
 }

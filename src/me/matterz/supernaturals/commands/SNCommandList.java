@@ -6,6 +6,7 @@ import java.util.List;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.manager.SNCommand;
+import me.matterz.supernaturals.manager.SupernaturalManager;
 import me.matterz.supernaturals.util.TextUtil;
 
 import org.bukkit.ChatColor;
@@ -37,7 +38,7 @@ public class SNCommandList extends SNCommand {
 		List<String> ghouls = new ArrayList<String>();
 		List<String> priests = new ArrayList<String>();
 		
-		for (SuperNPlayer snplayer : SupernaturalsPlugin.instance.getSuperManager().getSupernaturals()) {
+		for (SuperNPlayer snplayer : SupernaturalManager.getSupernaturals()) {
 			if (snplayer.isVampire()) {
 				vampires.add(snplayer.getName());
 			}else if(snplayer.isPriest()){

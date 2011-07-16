@@ -14,12 +14,6 @@ import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.util.GeometryUtil;
 
 public class VampireManager{
-	
-	private SupernaturalsPlugin plugin;
-	
-	public VampireManager(SupernaturalsPlugin plugin) {
-		this.plugin=plugin;
-	}
 
 	// -------------------------------------------- //
 	// 					Power Altering				//
@@ -28,26 +22,16 @@ public class VampireManager{
 	public void gainPowerAdvanceTime(SuperNPlayer snplayer, int milliseconds){
 		double deltaSeconds = milliseconds / 1000D;
 		double deltaPower = deltaSeconds * SNConfigHandler.vampireTimePowerGained;
-		plugin.getSuperManager().alterPower(snplayer, deltaPower);
+		SupernaturalManager.alterPower(snplayer, deltaPower);
 	}
 	
 	// -------------------------------------------- //
-	// 					Movement				//
+	// 					Movement					//
 	// -------------------------------------------- //
-	
-	public void moveAdvanceTime(SuperNPlayer snplayer){
-		if(!snplayer.getMove()){
-			snplayer.setMove(true);
-		}
-	}
 	
 	public void jump(Player player, double deltaSpeed, boolean upOnly) {
 		
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		
-		if(!snplayer.getMove()){
-			return;
-		}
 		
 		if (snplayer.getPower() - SNConfigHandler.jumpBloodCost <= 0) {
 			SupernaturalManager.sendMessage(snplayer, "Not enough Power to Superjump.");
@@ -55,9 +39,9 @@ public class VampireManager{
 		}
 		
 		if(upOnly){
-			plugin.getSuperManager().alterPower(snplayer, -SNConfigHandler.jumpBloodCost, "SuperJump!");
+			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.jumpBloodCost, "SuperJump!");
 		}else{
-			plugin.getSuperManager().alterPower(snplayer, -SNConfigHandler.dashBloodCost, "Dash!");
+			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.dashBloodCost, "Dash!");
 		}
 		
 		Vector vjadd;
@@ -71,7 +55,6 @@ public class VampireManager{
 		vjadd.multiply(deltaSpeed);
 		
 		player.setVelocity(player.getVelocity().add(vjadd));
-		snplayer.setMove(false);
 	}
 	
 	// -------------------------------------------- //
@@ -112,7 +95,7 @@ public class VampireManager{
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
 			SupernaturalManager.sendMessage(snplayer, "The gold draws energy from the obsidian... The energy rushes through you and you feel a bitter cold...");
 			SNConfigHandler.vampireAltarInfectRecipe.removeFromPlayer(player);
-			plugin.getSuperManager().curse(snplayer, "vampire", SNConfigHandler.vampirePowerStart);
+			SupernaturalManager.curse(snplayer, "vampire", SNConfigHandler.vampirePowerStart);
 		} else {
 			SupernaturalManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
@@ -150,7 +133,7 @@ public class VampireManager{
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
 			SupernaturalManager.sendMessage(snplayer, "The lapiz draws energy from the glowstone... Then the energy rushes through you and you feel pure and clean.");
 			SNConfigHandler.vampireAltarCureRecipe.removeFromPlayer(player);
-			plugin.getSuperManager().cure(snplayer);
+			SupernaturalManager.cure(snplayer);
 		}
 		else
 		{
@@ -193,7 +176,7 @@ public class VampireManager{
 			deltaHeal = -deltaBlood / SNConfigHandler.vampireHealthCost;
 		}
 		
-		plugin.getSuperManager().alterPower(snplayer, deltaBlood, "Healing!");
+		SupernaturalManager.alterPower(snplayer, deltaBlood, "Healing!");
 		int healthDelta = (int)deltaHeal;
 		int targetHealth = currentHealth + healthDelta;
 		if(targetHealth > 20)
@@ -235,7 +218,7 @@ public class VampireManager{
 		World playerWorld = player.getWorld();
 		
 		if ((player.getWorld().getEnvironment().equals(Environment.NETHER)) 
-				|| plugin.getSuperManager().worldTimeIsNight(player) || this.isUnderRoof(player) || material == Material.STATIONARY_WATER
+				|| SupernaturalManager.worldTimeIsNight(player) || this.isUnderRoof(player) || material == Material.STATIONARY_WATER
 				|| material == Material.WATER || playerWorld.hasStorm() || playerWorld.isThundering())
 		{
 			return false;

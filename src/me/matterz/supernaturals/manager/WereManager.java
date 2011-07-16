@@ -13,14 +13,8 @@ import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 
 public class WereManager {
-	
-private SupernaturalsPlugin plugin;
 
 private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNPlayer>();
-	
-	public WereManager(SupernaturalsPlugin plugin) {
-		this.plugin=plugin;
-	}
 
 	// -------------------------------------------- //
 	// 					Summonings					//
@@ -28,12 +22,12 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	
 	public void summon(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		if((snplayer.getPower() > SNConfigHandler.werePowerSummonMin) && plugin.getSuperManager().worldTimeIsNight(player)){
+		if((snplayer.getPower() > SNConfigHandler.werePowerSummonMin) && SupernaturalManager.worldTimeIsNight(player)){
 			Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
 			wolf.setTamed(true);
 			wolf.setOwner(player);
 			wolvesMap.put(wolf, snplayer);
-			plugin.getSuperManager().alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
+			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " summoned a wolf pet!");
 		}else{
@@ -69,7 +63,7 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	// -------------------------------------------- //
 	
 	public void regenAdvanceTime(Player player, int milliseconds){
-		if(!plugin.getSuperManager().worldTimeIsNight(player)){
+		if(!SupernaturalManager.worldTimeIsNight(player)){
 			return;
 		}
 		

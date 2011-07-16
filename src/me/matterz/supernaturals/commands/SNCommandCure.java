@@ -39,6 +39,6 @@ public class SNCommandCure extends SNCommand {
 		this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " was cured of any curse!");
 		SupernaturalsPlugin.instance.getSuperManager();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		SupernaturalsPlugin.instance.getSuperManager().cure(snplayer);
+		SupernaturalManager.cure(snplayer);
 	}
 }

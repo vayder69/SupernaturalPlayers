@@ -28,6 +28,6 @@ public class SNCommandReload extends SNCommand {
 			return;
 		}
 		this.sendMessage("All config and player has been reloaded");
-		SupernaturalsPlugin.instance.reloadData();
+		SupernaturalsPlugin.reloadData();
 	}
 }

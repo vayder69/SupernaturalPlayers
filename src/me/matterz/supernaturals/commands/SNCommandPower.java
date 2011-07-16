@@ -37,7 +37,6 @@ public class SNCommandPower extends SNCommand {
 				this.sendMessage("You do not have permissions to use this command.");
 				return;
 			}
-			SupernaturalsPlugin.instance.getSuperManager();
 			SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
 					
 			this.sendMessage("Your current power level is: " + (int) snplayer.getPower());
@@ -67,9 +66,8 @@ public class SNCommandPower extends SNCommand {
 			}
 			
 			this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " has been powered up!");
-			SupernaturalsPlugin.instance.getSuperManager();
 			SuperNPlayer snplayer = SupernaturalManager.get(player);
-			SupernaturalsPlugin.instance.getSuperManager().alterPower(snplayer, powerGain, "Admin boost!");
+			SupernaturalManager.alterPower(snplayer, powerGain, "Admin boost!");
 		}
 	}
 }

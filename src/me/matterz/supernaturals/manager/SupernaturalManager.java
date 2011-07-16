@@ -41,11 +41,11 @@ public class SupernaturalManager {
 	// 				Data Management					//
 	// -------------------------------------------- //
 	
-	public List<SuperNPlayer> getSupernaturals(){
+	public static List<SuperNPlayer> getSupernaturals(){
 		return supernaturals;
 	}
 	
-	public void setSupernaturals(List<SuperNPlayer> supernaturals){
+	public static void setSupernaturals(List<SuperNPlayer> supernaturals){
 		SupernaturalManager.supernaturals = supernaturals;
 	}
 	
@@ -75,7 +75,7 @@ public class SupernaturalManager {
 	public static Set<SuperNPlayer> findAllOnline() {
 		Set<SuperNPlayer> snplayers = new HashSet<SuperNPlayer>();
 		for (Player player : SupernaturalsPlugin.instance.getServer().getOnlinePlayers()) {
-			snplayers.add(SupernaturalManager.get(player));
+			snplayers.add(get(player));
 		}
 		return snplayers;
 	}
@@ -84,11 +84,11 @@ public class SupernaturalManager {
 	// 			Supernatural Conversions			//
 	// -------------------------------------------- //
 	
-	public void curse(SuperNPlayer snplayer, String superType) {
-		this.curse(snplayer, superType, 0);
+	public static void curse(SuperNPlayer snplayer, String superType) {
+		curse(snplayer, superType, 0);
 	}
 	
-	public void curse(SuperNPlayer snplayer, String superType, int powerLevel) {
+	public static void curse(SuperNPlayer snplayer, String superType, int powerLevel) {
 		String type = superType.toLowerCase();
 		snplayer.setOldType(snplayer.getType());
 		snplayer.setOldPower(snplayer.getPower());
@@ -97,20 +97,18 @@ public class SupernaturalManager {
 		snplayer.setPower(powerLevel);
 		
 		snplayer.setTruce(true);
-		snplayer.setMove(true);
-		snplayer.setTruceTimer(0);
 		
 		SupernaturalManager.sendMessage(snplayer, "You are now a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
 		SupernaturalsPlugin.log(snplayer.getName() + " turned into a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
 		
-		this.updateName(snplayer);
+		updateName(snplayer);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		
-		plugin.saveData();
+		SupernaturalsPlugin.saveData();
 	}
 	
-	public void cure(SuperNPlayer snplayer){
+	public static void cure(SuperNPlayer snplayer){
 		snplayer.setOldType(snplayer.getType());
 		snplayer.setOldPower(snplayer.getPower());
 		
@@ -118,19 +116,17 @@ public class SupernaturalManager {
 		snplayer.setPower(0);
 		
 		snplayer.setTruce(true);
-		snplayer.setMove(true);
-		snplayer.setTruceTimer(0);
 		
-		this.updateName(snplayer);
+		updateName(snplayer);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		
 		SupernaturalManager.sendMessage(snplayer, "You have been restored to humanity!");
 		SupernaturalsPlugin.log(snplayer.getName() + " was restored to humanity!");
-		plugin.saveData();
+		SupernaturalsPlugin.saveData();
 	}
 	
-	public void revert(SuperNPlayer snplayer){
+	public static void revert(SuperNPlayer snplayer){
 		String oldType = snplayer.getOldType();
 		double oldPower = snplayer.getOldPower();
 		
@@ -141,10 +137,8 @@ public class SupernaturalManager {
 		snplayer.setPower(oldPower);
 		
 		snplayer.setTruce(true);
-		snplayer.setMove(true);
-		snplayer.setTruceTimer(0);
 		
-		this.updateName(snplayer);
+		updateName(snplayer);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		
@@ -152,7 +146,7 @@ public class SupernaturalManager {
 				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
 		SupernaturalsPlugin.log(snplayer.getName() + " was reverted to the previous state of being a " 
 				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
-		plugin.saveData();
+		SupernaturalsPlugin.saveData();
 		
 	}
 	
@@ -160,65 +154,65 @@ public class SupernaturalManager {
 	// 					Power Altering				//
 	// -------------------------------------------- //
 	
-	public void alterPower(SuperNPlayer snplayer, double delta){
+	public static void alterPower(SuperNPlayer snplayer, double delta){
 		snplayer.setPower((snplayer.getPower() + delta));
 	}
 	
-	public void alterPower(SuperNPlayer snplayer, double delta, String reason){
-		this.alterPower(snplayer, delta);
+	public static void alterPower(SuperNPlayer snplayer, double delta, String reason){
+		alterPower(snplayer, delta);
 		SupernaturalManager.sendMessage(snplayer, "Power: "+ChatColor.WHITE+(int)snplayer.getPower()+ChatColor.RED+" ("+ChatColor.WHITE+(int)delta+ChatColor.RED+") "+reason);
 	}
 	
-	public void bloodDrink(SuperNPlayer snplayer, double amount, String source) {
+	public static void bloodDrink(SuperNPlayer snplayer, double amount, String source) {
 		if (snplayer.getPower() == 10000D) {
 			return;
 		}
-		this.alterPower(snplayer, amount, String.format("from %s", source));
+		alterPower(snplayer, amount, String.format("from %s", source));
 	}
 	
-	public void killEvent(SuperNPlayer damager, SuperNPlayer victim){
+	public static void killEvent(SuperNPlayer damager, SuperNPlayer victim){
 		if(victim==null){
 			if(damager.isVampire()){
-				this.alterPower(damager, SNConfigHandler.vampireKillPowerCreatureGain, "Creature death!");
+				alterPower(damager, SNConfigHandler.vampireKillPowerCreatureGain, "Creature death!");
 			} else if(damager.isGhoul()){
-				this.alterPower(damager, SNConfigHandler.ghoulKillPowerCreatureGain, "Creature death!");
+				alterPower(damager, SNConfigHandler.ghoulKillPowerCreatureGain, "Creature death!");
 			} else if(damager.isWere()){
-				this.alterPower(damager, SNConfigHandler.wereKillPowerCreatureGain, "Creature death!");
+				alterPower(damager, SNConfigHandler.wereKillPowerCreatureGain, "Creature death!");
 			}
 		}else{
 			double random = Math.random();
 			if(random>SNConfigHandler.spreadChance){
 				if(damager.isVampire()){
-					this.alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
+					alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
 					if(SNConfigHandler.vampireKillSpreadCurse && !victim.isSuper())
 					{
 						SupernaturalManager.sendMessage(victim, "You feel your heart stop! You have contracted vampirism.");
-						this.curse(victim, "vampire");
+						curse(victim, "vampire");
 					}
 				} else if(damager.isGhoul()){
-					this.alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
+					alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
 					if(SNConfigHandler.ghoulKillSpreadCurse && !victim.isSuper())
 					{
 						SupernaturalManager.sendMessage(victim, "Your body dies... You feel a deep hatred for the living.");
-						this.curse(victim, "ghoul");
+						curse(victim, "ghoul");
 					}
 				} else if(damager.isWere()){
-					this.alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
+					alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
 					if(SNConfigHandler.wereKillSpreadCurse && !victim.isSuper())
 					{
 						SupernaturalManager.sendMessage(victim, "Your basic nature changes... You feel more in touch with your animal side.");
-						this.curse(victim, "werewolf");
+						curse(victim, "werewolf");
 					}
 				}
 			}
 		}
 	}
 	
-	public void deathEvent(Player player){
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+	public static void deathEvent(Player player){
+		SuperNPlayer snplayer = get(player);
 		if(!snplayer.isSuper()){
 			if(snplayer.isPriest()){
-				this.alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
+				alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
 			}
 			
 			Entity damager = null;
@@ -233,11 +227,11 @@ public class SupernaturalManager {
 				double random = Math.random();
 				if(random>SNConfigHandler.spreadChance){
 					if((damager instanceof Ghast) && player.getWorld().getEnvironment().equals(Environment.NETHER)){
-						this.curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
+						curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
 						SupernaturalManager.sendMessage(snplayer, "You have been transformed into a Ghoul!");
 					}else if((damager instanceof Wolf)){
-						if(!(((Wolf)damager).isTamed()) && this.worldTimeIsNight(player)){
-							this.curse(snplayer, "werewolf", SNConfigHandler.werePowerStart);
+						if(!(((Wolf)damager).isTamed()) && worldTimeIsNight(player)){
+							curse(snplayer, "werewolf", SNConfigHandler.werePowerStart);
 							SupernaturalManager.sendMessage(snplayer, "You have mutated into a werewolf!");
 						}
 					}
@@ -245,11 +239,11 @@ public class SupernaturalManager {
 			}
 		}else{
 			if(snplayer.isVampire()){
-				this.alterPower(snplayer, -SNConfigHandler.vampireDeathPowerPenalty, "You died!");
+				alterPower(snplayer, -SNConfigHandler.vampireDeathPowerPenalty, "You died!");
 			} else if(snplayer.isGhoul()){
-				this.alterPower(snplayer, -SNConfigHandler.ghoulDeathPowerPenalty, "You died!");
+				alterPower(snplayer, -SNConfigHandler.ghoulDeathPowerPenalty, "You died!");
 			} else if(snplayer.isWere()){
-				this.alterPower(snplayer, -SNConfigHandler.wereDeathPowerPenalty, "You died!");
+				alterPower(snplayer, -SNConfigHandler.wereDeathPowerPenalty, "You died!");
 			}
 		}
 	}
@@ -274,13 +268,13 @@ public class SupernaturalManager {
 		snplayer.setTruceTimer(SNConfigHandler.truceBreakTime);
 	}
 	
-	public void truceRestore(SuperNPlayer snplayer){
+	public static void truceRestore(SuperNPlayer snplayer){
 		SupernaturalManager.sendMessage(snplayer, "Your truce with monsters has been restored!");
 		snplayer.setTruce(true);
 		snplayer.setTruceTimer(0);
 		
 		// Untarget the player.
-		Player player = plugin.getServer().getPlayer(snplayer.getName());
+		Player player = SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName());
 		for(LivingEntity entity : player.getWorld().getLivingEntities()){
 			if(!(entity instanceof Creature)){
 				continue;
@@ -322,11 +316,11 @@ public class SupernaturalManager {
 	
 	private void truceBreakTimeLeftAlter(SuperNPlayer snplayer, int delta){
 		if ((snplayer.getTruceTimer() + delta) < 0) {
-			this.truceRestore(snplayer);
+			truceRestore(snplayer);
 		} else {
 			snplayer.setTruceTimer(snplayer.getTruceTimer() + delta);
 		}
-		plugin.saveData();
+		SupernaturalsPlugin.saveData();
 	}
 	
 	// -------------------------------------------- //
@@ -344,8 +338,8 @@ public class SupernaturalManager {
 		}
 	}
 	
-	public void updateName(SuperNPlayer snplayer){
-		Player player = plugin.getServer().getPlayer(snplayer.getName());
+	public static void updateName(SuperNPlayer snplayer){
+		Player player = SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName());
 		String name = player.getName();
 		String displayname = player.getDisplayName().trim();
 		String updatedname;
@@ -374,7 +368,7 @@ public class SupernaturalManager {
 	// 					TimeKeeping					//
 	// -------------------------------------------- //
 	
-	public boolean worldTimeIsNight(Player player) {
+	public static boolean worldTimeIsNight(Player player) {
 		long time = player.getWorld().getTime() % 24000;
 		
 		if (time < 0 || time > 12400) 
@@ -399,8 +393,6 @@ public class SupernaturalManager {
 		}
 		
 		if(snplayer.isVampire()) {
-			if(taskCounter%5==0)
-				plugin.getVampireManager().moveAdvanceTime(snplayer);
 			if(taskCounter%15==0){
 				plugin.getVampireManager().combustAdvanceTime(player, 3000);
 				plugin.getVampireManager().gainPowerAdvanceTime(snplayer, 3000);
@@ -414,6 +406,10 @@ public class SupernaturalManager {
 		}else if(snplayer.isWere()){
 			if(taskCounter%15==0){
 				plugin.getWereManager().regenAdvanceTime(player, 3000);
+			}
+		}else if(snplayer.isPriest()){
+			if(taskCounter%5==0){
+				plugin.getPriestManager().armorCheck(player);
 			}
 		}
 		

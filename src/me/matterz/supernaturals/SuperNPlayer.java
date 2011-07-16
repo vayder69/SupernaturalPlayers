@@ -11,7 +11,6 @@ public class SuperNPlayer{
 	private double superPower = 0;
 	private boolean truce = true;
 	private int truceTimer = 0;
-	private boolean move = true;
 	
 	public SuperNPlayer(){}
 	
@@ -23,7 +22,6 @@ public class SuperNPlayer{
 		this.superPower = 0;
 		this.truce = true;
 		this.truceTimer = 0;
-		this.move = true;
 	}
 	
 	// -------------------------------------------- //
@@ -76,6 +74,7 @@ public class SuperNPlayer{
 	
 	public void setTruce(boolean truce){
 		this.truce = truce;
+		this.truceTimer = 0;
 	}
 	
 	public int getTruceTimer(){
@@ -84,14 +83,6 @@ public class SuperNPlayer{
 	
 	public void setTruceTimer(int timer){
 		this.truceTimer=timer;
-	}
-	
-	public boolean getMove(){
-		return this.move;
-	}
-	
-	public void setMove(boolean move){
-		this.move = move;
 	}
 	
 	// -------------------------------------------- //

@@ -9,12 +9,6 @@ import me.matterz.supernaturals.io.SNConfigHandler;
 
 public class GhoulManager {
 	
-private SupernaturalsPlugin plugin;
-	
-	public GhoulManager(SupernaturalsPlugin plugin) {
-		this.plugin=plugin;
-	}
-	
 	// -------------------------------------------- //
 	// 			Regenerate Feature					//
 	// -------------------------------------------- //
@@ -52,7 +46,7 @@ private SupernaturalsPlugin plugin;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonMin)){
 			player.getWorld().spawnCreature(player.getLocation(), CreatureType.ZOMBIE);
-			plugin.getSuperManager().alterPower(snplayer, -SNConfigHandler.ghoulPowerSummonCost, "Summoning a Zombie!");
+			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.ghoulPowerSummonCost, "Summoning a Zombie!");
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " summoned a Zombie!");
 		} else {
