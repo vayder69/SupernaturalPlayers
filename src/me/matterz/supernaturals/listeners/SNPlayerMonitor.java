@@ -1,13 +1,24 @@
 package me.matterz.supernaturals.listeners;
 
+import java.util.List;
+
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
+import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class SNPlayerMonitor extends PlayerListener {
 	
@@ -17,7 +28,77 @@ private SupernaturalsPlugin plugin;
 		this.plugin = instance;
 	}
 	
-	public void onPlayerJoin(PlayerJoinEvent event){
+	@Override
+	public void onPlayerAnimation(PlayerAnimationEvent event){
+		Player player = event.getPlayer();
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		ItemStack item = player.getItemInHand();
+		if(event.getAnimationType().equals(PlayerAnimationType.ARM_SWING)){
+			if(snplayer.isVampire()){
+				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){
+					plugin.getSuperManager().jump(player, SNConfigHandler.jumpDeltaSpeed, true);
+				}else if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.vampireMaterial)){
+					plugin.getVampireManager().teleport(player);
+				}
+			}else if(snplayer.isWere()){
+				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfMaterial)){
+					plugin.getWereManager().summon(player);
+					if(item.getAmount()==1){
+						player.setItemInHand(null);
+					}else{
+						item.setAmount(player.getItemInHand().getAmount()-1);
+					}
+				}else if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
+					plugin.getWereManager().wolfbane(player);
+				}
+			}else if(snplayer.isGhoul()){
+				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.ghoulMaterial)){
+					plugin.getGhoulManager().summon(player);
+					if(item.getAmount()==1){
+						player.setItemInHand(null);
+					}else{
+						item.setAmount(player.getItemInHand().getAmount()-1);
+					}
+				}
+			}else if(snplayer.isPriest()){
+				if(SNConfigHandler.priestSpellMaterials.contains(item.getType())){
+					List<Block> blocks = player.getLineOfSight(null, 20);
+					List<Entity> entities = player.getNearbyEntities(21, 21, 21);
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log(snplayer.getName() + " is attempting to cast a spell...");
+					for(Block block : blocks){
+						for(Entity entity : entities){
+							if(entity instanceof Player){
+								Player victim = (Player) entity;
+								Location location = victim.getLocation();
+								Location feetLocation = new Location(location.getWorld(), location.getX(), location.getY()-1, location.getZ());
+								Location groundLocation = new Location(location.getWorld(), location.getX(), location.getY()-2, location.getZ());
+								if(location.getBlock().equals(block) || feetLocation.getBlock().equals(block) || groundLocation.getBlock().equals(block)){
+									if(SNConfigHandler.debugMode)
+										SupernaturalsPlugin.log(victim.getName()+" is targetted by spell.");
+									if(item.getType().equals(SNConfigHandler.priestSpellMaterials.get(0))){
+										plugin.getPriestManager().banish(player, victim);
+									}else if(item.getType().equals(SNConfigHandler.priestSpellMaterials.get(1))){
+										plugin.getPriestManager().exorcise(player, victim);
+									}else if(item.getType().equals(SNConfigHandler.priestSpellMaterials.get(2))){
+										plugin.getPriestManager().cure(player, victim, item.getType());
+									}else if(item.getType().equals(SNConfigHandler.priestSpellMaterials.get(3))){
+										plugin.getPriestManager().heal(player, victim);
+									}else{
+										plugin.getPriestManager().drainPower(player, victim);
+									}
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void onPlayerJoin(PlayerJoinEvent event){	    
 		Player player = event.getPlayer();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		
@@ -38,5 +119,25 @@ private SupernaturalsPlugin plugin;
 			plugin.getServer().broadcastMessage(ChatColor.GOLD + "Priest " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
 		}
 		
+	}
+	
+	public void onPlayerMove(PlayerMoveEvent event){
+		if(event.isCancelled()){
+			return;
+		}
+		
+		Player player = event.getPlayer();
+		Material material = player.getLocation().getBlock().getType();
+		
+		if(material == Material.STATIONARY_WATER || material == Material.WATER){
+			SuperNPlayer snplayer = SupernaturalManager.get(player);
+			if(snplayer.isGhoul()){
+				int health = (player.getHealth()-SNConfigHandler.ghoulDamageWater);
+				if(health<0)
+					health=0;
+				player.setHealth(health);
+				
+			}
+		}
 	}
 }

@@ -6,7 +6,6 @@ import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
@@ -29,32 +28,12 @@ public class VampireManager{
 	// 					Movement					//
 	// -------------------------------------------- //
 	
-	public void jump(Player player, double deltaSpeed, boolean upOnly) {
-		
+	public void teleport(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		
-		if (snplayer.getPower() - SNConfigHandler.jumpBloodCost <= 0) {
-			SupernaturalManager.sendMessage(snplayer, "Not enough Power to Superjump.");
-			return;
+		if(snplayer.getPower()<SNConfigHandler.vampireTeleportCost){
+			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.vampireTeleportCost, "Teleport!");
+			player.teleport(SNConfigHandler.vampireTeleportLocation);
 		}
-		
-		if(upOnly){
-			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.jumpBloodCost, "SuperJump!");
-		}else{
-			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.dashBloodCost, "Dash!");
-		}
-		
-		Vector vjadd;
-		if (upOnly) {
-			vjadd = new Vector(0, 1, 0);
-		} else {
-			Vector vhor = player.getLocation().getDirection();
-			vjadd = new Vector(vhor.getX(),0,vhor.getZ());
-			vjadd.normalize();
-		}
-		vjadd.multiply(deltaSpeed);
-		
-		player.setVelocity(player.getVelocity().add(vjadd));
 	}
 	
 	// -------------------------------------------- //

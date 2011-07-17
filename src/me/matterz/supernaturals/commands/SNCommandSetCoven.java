@@ -8,16 +8,16 @@ import me.matterz.supernaturals.manager.SNCommand;
 
 import org.bukkit.entity.Player;
 
-public class SNCommandSetChurch extends SNCommand {
-	public SNCommandSetChurch() {
+public class SNCommandSetCoven extends SNCommand {
+	public SNCommandSetCoven() {
 		super();
 		requiredParameters = new ArrayList<String>();
 		optionalParameters = new ArrayList<String>();
 		senderMustBePlayer = true;
 		senderMustBeSupernatural = true;
-		permissions = "supernatural.admin.command.setchurch";
+		permissions = "supernatural.admin.command.setcoven";
 		helpNameAndParams = "";
-		helpDescription = "Sets the current location as the church";
+		helpDescription = "Sets the current location as the vampire coven";
 	}
 	
 	@Override
@@ -33,12 +33,12 @@ public class SNCommandSetChurch extends SNCommand {
 		double currentY = senderPlayer.getLocation().getY();
 		double currentZ = senderPlayer.getLocation().getZ();
 		
-		SNConfigHandler.priestChurchWorld = senderPlayer.getWorld().getName();
-		SNConfigHandler.priestChurchLocationX = (int) currentX;
-		SNConfigHandler.priestChurchLocationY = (int) currentY;
-		SNConfigHandler.priestChurchLocationZ = (int) currentZ;
+		SNConfigHandler.vampireTeleportWorld = senderPlayer.getWorld().getName();
+		SNConfigHandler.vampireTeleportLocationX = (int) currentX;
+		SNConfigHandler.vampireTeleportLocationY = (int) currentY;
+		SNConfigHandler.vampireTeleportLocationZ = (int) currentZ;
 		SupernaturalsPlugin.saveData();
 				
-		this.sendMessage("Church location set.");
+		this.sendMessage("Coven location set.");
 	}
 }

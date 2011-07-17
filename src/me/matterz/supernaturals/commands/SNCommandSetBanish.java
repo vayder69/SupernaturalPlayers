@@ -8,16 +8,17 @@ import me.matterz.supernaturals.manager.SNCommand;
 
 import org.bukkit.entity.Player;
 
-public class SNCommandSetChurch extends SNCommand {
-	public SNCommandSetChurch() {
+public class SNCommandSetBanish extends SNCommand {
+	
+	public SNCommandSetBanish() {
 		super();
 		requiredParameters = new ArrayList<String>();
 		optionalParameters = new ArrayList<String>();
 		senderMustBePlayer = true;
 		senderMustBeSupernatural = true;
-		permissions = "supernatural.admin.command.setchurch";
+		permissions = "supernatural.admin.command.setbanish";
 		helpNameAndParams = "";
-		helpDescription = "Sets the current location as the church";
+		helpDescription = "Sets the current location as the priests' banish location";
 	}
 	
 	@Override
@@ -33,12 +34,12 @@ public class SNCommandSetChurch extends SNCommand {
 		double currentY = senderPlayer.getLocation().getY();
 		double currentZ = senderPlayer.getLocation().getZ();
 		
-		SNConfigHandler.priestChurchWorld = senderPlayer.getWorld().getName();
-		SNConfigHandler.priestChurchLocationX = (int) currentX;
-		SNConfigHandler.priestChurchLocationY = (int) currentY;
-		SNConfigHandler.priestChurchLocationZ = (int) currentZ;
+		SNConfigHandler.priestBanishWorld = senderPlayer.getWorld().getName();
+		SNConfigHandler.priestBanishLocationX = (int) currentX;
+		SNConfigHandler.priestBanishLocationY = (int) currentY;
+		SNConfigHandler.priestBanishLocationZ = (int) currentZ;
 		SupernaturalsPlugin.saveData();
 				
-		this.sendMessage("Church location set.");
+		this.sendMessage("Banish location set.");
 	}
 }

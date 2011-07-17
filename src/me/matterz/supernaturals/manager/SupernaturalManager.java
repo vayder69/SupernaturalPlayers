@@ -17,6 +17,7 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByProjectileEvent;
+import org.bukkit.util.Vector;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
@@ -109,6 +110,10 @@ public class SupernaturalManager {
 	}
 	
 	public static void cure(SuperNPlayer snplayer){
+		if(snplayer.getOldType().equals("priest")){
+			revert(snplayer);
+			return;
+		}
 		snplayer.setOldType(snplayer.getType());
 		snplayer.setOldPower(snplayer.getPower());
 		
@@ -198,7 +203,7 @@ public class SupernaturalManager {
 					}
 				} else if(damager.isWere()){
 					alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
-					if(SNConfigHandler.wereKillSpreadCurse && !victim.isSuper())
+					if(SNConfigHandler.wereKillSpreadCurse && !victim.isSuper() && worldTimeIsNight(SupernaturalsPlugin.instance.getServer().getPlayer(victim.getName())))
 					{
 						SupernaturalManager.sendMessage(victim, "Your basic nature changes... You feel more in touch with your animal side.");
 						curse(victim, "werewolf");
@@ -246,6 +251,43 @@ public class SupernaturalManager {
 				alterPower(snplayer, -SNConfigHandler.wereDeathPowerPenalty, "You died!");
 			}
 		}
+	}
+	
+	// -------------------------------------------- //
+	// 					Movement					//
+	// -------------------------------------------- //
+	
+	public void jump(Player player, double deltaSpeed, boolean upOnly) {
+		
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		
+		if(upOnly){
+			if(snplayer.getPower() - SNConfigHandler.jumpBloodCost <= 0) {
+				SupernaturalManager.sendMessage(snplayer, "Not enough Power to jump.");
+				return;
+			}else{
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.jumpBloodCost, "SuperJump!");
+			}
+		}else{
+			if(snplayer.getPower() - SNConfigHandler.dashBloodCost <= 0) {
+				SupernaturalManager.sendMessage(snplayer, "Not enough Power to dash.");
+				return;
+			}else{
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.dashBloodCost, "Dash!");
+			}
+		}
+		
+		Vector vjadd;
+		if (upOnly) {
+			vjadd = new Vector(0, 1, 0);
+		} else {
+			Vector vhor = player.getLocation().getDirection();
+			vjadd = new Vector(vhor.getX(),0,vhor.getZ());
+			vjadd.normalize();
+		}
+		vjadd.multiply(deltaSpeed);
+		
+		player.setVelocity(player.getVelocity().add(vjadd));
 	}
 	
 	// -------------------------------------------- //

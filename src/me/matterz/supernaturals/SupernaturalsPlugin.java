@@ -16,12 +16,15 @@ import me.matterz.supernaturals.commands.SNCommandHelp;
 import me.matterz.supernaturals.commands.SNCommandList;
 import me.matterz.supernaturals.commands.SNCommandSave;
 import me.matterz.supernaturals.commands.SNCommandConvert;
+import me.matterz.supernaturals.commands.SNCommandSetBanish;
 import me.matterz.supernaturals.commands.SNCommandSetChurch;
+import me.matterz.supernaturals.commands.SNCommandSetCoven;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.io.SNPlayerHandler;
 import me.matterz.supernaturals.listeners.SNEntityListener;
 import me.matterz.supernaturals.listeners.SNEntityMonitor;
 import me.matterz.supernaturals.listeners.SNPlayerListener;
+import me.matterz.supernaturals.listeners.SNPlayerMonitor;
 import me.matterz.supernaturals.manager.GhoulManager;
 import me.matterz.supernaturals.manager.PriestManager;
 import me.matterz.supernaturals.manager.SNCommand;
@@ -51,6 +54,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	private final SNEntityListener entityListener = new SNEntityListener(this);
 	private final SNPlayerListener playerListener = new SNPlayerListener(this);
+	private final SNPlayerMonitor playerMonitor = new SNPlayerMonitor(this);
 	private final SNEntityMonitor entityMonitor = new SNEntityMonitor(this);
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
@@ -124,12 +128,16 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandList());
 		commands.add(new SNCommandClasses());
 		commands.add(new SNCommandSetChurch());
+		commands.add(new SNCommandSetBanish());
+		commands.add(new SNCommandSetCoven());
 		
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.High, this);
-		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerListener, Priority.Normal, this);
+		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Lowest, this);
 		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Low, this);
-		pm.registerEvent(Type.PLAYER_JOIN, this.playerListener, Priority.Normal, this);
+		
+		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerMonitor, Priority.Monitor, this);
+		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
+		pm.registerEvent(Type.PLAYER_MOVE, this.playerMonitor, Priority.Monitor, this);
 		
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
 		pm.registerEvent(Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);

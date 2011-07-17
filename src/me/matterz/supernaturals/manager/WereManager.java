@@ -17,6 +17,23 @@ public class WereManager {
 private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNPlayer>();
 
 	// -------------------------------------------- //
+	// 					Wolfbane					//
+	// -------------------------------------------- //
+
+	public void wolfbane(Player player){
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		if(SNConfigHandler.wereWolfbaneRecipe.playerHasEnough(player)) {
+			SupernaturalManager.sendMessage(snplayer, "You create a wolfbane potion!");
+			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.wereWolfbaneRecipe.getRecipeLine());
+			SNConfigHandler.wereWolfbaneRecipe.removeFromPlayer(player);
+			SupernaturalManager.cure(snplayer);
+		}else{
+			SupernaturalManager.sendMessage(snplayer, "You cannot create a Wolfbane potion without the following: ");
+			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.wereWolfbaneRecipe.getRecipeLine());
+		}
+	}
+	
+	// -------------------------------------------- //
 	// 					Summonings					//
 	// -------------------------------------------- //
 	
