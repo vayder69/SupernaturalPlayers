@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
+import org.bukkit.inventory.ItemStack;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
@@ -37,18 +38,27 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	// 					Summonings					//
 	// -------------------------------------------- //
 	
-	public void summon(Player player){
+	public void summon(Player player, ItemStack item){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		if((snplayer.getPower() > SNConfigHandler.werePowerSummonMin) && SupernaturalManager.worldTimeIsNight(player)){
-			Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
-			wolf.setTamed(true);
-			wolf.setOwner(player);
-			wolvesMap.put(wolf, snplayer);
-			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
-			if(SNConfigHandler.debugMode)
-				SupernaturalsPlugin.log(snplayer.getName() + " summoned a wolf pet!");
+		if(SupernaturalManager.worldTimeIsNight(player)){
+			if(snplayer.getPower() > SNConfigHandler.werePowerSummonMin){
+				Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
+				wolf.setTamed(true);
+				wolf.setOwner(player);
+				wolvesMap.put(wolf, snplayer);
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(snplayer.getName() + " summoned a wolf pet!");
+				if(item.getAmount()==1){
+					player.setItemInHand(null);
+				}else{
+					item.setAmount(player.getItemInHand().getAmount()-1);
+				}
+			}else{
+				SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
+			}
 		}else{
-			SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
+			SupernaturalManager.sendMessage(snplayer, "Cannot use werewolf abilities during the day!");
 		}
 	}
 	

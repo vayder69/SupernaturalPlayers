@@ -29,6 +29,8 @@ public class SNCommandAdmin extends SNCommand{
 		adminHelpMessages.add("/sn save "+ChatColor.WHITE+"- Save data to disk.");
 		adminHelpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
 		adminHelpMessages.add("/sn setchurch "+ChatColor.WHITE+"- Sets your current location as the priests' church.");
+		adminHelpMessages.add("/sn setbanish "+ChatColor.WHITE+"- Sets your current location as the priests' banish spot.");
+		adminHelpMessages.add("/sn setcoven "+ChatColor.WHITE+"- Sets your current location as the vampires' teleport spot.");
 	}
 	
 	@Override
@@ -39,6 +41,6 @@ public class SNCommandAdmin extends SNCommand{
 			this.sendMessage(adminHelpMessages);
 		} else {
 			this.sendMessage("You do not have permissions to use this command.");
-		}	
+		}
 	}
 }

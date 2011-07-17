@@ -43,8 +43,7 @@ public class SNCommandHelp extends SNCommand{
 		if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions)){
 			this.sendMessage("You do not have permissions to use this command.");
 			return;
-		}
-		
+		}		
 		this.sendMessage(helpMessages);
 	}
 }

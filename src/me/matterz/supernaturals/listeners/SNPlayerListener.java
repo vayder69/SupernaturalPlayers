@@ -23,12 +23,8 @@ public class SNPlayerListener extends PlayerListener{
 	@Override
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Action action = event.getAction();
-		if(action == Action.RIGHT_CLICK_AIR){
-			event.setCancelled(false);
-		}else{
-			if(event.isCancelled()){
-				return;
-			}
+		if(action != Action.RIGHT_CLICK_AIR && event.isCancelled()){
+			return;
 		}
 		
 		if(!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)){
@@ -55,8 +51,13 @@ public class SNPlayerListener extends PlayerListener{
 			}
 		}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.dashMaterial)){
 			if(snplayer.isWere()){
-				plugin.getSuperManager().jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
-				event.setCancelled(true);
+				if(SupernaturalManager.worldTimeIsNight(player)){
+					plugin.getSuperManager().jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
+					SupernaturalsPlugin.log(snplayer.getName() + " used dash!");
+					event.setCancelled(true);
+				}else{
+					SupernaturalManager.sendMessage(snplayer, "Can only use werewolf abilities at night.");
+				}
 				return;
 			}
 		}

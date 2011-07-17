@@ -81,7 +81,6 @@ public class SNConfigHandler {
 	public static int priestPowerDrain;
 	public static int priestHealAmount;
 	public static int priestPowerStart;
-	public static int priestPowerDonation;
 	public static int werePowerSummonMin;
 	public static int werePowerSummonCost;
 	public static int werePowerFood;
@@ -110,7 +109,7 @@ public class SNConfigHandler {
 	public static List<Material> ghoulWeaponImmunity = new ArrayList<Material>();
 	public static List<CreatureType> ghoulTruce = new ArrayList<CreatureType>();
 	public static List<Material> priestSpellMaterials = new ArrayList<Material>();
-	public static List<Material> priestDonationMaterials = new ArrayList<Material>();
+	public static HashMap<Material, Integer> priestDonationMap = new HashMap<Material, Integer>();
 	
 	public static String vampireTeleportWorld;
 	public static int vampireTeleportLocationX;
@@ -141,6 +140,7 @@ public class SNConfigHandler {
 	private static List<String> priestDonationMaterialsString = new ArrayList<String>();
 	private static List<String> wereWolfbaneMaterialsString = new ArrayList<String>();
 	private static List<Integer> wereWolfbaneQuantities = new ArrayList<Integer>();
+	private static List<Integer> priestDonationRewards = new ArrayList<Integer>();
 	
 	public static Map<Material,Double> materialOpacity = new HashMap<Material,Double>();
 	
@@ -258,7 +258,6 @@ public class SNConfigHandler {
 		priestDeathPowerPenalty = config.getInt("Priest.Death.PowerPenalty", 200);
 		priestDamageFactorAttackSuper = config.getDouble("Priest.DamageFactor.AttackSuper", 3.0);
 		priestDamageFactorAttackHuman = config.getDouble("Priest.DamageFactor.AttackHuman", 0.5);
-		priestPowerDonation = config.getInt("Priest.Power.Donations", 10);
 		priestPowerBanish = config.getInt("Priest.Power.Banish", 1000);
 		priestPowerHeal = config.getInt("Priest.Power.Heal", 500);
 		priestPowerExorcise = config.getInt("Priest.Power.Exorcise", 2000);
@@ -271,7 +270,8 @@ public class SNConfigHandler {
 		priestMaterialsString = config.getStringList("Priest.Spell.Material", null);
 		priestAltarMaterialsString = config.getStringList("Priest.Church.Recipe.Materials", null);
 		priestAltarQuantities = config.getIntList("Priest.Church.Recipe.Quantities", null);
-		priestDonationMaterialsString = config.getStringList("Priest.Church.DonationMaterials", null);
+		priestDonationMaterialsString = config.getStringList("Priest.Church.Donation.Materials", null);
+		priestDonationRewards = config.getIntList("Priest.Church.Donation.Rewards", null);
 		
 		ghoulPowerStart = config.getInt("Ghoul.Power.Start", 1000);
 		ghoulKillSpreadCurse = config.getBoolean("Ghoul.Kill.SpreadCurse", true);
@@ -409,7 +409,16 @@ public class SNConfigHandler {
 			priestDonationMaterialsString.add("RAW_FISH");
 			priestDonationMaterialsString.add("COOKED_FISH");
 			priestDonationMaterialsString.add("GRILLED_PORK");
-			config.setProperty("Priest.Church.DonationMaterials", priestDonationMaterialsString);
+			priestDonationMaterialsString.add("BREAD");
+			config.setProperty("Priest.Church.Donation.Materials", priestDonationMaterialsString);
+		}
+		
+		if(priestDonationRewards.size() == 0){
+			priestDonationRewards.add(150);
+			priestDonationRewards.add(160);
+			priestDonationRewards.add(100);
+			priestDonationRewards.add(20);
+			config.setProperty("Priest.Church.Donation.Rewards", priestDonationRewards);
 		}
 		
 		if(ghoulWeaponsString.size() == 0){
@@ -505,10 +514,6 @@ public class SNConfigHandler {
 			priestSpellMaterials.add(Material.getMaterial(material));
 		}
 		
-		for(String material : priestDonationMaterialsString){
-			priestDonationMaterials.add(Material.getMaterial(material));
-		}
-		
 		for(String creature : ghoulTruceString){
 			CreatureType cType = CreatureType.valueOf(creature);
 			if(cType!=null)
@@ -516,6 +521,10 @@ public class SNConfigHandler {
 		}
 		
 		for(String weapon : ghoulWeaponsString){
+			ghoulWeapons.add(Material.getMaterial(weapon));
+		}
+		
+		for(String weapon : ghoulWeaponImmunityString){
 			ghoulWeapons.add(Material.getMaterial(weapon));
 		}
 		
@@ -557,7 +566,7 @@ public class SNConfigHandler {
 		
 		for(int i=0; i<wereWolfbaneMaterialsString.size();i++){
 			Material material = Material.getMaterial(wereWolfbaneMaterialsString.get(i));
-			int quantity=1;
+			int quantity = 1;
 			try{
 				quantity = wereWolfbaneQuantities.get(i);
 			}catch(Exception e){
@@ -565,6 +574,18 @@ public class SNConfigHandler {
 				SupernaturalsPlugin.log("Invalid Wolfbane Quantities!");
 			}
 			wereWolfbaneRecipe.materialQuantities.put(material,quantity);
+		}
+		
+		for(int i=0; i<priestDonationMaterialsString.size(); i++){
+			Material material = Material.getMaterial(priestDonationMaterialsString.get(i));
+			int reward = 1;
+			try{
+				reward = priestDonationRewards.get(i);
+			}catch(Exception e){
+				e.printStackTrace();
+				SupernaturalsPlugin.log("Invalid priest donation reward!");
+			}
+			priestDonationMap.put(material,reward);
 		}
 		
 		priestChurchLocation = new Location(plugin.getServer().getWorld(priestChurchWorld), priestChurchLocationX, priestChurchLocationY, priestChurchLocationZ);

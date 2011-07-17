@@ -1,13 +1,31 @@
 package me.matterz.supernaturals.manager;
 
+import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 
 public class GhoulManager {
+	
+	// -------------------------------------------- //
+	// 				Water Damage					//
+	// -------------------------------------------- //
+	
+	public void waterAdvanceTime(Player player){	
+		Material material = player.getLocation().getBlock().getType();
+		
+		if(material == Material.STATIONARY_WATER || material == Material.WATER){
+			int health = (player.getHealth()-SNConfigHandler.ghoulDamageWater);
+			if(health<0)
+				health=0;
+			player.setHealth(health);
+			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Ghouls disintegrate in water!  Get Out Quick!");
+		}
+	}
 	
 	// -------------------------------------------- //
 	// 			Regenerate Feature					//
@@ -42,13 +60,18 @@ public class GhoulManager {
 	// 					Summonings					//
 	// -------------------------------------------- //
 	
-	public void summon(Player player){
+	public void summon(Player player, ItemStack item){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonMin)){
 			player.getWorld().spawnCreature(player.getLocation(), CreatureType.ZOMBIE);
 			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.ghoulPowerSummonCost, "Summoning a Zombie!");
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " summoned a Zombie!");
+			if(item.getAmount()==1){
+				player.setItemInHand(null);
+			}else{
+				item.setAmount(player.getItemInHand().getAmount()-1);
+			}
 		} else {
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
 		}

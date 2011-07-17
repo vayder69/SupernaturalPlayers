@@ -9,7 +9,6 @@ import me.matterz.supernaturals.manager.SupernaturalManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -17,7 +16,6 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SNPlayerMonitor extends PlayerListener {
@@ -38,27 +36,25 @@ private SupernaturalsPlugin plugin;
 				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){
 					plugin.getSuperManager().jump(player, SNConfigHandler.jumpDeltaSpeed, true);
 				}else if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.vampireMaterial)){
-					plugin.getVampireManager().teleport(player);
+					plugin.getVampireManager().teleport(player, item);
 				}
 			}else if(snplayer.isWere()){
-				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfMaterial)){
-					plugin.getWereManager().summon(player);
-					if(item.getAmount()==1){
-						player.setItemInHand(null);
-					}else{
-						item.setAmount(player.getItemInHand().getAmount()-1);
+				if(SupernaturalManager.worldTimeIsNight(player)){
+					if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfMaterial)){
+						plugin.getWereManager().summon(player, item);
+					}else if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
+						SupernaturalManager.sendMessage(snplayer, "Cannot cure lycanthropy during the night.");
 					}
-				}else if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
-					plugin.getWereManager().wolfbane(player);
+				}else{
+					if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
+						plugin.getWereManager().wolfbane(player);
+					}else{
+						SupernaturalManager.sendMessage(snplayer, "Cannot use werewolf abilities during the day.");
+					}
 				}
 			}else if(snplayer.isGhoul()){
 				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.ghoulMaterial)){
-					plugin.getGhoulManager().summon(player);
-					if(item.getAmount()==1){
-						player.setItemInHand(null);
-					}else{
-						item.setAmount(player.getItemInHand().getAmount()-1);
-					}
+					plugin.getGhoulManager().summon(player, item);
 				}
 			}else if(snplayer.isPriest()){
 				if(SNConfigHandler.priestSpellMaterials.contains(item.getType())){
@@ -119,25 +115,5 @@ private SupernaturalsPlugin plugin;
 			plugin.getServer().broadcastMessage(ChatColor.GOLD + "Priest " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
 		}
 		
-	}
-	
-	public void onPlayerMove(PlayerMoveEvent event){
-		if(event.isCancelled()){
-			return;
-		}
-		
-		Player player = event.getPlayer();
-		Material material = player.getLocation().getBlock().getType();
-		
-		if(material == Material.STATIONARY_WATER || material == Material.WATER){
-			SuperNPlayer snplayer = SupernaturalManager.get(player);
-			if(snplayer.isGhoul()){
-				int health = (player.getHealth()-SNConfigHandler.ghoulDamageWater);
-				if(health<0)
-					health=0;
-				player.setHealth(health);
-				
-			}
-		}
 	}
 }

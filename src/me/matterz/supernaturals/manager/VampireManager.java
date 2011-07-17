@@ -6,6 +6,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
@@ -28,11 +29,18 @@ public class VampireManager{
 	// 					Movement					//
 	// -------------------------------------------- //
 	
-	public void teleport(Player player){
+	public void teleport(Player player, ItemStack item){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		if(snplayer.getPower()<SNConfigHandler.vampireTeleportCost){
+		if(snplayer.getPower()>SNConfigHandler.vampireTeleportCost){
 			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.vampireTeleportCost, "Teleport!");
 			player.teleport(SNConfigHandler.vampireTeleportLocation);
+			if(item.getAmount()==1){
+				player.setItemInHand(null);
+			}else{
+				item.setAmount(player.getItemInHand().getAmount()-1);
+			}
+		}else{
+			SupernaturalManager.sendMessage(snplayer, "Not enough power to teleport.");
 		}
 	}
 	
@@ -139,9 +147,8 @@ public class VampireManager{
 		
 		// Can't regenerate if lacking power
 		if(snplayer.getPower() <= SNConfigHandler.vampireHealingPowerMin){
-			if(SNConfigHandler.debugMode){
+			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log("Regen Event: player " + player.getName() + " not enough power!");
-			}
 			return;
 		}
 		
@@ -198,13 +205,14 @@ public class VampireManager{
 		
 		if ((player.getWorld().getEnvironment().equals(Environment.NETHER)) 
 				|| SupernaturalManager.worldTimeIsNight(player) || this.isUnderRoof(player) || material == Material.STATIONARY_WATER
-				|| material == Material.WATER || playerWorld.hasStorm() || playerWorld.isThundering())
+				|| material == Material.WATER || playerWorld.hasStorm())
 		{
 			return false;
 		}
 		return true;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public boolean isUnderRoof(Player player) {
 		/*
 		We start checking opacity 2 blocks up.

@@ -38,6 +38,7 @@ public class SNCommandSetBanish extends SNCommand {
 		SNConfigHandler.priestBanishLocationX = (int) currentX;
 		SNConfigHandler.priestBanishLocationY = (int) currentY;
 		SNConfigHandler.priestBanishLocationZ = (int) currentZ;
+		SNConfigHandler.priestBanishLocation = senderPlayer.getLocation();
 		SupernaturalsPlugin.saveData();
 				
 		this.sendMessage("Banish location set.");

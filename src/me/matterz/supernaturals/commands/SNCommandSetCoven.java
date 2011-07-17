@@ -37,6 +37,7 @@ public class SNCommandSetCoven extends SNCommand {
 		SNConfigHandler.vampireTeleportLocationX = (int) currentX;
 		SNConfigHandler.vampireTeleportLocationY = (int) currentY;
 		SNConfigHandler.vampireTeleportLocationZ = (int) currentZ;
+		SNConfigHandler.vampireTeleportLocation = senderPlayer.getLocation();
 		SupernaturalsPlugin.saveData();
 				
 		this.sendMessage("Coven location set.");

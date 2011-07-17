@@ -438,12 +438,16 @@ public class SupernaturalManager {
 			if(taskCounter%15==0){
 				plugin.getVampireManager().combustAdvanceTime(player, 3000);
 				plugin.getVampireManager().gainPowerAdvanceTime(snplayer, 3000);
-			}else if(taskCounter==0){
+			}
+			if(taskCounter==0){
 				plugin.getVampireManager().regenAdvanceTime(player, 30000);
 			}
 		}else if(snplayer.isGhoul()){
 			if(taskCounter%15==0){
 				plugin.getGhoulManager().regenAdvanceTime(player, 3000);
+			}
+			if(taskCounter%5==0){
+				plugin.getGhoulManager().waterAdvanceTime(player);
 			}
 		}else if(snplayer.isWere()){
 			if(taskCounter%15==0){

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.minecraft.server.EnumSkyBlock;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -43,28 +44,31 @@ private SupernaturalsPlugin plugin;
 		int locZ = location.getBlockZ();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		int amount = 0;
+		int delta = 0;
 		if(world.getName().equalsIgnoreCase(SNConfigHandler.priestChurchWorld)){
 			if(Math.abs(locX-SNConfigHandler.priestChurchLocationX) <= 10){
 				if(Math.abs(locY-SNConfigHandler.priestChurchLocationY) <= 10){
 					if(Math.abs(locZ-SNConfigHandler.priestChurchLocationZ) <= 10){
 						if(snplayer.isPriest()){
 							if(player.getItemInHand().getType().equals(Material.COAL)){
-								SupernaturalManager.sendMessage(snplayer, "The Church expels you from it's ranks!");
+								SupernaturalManager.sendMessage(snplayer, "The Church excommunicates you!");
 								SupernaturalManager.cure(snplayer);
 							}else{
 								PlayerInventory inv = player.getInventory();
 								ItemStack[] items = inv.getContents();
-								for(Material mat : SNConfigHandler.priestDonationMaterials){
+								for(Material mat : SNConfigHandler.priestDonationMap.keySet()){
 									for(ItemStack itemStack : items){
-										if(itemStack.getType().equals(mat)){
-											amount += itemStack.getAmount();
+										if(itemStack!=null){
+											if(itemStack.getType().equals(mat)){
+												amount = itemStack.getAmount();
+											}
 										}
 									}
+									delta += (amount * SNConfigHandler.priestDonationMap.get(mat));
 								}
-								for(Material mat: SNConfigHandler.priestDonationMaterials){
+								for(Material mat: SNConfigHandler.priestDonationMap.keySet()){
 									inv.remove(mat);
 								}
-								int delta = amount * SNConfigHandler.priestPowerDonation;
 								SupernaturalManager.sendMessage(snplayer, "The Church accepts your gracious donations.");
 								SupernaturalManager.alterPower(snplayer, delta, "Donations!");
 							}
@@ -108,6 +112,7 @@ private SupernaturalsPlugin plugin;
 		if(snplayer.getPower() > SNConfigHandler.priestPowerBanish){
 			if(snvictim.isSuper()){
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestPowerBanish, "Banished "+victim.getName());
+				SupernaturalManager.sendMessage(snvictim, "You were banished by "+ChatColor.WHITE+snplayer.getName()+ChatColor.RED+"!");
 				victim.teleport(SNConfigHandler.priestBanishLocation);
 				ItemStack item = player.getItemInHand();
 				if(item.getAmount()==1){
@@ -127,6 +132,7 @@ private SupernaturalsPlugin plugin;
 		if(snplayer.getPower() > SNConfigHandler.priestPowerHeal){
 			if(!snvictim.isSuper() && victim.getHealth()<20 && !victim.isDead()){
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestPowerHeal, "Healed "+victim.getName());
+				SupernaturalManager.sendMessage(snvictim, "You were healed by "+ChatColor.WHITE+snplayer.getName()+ChatColor.RED+"!");
 				int health = victim.getHealth()+SNConfigHandler.priestHealAmount;
 				if(health>20)
 					health=20;
@@ -151,6 +157,7 @@ private SupernaturalsPlugin plugin;
 		if(snplayer.getPower() > SNConfigHandler.priestPowerExorcise){
 			if(snvictim.isSuper()){
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestPowerExorcise, "Exorcised "+victim.getName());
+				SupernaturalManager.sendMessage(snvictim, "You were exorcised by "+ChatColor.WHITE+snplayer.getName()+ChatColor.RED+"!");
 				SupernaturalManager.cure(snvictim);
 				ItemStack item = player.getItemInHand();
 				if(item.getAmount()==1){
@@ -170,22 +177,29 @@ private SupernaturalsPlugin plugin;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
 		if(snplayer.getPower() > SNConfigHandler.priestPowerCure){
-			if(snvictim.isSuper() && victim.getItemInHand().getType().equals(material)){
-				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestPowerCure, "Cured "+victim.getName());
-				SupernaturalManager.sendMessage(snvictim, snplayer.getName()+" has restored your humanity");
-				SupernaturalManager.cure(snvictim);
-				ItemStack item = player.getItemInHand();
-				ItemStack item2 = victim.getItemInHand();
-				if(item.getAmount()==1){
-					player.setItemInHand(null);
+			if(snvictim.isSuper()){
+				if(victim.getItemInHand().getType().equals(material)){
+					SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestPowerCure, "Cured "+victim.getName());
+					SupernaturalManager.sendMessage(snvictim, ChatColor.WHITE+snplayer.getName()+ChatColor.RED+" has restored your humanity");
+					SupernaturalManager.cure(snvictim);
+					ItemStack item = player.getItemInHand();
+					ItemStack item2 = victim.getItemInHand();
+					if(item.getAmount()==1){
+						player.setItemInHand(null);
+					}else{
+						item.setAmount(player.getItemInHand().getAmount()-1);
+					}
+					if(item2.getAmount()==1){
+						victim.setItemInHand(null);
+					}else{
+						item2.setAmount(victim.getItemInHand().getAmount()-1);
+					}
 				}else{
-					item.setAmount(player.getItemInHand().getAmount()-1);
+					SupernaturalManager.sendMessage(snplayer, ChatColor.WHITE+snvictim.getName()+ChatColor.RED
+							+" is not holding "+ChatColor.WHITE+material.toString()+ChatColor.RED+".");
 				}
-				if(item2.getAmount()==1){
-					victim.setItemInHand(null);
-				}else{
-					item2.setAmount(victim.getItemInHand().getAmount()-1);
-				}
+			}else{
+				SupernaturalManager.sendMessage(snplayer, "You can only cure supernatural players.");
 			}
 		}else{
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to banish.");
