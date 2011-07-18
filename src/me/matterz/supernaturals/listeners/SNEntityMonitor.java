@@ -43,11 +43,21 @@ public class SNEntityMonitor extends EntityListener {
 			SuperNPlayer snDamager;
 			
 			//For further interest that attacker must be a player.
-			if(!(damager instanceof Player)){
+			if(damager instanceof Player){
+				pDamager = (Player)damager;
+			}else if(damager instanceof Wolf){
+				Wolf wolf = (Wolf) damager;
+				if(!wolf.isTamed()){
+					return;
+				}
+				if(!(wolf.getOwner() instanceof Player)){
+					return;
+				}
+				pDamager = (Player) wolf.getOwner();
+			}else{
 				return;
-			}			
-
-			pDamager = (Player)damager;
+			}
+		
 			snDamager = SupernaturalManager.get(pDamager);
 			
 			if(victim instanceof Creature){
@@ -97,6 +107,8 @@ public class SNEntityMonitor extends EntityListener {
 		
 		Entity entity = event.getEntity();
 		
+		Player pDamager = null;
+		
 		if(entity instanceof Creature){
 			Event e = entity.getLastDamageCause();
 			Entity damager = null;
@@ -106,12 +118,24 @@ public class SNEntityMonitor extends EntityListener {
 			} else if(e instanceof EntityDamageByProjectileEvent){
 				damager = ((EntityDamageByEntityEvent) e).getDamager();
 			}
+			
 			if(damager!=null){
 				if(damager instanceof Player){
-					Player pDamager = (Player) damager;
-					SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
-					SupernaturalManager.killEvent(snDamager, null);
+					pDamager = (Player) damager;
+				}else if(damager instanceof Wolf){
+					Wolf wolf = (Wolf) damager;
+					if(!wolf.isTamed()){
+						return;
+					}
+					if(!(wolf.getOwner() instanceof Player)){
+						return;
+					}
+					pDamager = (Player) wolf.getOwner();
+				}else{
+					return;
 				}
+				SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
+				SupernaturalManager.killEvent(snDamager, null);
 			}
 			if(entity instanceof Wolf){
 				WereManager.removeWolf((Wolf) entity);
@@ -123,7 +147,6 @@ public class SNEntityMonitor extends EntityListener {
 			return;
 		}
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)entity);
-		
 		SupernaturalManager.deathEvent((Player) entity);
 		
 		Entity damager = null;
@@ -136,10 +159,21 @@ public class SNEntityMonitor extends EntityListener {
 		
 		if(damager!=null){
 			if(damager instanceof Player){
-				Player pDamager = (Player) damager;
-				SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
-				SupernaturalManager.killEvent(snDamager, snplayer);
+				pDamager = (Player) damager;
+			}else if(damager instanceof Wolf){
+				Wolf wolf = (Wolf) damager;
+				if(!wolf.isTamed()){
+					return;
+				}
+				if(!(wolf.getOwner() instanceof Player)){
+					return;
+				}
+				pDamager = (Player) wolf.getOwner();
+			}else{
+				return;
 			}
+			SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
+			SupernaturalManager.killEvent(snDamager, snplayer);
 		}
 	}
 }

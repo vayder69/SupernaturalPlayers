@@ -407,7 +407,11 @@ public class SupernaturalManager {
 		int targetHealth = currentHealth + healthDelta;
 		if(targetHealth > 20)
 			targetHealth = 20;
-		player.setHealth(targetHealth);
+		try{
+			player.setHealth(targetHealth);
+		}catch(IllegalArgumentException e){
+			SupernaturalsPlugin.log("Attempted to regen dead player.");
+		}
 		if(SNConfigHandler.debugMode){
 			SupernaturalsPlugin.log("Regen Event: player " + player.getName() + " gained " + healthDelta + " health.");
 		}

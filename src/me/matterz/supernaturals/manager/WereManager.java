@@ -56,6 +56,7 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 					Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
 					wolf.setTamed(true);
 					wolf.setOwner(player);
+					wolf.setHealth(20);
 					wolvesMap.put(wolf, snplayer);
 					SupernaturalManager.alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
 					if(SNConfigHandler.debugMode)

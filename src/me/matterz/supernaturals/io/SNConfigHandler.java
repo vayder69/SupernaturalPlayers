@@ -287,8 +287,8 @@ public class SNConfigHandler {
 		
 		werePowerStart = config.getInt("Were.Power.Start", 5000);
 		wereKillSpreadCurse = config.getBoolean("Were.Kill.SpreadCurse", true);
-		wereKillPowerCreatureGain = config.getInt("Were.Power.Kill.CreatureGain", 500);
-		wereKillPowerPlayerGain = config.getInt("Were.Power.Kill.PlayerGain", 100);
+		wereKillPowerCreatureGain = config.getInt("Were.Power.Kill.CreatureGain", 100);
+		wereKillPowerPlayerGain = config.getInt("Were.Power.Kill.PlayerGain", 500);
 		werePowerFood = config.getInt("Were.Power.Food", 100);
 		wereDeathPowerPenalty = config.getInt("Were.Power.Death.Penalty", 2000);
 		wereDamageFall = config.getDouble("Were.DamageFactor.Fall", 0.5);
