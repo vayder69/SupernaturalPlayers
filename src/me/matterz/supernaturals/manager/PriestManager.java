@@ -98,10 +98,12 @@ public class PriestManager {
 	// -------------------------------------------- //
 	
 	public void banish(Player player, Player victim){
-		if(!SupernaturalsPlugin.instance.getPvP(victim))
-			return;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
+		if(!SupernaturalsPlugin.instance.getPvP(victim)){
+			SupernaturalManager.sendMessage(snplayer, "Cannot cast in a non-PvP zone.");
+			return;
+		}
 		if(snplayer.getPower() > SNConfigHandler.priestPowerBanish){
 			if(snvictim.isSuper()){
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestPowerBanish, "Banished "+victim.getName());
@@ -145,10 +147,12 @@ public class PriestManager {
 	}
 	
 	public void exorcise(Player player, Player victim){
-		if(!SupernaturalsPlugin.instance.getPvP(victim))
-			return;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
+		if(!SupernaturalsPlugin.instance.getPvP(victim)){
+			SupernaturalManager.sendMessage(snplayer, "Cannot cast in a non-PvP zone.");
+			return;
+		}
 		if(snplayer.getPower() > SNConfigHandler.priestPowerExorcise){
 			if(snvictim.isSuper()){
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestPowerExorcise, "Exorcised "+victim.getName());
@@ -202,14 +206,17 @@ public class PriestManager {
 	}
 	
 	public void drainPower(Player player, Player victim){
-		if(!SupernaturalsPlugin.instance.getPvP(victim))
-			return;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
+		if(!SupernaturalsPlugin.instance.getPvP(victim)){
+			SupernaturalManager.sendMessage(snplayer, "Cannot cast in a non-PvP zone.");
+			return;
+		}
 		if(snplayer.getPower() > SNConfigHandler.priestPowerDrain){
 			if(snvictim.isSuper()){
 				double power = snvictim.getPower();
 				power *= SNConfigHandler.priestDrainFactor;
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.priestPowerDrain, "Drained  "+snvictim.getName()+"'s power!");
 				SupernaturalManager.alterPower(snvictim, -power, "Drained by "+snplayer.getName());
 				ItemStack item = player.getItemInHand();
 				if(item.getAmount()==1){

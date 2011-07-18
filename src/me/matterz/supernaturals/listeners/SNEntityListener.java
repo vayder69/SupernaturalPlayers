@@ -57,6 +57,7 @@ public class SNEntityListener extends EntityListener{
 						return;
 					}else{
 						SupernaturalManager.sendMessage(snpVictim, "Not enough power to prevent water damage!");
+						return;
 					}
 				}else if(event.getCause().equals(DamageCause.FALL)){
 						event.setCancelled(true);
@@ -80,71 +81,128 @@ public class SNEntityListener extends EntityListener{
 			edbpEvent = (EntityDamageByProjectileEvent) event;
 			damager = edbpEvent.getDamager();
 			damage = event.getDamage();
+			
+			if(!(damager instanceof Player))
+				return;	
+			
+			pDamager = (Player)damager;
+			snpDamager = SupernaturalManager.get(pDamager);
+			ItemStack item = pDamager.getItemInHand();
+			
+			//Modify damage if damager is a supernatural
+			if(snpDamager.isVampire()){
+				damage += damage * snpDamager.scaleAttack(SNConfigHandler.vampireDamageFactor);
+			}else if(snpDamager.isGhoul()){
+				SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
+				SupernaturalManager.sendMessage(snpDamager, "Ghouls do no damage with weapons!");
+				damage=0;
+			}else if(snpDamager.isWere()){
+				SupernaturalsPlugin.log("Werewolf attack event!");
+				if(SupernaturalManager.worldTimeIsNight(pDamager)){
+					SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
+					SupernaturalManager.sendMessage(snpDamager, "Werewolves cannot use weapons at night!");
+					damage=0;
+				}
+			}else if(snpDamager.isPriest()){
+				damage = plugin.getPriestManager().priestAttack(pDamager, victim, damage);
+			}
+			
+			// Modify damage if victim is a supernatural
+			if(victim instanceof Player){
+				pVictim = (Player)victim;
+				snpVictim = SupernaturalManager.get(pVictim);
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + item.getType().toString());
+				if(snpVictim.isVampire()){
+					if(SNConfigHandler.woodMaterials.contains(item.getType())){
+						damage += damage * SNConfigHandler.woodFactor;
+						SupernaturalManager.sendMessage(snpVictim, "Vampires have a weakness to wood!");
+					}else{
+						damage -= damage * snpVictim.scaleDefense(SNConfigHandler.vampireDamageReceivedFactor);
+					}
+				}else if(snpVictim.isGhoul()){
+					if(SNConfigHandler.ghoulWeaponImmunity.contains(item.getType())){
+						damage = 0;
+						SupernaturalManager.sendMessage(snpDamager, "Ghouls are immune to that weapon!");
+					}else{
+						damage -= damage * snpVictim.scaleDefense(SNConfigHandler.ghoulDamageReceivedFactor);
+					}
+				}else if(snpDamager.isWere()){
+					if(SupernaturalManager.worldTimeIsNight(pDamager)){
+						damage -= damage * snpVictim.scaleDefense(SNConfigHandler.wereDamageReceivedFactor);
+					}
+				}		
+			}
+			event.setDamage(Math.round(damage));
+			return;
 		}else if(event instanceof EntityDamageByEntityEvent){
 			edbeEvent = (EntityDamageByEntityEvent) event;
 			damager = edbeEvent.getDamager();
 			damage = event.getDamage();
-		} else
-			return;
-		if(!(damager instanceof Player))
-			return;	
 			
-		pDamager = (Player)damager;
-		snpDamager = SupernaturalManager.get(pDamager);
-		ItemStack item = pDamager.getItemInHand();
-		
-		//Modify damage if damager is a supernatural
-		if(snpDamager.isVampire()){
-			damage += damage * snpDamager.scaleAttack(SNConfigHandler.vampireDamageFactor);
-		} else if(snpDamager.isGhoul()){
-			if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
-					SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
-					SupernaturalManager.sendMessage(snpDamager, "Ghouls do no damage with weapons!");
-					damage=0;
-			}else{
-				damage += damage * snpDamager.scaleAttack(SNConfigHandler.ghoulDamageFactor);
-				}
-		}else if(snpDamager.isWere()){
-			if(SupernaturalManager.worldTimeIsNight(pDamager)){
+			if(!(damager instanceof Player))
+				return;	
+			
+			pDamager = (Player)damager;
+			snpDamager = SupernaturalManager.get(pDamager);
+			ItemStack item = pDamager.getItemInHand();
+			
+			//Modify damage if damager is a supernatural
+			if(snpDamager.isVampire()){
+				damage += damage * snpDamager.scaleAttack(SNConfigHandler.vampireDamageFactor);
+			}else if(snpDamager.isGhoul()){
 				if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
-					SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
-					SupernaturalManager.sendMessage(snpDamager, "Werewolves cannot use weapons at night!");
-					damage=0;
+						SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
+						SupernaturalManager.sendMessage(snpDamager, "Ghouls do no damage with weapons!");
+						damage=0;
 				}else{
-					damage += damage * snpDamager.scaleAttack(SNConfigHandler.wereDamageFactor);
-				}
-			}
-		} else if(snpDamager.isPriest()){
-			damage = plugin.getPriestManager().priestAttack(pDamager, victim, damage);
-		}
-		
-		// Modify damage if victim is a supernatural
-		if(victim instanceof Player){
-			pVictim = (Player)victim;
-			snpVictim = SupernaturalManager.get(pVictim);
-			if(SNConfigHandler.debugMode)
-				SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + item.getType().toString());
-			if(snpVictim.isVampire()){
-				if(SNConfigHandler.woodMaterials.contains(item.getType())){
-					damage *= SNConfigHandler.woodFactor;
-					SupernaturalManager.sendMessage(snpVictim, "Vampires have a weakness to wood!");
-				}else{
-					damage -= damage * snpVictim.scaleDefense(SNConfigHandler.vampireDamageReceivedFactor);
-				}
-			}else if(snpVictim.isGhoul()){
-				if(SNConfigHandler.ghoulWeaponImmunity.contains(item.getType())){
-					damage = 0;
-					SupernaturalManager.sendMessage(snpDamager, "Ghouls are immune to that weapon!");
-				}else{
-					damage -= damage * snpVictim.scaleDefense(SNConfigHandler.ghoulDamageReceivedFactor);
-				}
+					damage += damage * snpDamager.scaleAttack(SNConfigHandler.ghoulDamageFactor);
+					}
 			}else if(snpDamager.isWere()){
+				SupernaturalsPlugin.log("Werewolf attack event!");
 				if(SupernaturalManager.worldTimeIsNight(pDamager)){
-					damage -= damage * snpVictim.scaleDefense(SNConfigHandler.wereDamageReceivedFactor);
+					if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
+						SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
+						SupernaturalManager.sendMessage(snpDamager, "Werewolves cannot use weapons at night!");
+						damage=0;
+					}else{
+						if(victim instanceof Player)
+							SupernaturalsPlugin.log(pDamager.getName() + " did "+damage+" to "+((Player) victim).getName());
+						damage += damage * snpDamager.scaleAttack(SNConfigHandler.wereDamageFactor);
+					}
 				}
-			}		
-		}
-		event.setDamage(Math.round(damage));
+			}else if(snpDamager.isPriest()){
+				damage = plugin.getPriestManager().priestAttack(pDamager, victim, damage);
+			}
+			
+			// Modify damage if victim is a supernatural
+			if(victim instanceof Player){
+				pVictim = (Player)victim;
+				snpVictim = SupernaturalManager.get(pVictim);
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(pDamager.getName() + " attacked " + pVictim.getName() + " with " + item.getType().toString());
+				if(snpVictim.isVampire()){
+					if(SNConfigHandler.woodMaterials.contains(item.getType())){
+						damage += damage * SNConfigHandler.woodFactor;
+						SupernaturalManager.sendMessage(snpVictim, "Vampires have a weakness to wood!");
+					}else{
+						damage -= damage * snpVictim.scaleDefense(SNConfigHandler.vampireDamageReceivedFactor);
+					}
+				}else if(snpVictim.isGhoul()){
+					if(SNConfigHandler.ghoulWeaponImmunity.contains(item.getType())){
+						damage = 0;
+						SupernaturalManager.sendMessage(snpDamager, "Ghouls are immune to that weapon!");
+					}else{
+						damage -= damage * snpVictim.scaleDefense(SNConfigHandler.ghoulDamageReceivedFactor);
+					}
+				}else if(snpDamager.isWere()){
+					if(SupernaturalManager.worldTimeIsNight(pDamager)){
+						damage -= damage * snpVictim.scaleDefense(SNConfigHandler.wereDamageReceivedFactor);
+					}
+				}		
+			}
+			event.setDamage(Math.round(damage));
+		} 		
 	}
 	
 	@Override
@@ -155,13 +213,17 @@ public class SNEntityListener extends EntityListener{
 		if(!(event.getTarget() instanceof Player)){
 			return;
 		}
+		if(event.getEntity().equals(null))
+			return;
 		
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)event.getTarget());
 
 		if(!snplayer.getTruce()) {
 			return;
 		}
-		
+		if(EntityUtil.creatureTypeFromEntity(event.getEntity())==null){
+			return;
+		}
 		if(snplayer.isVampire() && SNConfigHandler.vampireTruce.contains(EntityUtil.creatureTypeFromEntity(event.getEntity()))){
 			event.setCancelled(true);
 		} else if(snplayer.isGhoul() && SNConfigHandler.ghoulTruce.contains(EntityUtil.creatureTypeFromEntity(event.getEntity()))){

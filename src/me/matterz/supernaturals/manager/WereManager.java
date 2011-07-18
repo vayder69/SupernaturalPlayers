@@ -39,9 +39,11 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	// -------------------------------------------- //
 	
 	public void summon(Player player, ItemStack item){
-		if(!SupernaturalsPlugin.instance.getSpawn(player))
-			return;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		if(!SupernaturalsPlugin.instance.getSpawn(player)){
+			SupernaturalManager.sendMessage(snplayer, "You cannot summon here.");
+			return;
+		}
 		if(SupernaturalManager.worldTimeIsNight(player)){
 			if(snplayer.getPower() >= SNConfigHandler.werePowerSummonCost){
 				int i = 0;

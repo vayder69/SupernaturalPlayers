@@ -63,9 +63,11 @@ public class GhoulManager {
 	// -------------------------------------------- //
 	
 	public void summon(Player player, ItemStack item){
-		if(!SupernaturalsPlugin.instance.getSpawn(player))
-			return;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		if(!SupernaturalsPlugin.instance.getSpawn(player)){
+			SupernaturalManager.sendMessage(snplayer, "You cannot summon here.");
+			return;
+		}
 		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonCost)){
 			player.getWorld().spawnCreature(player.getLocation(), CreatureType.ZOMBIE);
 			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.ghoulPowerSummonCost, "Summoning a Zombie!");

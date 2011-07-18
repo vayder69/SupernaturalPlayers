@@ -511,7 +511,7 @@ public class SNConfigHandler {
 		}
 		
 		for(String weapon : ghoulWeaponImmunityString){
-			ghoulWeapons.add(Material.getMaterial(weapon));
+			ghoulWeaponImmunity.add(Material.getMaterial(weapon));
 		}
 		
 		for(int i=0; i<vampireAltarInfectMaterialsString.size();i++){

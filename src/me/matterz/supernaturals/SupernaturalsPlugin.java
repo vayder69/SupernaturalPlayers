@@ -145,7 +145,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
 		
-		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.High, this);
+		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
 		pm.registerEvent(Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
 		
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityMonitor, Priority.Monitor, this);
@@ -223,14 +223,15 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		SupernaturalManager.setSupernaturals(SNPlayerHandler.load(file));
 	}
 	
+	public static void reloadConfig(){
+		if(SNConfigHandler.debugMode)
+			SupernaturalsPlugin.log("Reloading config...");
+		SNConfigHandler.reloadConfig();
+	}
+	
 	public static void reloadData(){
-		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Reloading config and data...");
-		}
 		File file = new File(dataFolder, "data.yml");
 		SupernaturalManager.setSupernaturals(SNPlayerHandler.load(file));
-        
-		SNConfigHandler.reloadConfig();
 	}
 	
 	// -------------------------------------------- //
