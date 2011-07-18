@@ -11,7 +11,6 @@ public class SuperNPlayer{
 	private double superPower = 0;
 	private boolean truce = true;
 	private int truceTimer = 0;
-	private boolean move = true;
 	
 	public SuperNPlayer(){}
 	
@@ -23,7 +22,6 @@ public class SuperNPlayer{
 		this.superPower = 0;
 		this.truce = true;
 		this.truceTimer = 0;
-		this.move = true;
 	}
 	
 	// -------------------------------------------- //
@@ -87,14 +85,6 @@ public class SuperNPlayer{
 		this.truceTimer=timer;
 	}
 	
-	public boolean canMove(){
-		return this.move;
-	}
-	
-	public void setMove(Boolean move){
-		this.move=move;
-	}
-	
 	// -------------------------------------------- //
 	// 					Booleans					//
 	// -------------------------------------------- //
@@ -139,12 +129,12 @@ public class SuperNPlayer{
 	}
 	
 	public double scaleAttack(double input){
-		double powerPercentage = input*(this.getPower()/10000);
+		double powerPercentage = input*((this.getPower()+1)/10000);
 		return powerPercentage;
 	}
 	
 	public double scaleDefense(double input){
-		double powerPercentage = input*(10000/this.getPower());
+		double powerPercentage = input*(10000/(this.getPower()+1));
 		return powerPercentage;
 	}
 	

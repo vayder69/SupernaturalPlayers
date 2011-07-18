@@ -186,7 +186,7 @@ public class SupernaturalManager {
 			}
 		}else{
 			double random = Math.random();
-			if(random>SNConfigHandler.spreadChance){
+			if(random<SNConfigHandler.spreadChance){
 				if(damager.isVampire()){
 					alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
 					if(SNConfigHandler.vampireKillSpreadCurse && !victim.isSuper())
@@ -257,20 +257,8 @@ public class SupernaturalManager {
 	// 					Movement					//
 	// -------------------------------------------- //
 	
-	public void moveAdvanceTime(SuperNPlayer snplayer){
-		if(snplayer.canMove()){
-			return;
-		}
-		snplayer.setMove(true);
-	}
-	
-	public void jump(Player player, double deltaSpeed, boolean upOnly) {
+	public static void jump(Player player, double deltaSpeed, boolean upOnly) {
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		
-		if(!snplayer.canMove()){
-			SupernaturalManager.sendMessage(snplayer, "Ability still on cooldown.");
-			return;
-		}
 		
 		if(upOnly){
 			if(snplayer.getPower() - SNConfigHandler.jumpBloodCost <= 0) {
@@ -278,7 +266,6 @@ public class SupernaturalManager {
 				return;
 			}else{
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.jumpBloodCost, "SuperJump!");
-				snplayer.setMove(false);
 			}
 		}else{
 			if(snplayer.getPower() - SNConfigHandler.dashBloodCost <= 0) {
@@ -286,7 +273,6 @@ public class SupernaturalManager {
 				return;
 			}else{
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.dashBloodCost, "Dash!");
-				snplayer.setMove(false);
 			}
 		}
 		
@@ -448,9 +434,6 @@ public class SupernaturalManager {
 		}
 		
 		if(snplayer.isVampire()) {
-			if(taskCounter%10==0){
-				moveAdvanceTime(snplayer);
-			}
 			if(taskCounter%15==0){
 				plugin.getVampireManager().regenAdvanceTime(player, 3000);
 			}
@@ -466,7 +449,6 @@ public class SupernaturalManager {
 				plugin.getGhoulManager().waterAdvanceTime(player);
 			}
 		}else if(snplayer.isWere()){
-			moveAdvanceTime(snplayer);
 			if(taskCounter%25==0){
 				plugin.getWereManager().regenAdvanceTime(player, 5000);
 			}

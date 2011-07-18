@@ -15,7 +15,9 @@ public class GhoulManager {
 	// 				Water Damage					//
 	// -------------------------------------------- //
 	
-	public void waterAdvanceTime(Player player){	
+	public void waterAdvanceTime(Player player){
+		if(player.isDead())
+			return;
 		Material material = player.getLocation().getBlock().getType();
 		
 		if(material == Material.STATIONARY_WATER || material == Material.WATER){
@@ -61,6 +63,8 @@ public class GhoulManager {
 	// -------------------------------------------- //
 	
 	public void summon(Player player, ItemStack item){
+		if(!SupernaturalsPlugin.instance.getSpawn(player))
+			return;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonCost)){
 			player.getWorld().spawnCreature(player.getLocation(), CreatureType.ZOMBIE);

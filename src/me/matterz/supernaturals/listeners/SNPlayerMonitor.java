@@ -34,7 +34,7 @@ private SupernaturalsPlugin plugin;
 		if(event.getAnimationType().equals(PlayerAnimationType.ARM_SWING)){
 			if(snplayer.isVampire()){
 				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){
-					plugin.getSuperManager().jump(player, SNConfigHandler.jumpDeltaSpeed, true);
+					SupernaturalManager.jump(player, SNConfigHandler.jumpDeltaSpeed, true);
 				}else if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.vampireMaterial)){
 					plugin.getVampireManager().teleport(player, item);
 				}
@@ -48,8 +48,6 @@ private SupernaturalsPlugin plugin;
 				}else{
 					if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
 						plugin.getWereManager().wolfbane(player);
-					}else{
-						SupernaturalManager.sendMessage(snplayer, "Cannot use werewolf abilities during the day.");
 					}
 				}
 			}else if(snplayer.isGhoul()){

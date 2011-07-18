@@ -47,6 +47,13 @@ import org.bukkit.plugin.Plugin;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import static com.sk89q.worldguard.bukkit.BukkitUtil.*;
+
 public class SupernaturalsPlugin extends JavaPlugin {
 	public static SupernaturalsPlugin instance;
 	
@@ -59,7 +66,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
 	private VampireManager vampManager = new VampireManager();
-	private PriestManager priestManager = new PriestManager(this);
+	private PriestManager priestManager = new PriestManager();
 	private WereManager wereManager = new WereManager();
 	private GhoulManager ghoulManager = new GhoulManager();
 	
@@ -138,7 +145,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
 		
-		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
+		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.High, this);
 		pm.registerEvent(Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
 		
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityMonitor, Priority.Monitor, this);
@@ -244,6 +251,33 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	    
 	    permissionHandler = ((Permissions) permissionsPlugin).getHandler();
 	    log("Found and will use plugin "+((Permissions)permissionsPlugin).getDescription().getFullName());
+	}
+	
+	private WorldGuardPlugin getWorldGuard() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
+	 
+	    // WorldGuard may not be loaded
+	    if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+	 
+	    return (WorldGuardPlugin) plugin;
+	}
+	
+	public boolean getPvP(Player player){
+		WorldGuardPlugin worldGuard = SupernaturalsPlugin.instance.getWorldGuard();
+		Vector pt = toVector(player.getLocation());
+		RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
+		ApplicableRegionSet set = regionManager.getApplicableRegions(pt);
+		return set.allows(DefaultFlag.PVP);
+	}
+	
+	public boolean getSpawn(Player player){
+		WorldGuardPlugin worldGuard = SupernaturalsPlugin.instance.getWorldGuard();
+		Vector pt = toVector(player.getLocation());
+		RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
+		ApplicableRegionSet set = regionManager.getApplicableRegions(pt);
+		return set.allows(DefaultFlag.MOB_SPAWNING);
 	}
 	
 	// -------------------------------------------- //

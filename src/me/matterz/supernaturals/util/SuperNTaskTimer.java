@@ -24,6 +24,5 @@ public class SuperNTaskTimer extends TimerTask {
 		for(SuperNPlayer snplayer : SupernaturalManager.findAllOnline()) {
 			plugin.getSuperManager().advanceTime(snplayer, (int)delta);
 		}
-		plugin.getPriestManager().priestLight();
 	}
 }
