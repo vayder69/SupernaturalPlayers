@@ -45,7 +45,7 @@ public class SNPlayerListener extends PlayerListener{
 				return;
 			}else if(snplayer.isWere()){
 				if(itemMaterial.equals(Material.BREAD)){
-					SupernaturalManager.sendMessage(snplayer, "Werewolves gain power from Bread.");
+					SupernaturalManager.sendMessage(snplayer, "Werewolves do not gain power from Bread.");
 					return;
 				}else{
 					SupernaturalManager.alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
@@ -53,17 +53,6 @@ public class SNPlayerListener extends PlayerListener{
 						SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
 					return;
 				}
-			}
-		}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.dashMaterial)){
-			if(snplayer.isWere()){
-				if(SupernaturalManager.worldTimeIsNight(player)){
-					SupernaturalManager.jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
-					SupernaturalsPlugin.log(snplayer.getName() + " used dash!");
-					event.setCancelled(true);
-				}else{
-					SupernaturalManager.sendMessage(snplayer, "Can only use Were abilities at night.");
-				}
-				return;
 			}
 		}
 		
