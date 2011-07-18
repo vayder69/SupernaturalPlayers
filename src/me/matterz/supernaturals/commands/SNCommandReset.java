@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
-import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SNCommand;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 

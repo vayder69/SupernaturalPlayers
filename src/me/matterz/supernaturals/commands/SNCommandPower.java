@@ -50,7 +50,7 @@ public class SNCommandPower extends SNCommand {
 				double powerGain;
 				
 				try{
-					powerGain = Double.parseDouble(parameters.get(1));
+					powerGain = Double.parseDouble(parameters.get(0));
 				} catch(NumberFormatException e) {
 					this.sendMessage("Invalid Number.");
 					return;

@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.matterz.supernaturals.SuperNPlayer;
-import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.util.GeometryUtil;
 
@@ -126,50 +125,6 @@ public class VampireManager{
 		{
 			SupernaturalManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
-		}
-	}
-	
-	// -------------------------------------------- //
-	// 			Regenerate Feature					//
-	// -------------------------------------------- //
-	
-	public void regenAdvanceTime(Player player, int milliseconds){		
-		if(player.isDead())
-			return;
-		
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		int currentHealth = player.getHealth();
-		
-		// Only regenerate if hurt.
-		if(currentHealth == 20){
-			return;
-		}
-		
-		// Can't regenerate if lacking power
-		if(snplayer.getPower() <= SNConfigHandler.vampireHealthCost){
-			if(SNConfigHandler.debugMode)
-				SupernaturalsPlugin.log("Regen Event: player " + player.getName() + " not enough power!");
-			return;
-		}
-		
-		// Calculate blood and health deltas
-		double deltaSeconds = milliseconds/1000D;
-		double deltaHeal = deltaSeconds * SNConfigHandler.vampireTimeHealthGained;
-		double deltaBlood = -deltaHeal * SNConfigHandler.vampireHealthCost;
-		
-		if(snplayer.getPower() + deltaBlood <= SNConfigHandler.vampireHealthCost){
-			deltaBlood = 0;
-			deltaHeal = -deltaBlood / SNConfigHandler.vampireHealthCost;
-		}
-		
-		SupernaturalManager.alterPower(snplayer, deltaBlood, "Healing!");
-		int healthDelta = (int)deltaHeal;
-		int targetHealth = currentHealth + healthDelta;
-		if(targetHealth > 20)
-			targetHealth = 20;
-		player.setHealth(targetHealth);
-		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Regen Event: player " + player.getName() + " gained " + healthDelta + " health.");
 		}
 	}
 	

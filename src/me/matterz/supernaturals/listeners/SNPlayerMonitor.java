@@ -56,7 +56,7 @@ private SupernaturalsPlugin plugin;
 				}
 			}else if(snplayer.isPriest()){
 				if(SNConfigHandler.priestSpellMaterials.contains(item.getType())){
-					List<Block> blocks = player.getLineOfSight(null, 20);
+					List<Block> blocks = player.getLineOfSight(SNConfigHandler.transparent, 20);
 					List<Entity> entities = player.getNearbyEntities(21, 21, 21);
 					if(SNConfigHandler.debugMode)
 						SupernaturalsPlugin.log(snplayer.getName() + " is attempting to cast a spell...");

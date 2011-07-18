@@ -2,6 +2,7 @@ package me.matterz.supernaturals.io;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,6 @@ public class SNConfigHandler {
 	public static double vampireHealthCost;
 	public static double wereDamageFall;
 	public static double wereDamageFactor;
-	public static double wereDamageReceivedFactor;
 	public static double priestDamageFactorAttackSuper;
 	public static double priestDamageFactorAttackHuman;
 	public static double priestDrainFactor;
@@ -138,6 +138,7 @@ public class SNConfigHandler {
 	private static List<Integer> priestDonationRewards = new ArrayList<Integer>();
 	
 	public static Map<Material,Double> materialOpacity = new HashMap<Material,Double>();
+	public static HashSet<Byte> transparent = new HashSet<Byte>();
 	
 	public static Recipes vampireAltarInfectRecipe = new Recipes();
 	public static Recipes vampireAltarCureRecipe = new Recipes();
@@ -170,6 +171,10 @@ public class SNConfigHandler {
 		materialOpacity.put(Material.FENCE, 0.2D);
 		materialOpacity.put(Material.DIODE_BLOCK_OFF, 0D);
 		materialOpacity.put(Material.DIODE_BLOCK_ON, 0D);
+		
+		transparent.add((byte)Material.WATER.getId());
+		transparent.add((byte)Material.STATIONARY_WATER.getId());
+		transparent.add((byte)Material.AIR.getId());
 	}
 	
 	public SNConfigHandler(SupernaturalsPlugin instance){
@@ -202,7 +207,7 @@ public class SNConfigHandler {
 		vampireDeathPowerPenalty = config.getInt("Vampire.Power.Death.Penalty", 10000);
 		vampireDamageFactor = config.getDouble("Vampire.DamageFactor.Attack", 0.3);
 		vampireDamageReceivedFactor = config.getDouble("Vampire.DamageFactor.Defense", 0.8);
-		woodFactor = config.getDouble("Vampire.DamageFactor.Wood", 2.5);
+		woodFactor = config.getDouble("Vampire.DamageFactor.Wood", 1.5);
 		vampireBurnInSunlight = config.getBoolean("Vampire.Burn.InSunlight", true);
 		vampireCombustFireTicks = config.getInt("Vampire.Burn.FireTicks", 3);
 		
@@ -288,7 +293,6 @@ public class SNConfigHandler {
 		wereDeathPowerPenalty = config.getInt("Were.Power.Death.Penalty", 2000);
 		wereDamageFall = config.getDouble("Were.DamageFactor.Fall", 0.5);
 		wereDamageFactor = config.getDouble("Were.DamageFactor.Attack", 5);
-		wereDamageReceivedFactor = config.getDouble("Were.DamageFactor.Defense", 1.0);
 		wereHealthGained = config.getDouble("Were.Time.HealthGained", 0.2);
 		wolfMaterial = config.getString("Were.Summon.Material", "PORK");
 		werePowerSummonCost = config.getInt("Were.Power.Summon.Cost", 2000);

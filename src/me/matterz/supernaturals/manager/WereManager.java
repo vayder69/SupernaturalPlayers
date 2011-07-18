@@ -98,37 +98,4 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 			wolvesMap.remove(wolf);
 		}
 	}
-	
-	// -------------------------------------------- //
-	// 			Regenerate Feature					//
-	// -------------------------------------------- //
-	
-	public void regenAdvanceTime(Player player, int milliseconds){
-		if(!SupernaturalManager.worldTimeIsNight(player)){
-			return;
-		}
-		
-		if(player.isDead())
-			return;
-		
-		int currentHealth = player.getHealth();
-		
-		// Only regenerate if hurt.
-		if(currentHealth == 20){
-			return;
-		}
-		
-		// Calculate blood and health deltas
-		double deltaSeconds = milliseconds/1000D;
-		double deltaHeal = deltaSeconds * SNConfigHandler.wereHealthGained;
-		
-		int healthDelta = (int)deltaHeal;
-		int targetHealth = currentHealth + healthDelta;
-		if(targetHealth > 20)
-			targetHealth = 20;
-		player.setHealth(targetHealth);
-		if(SNConfigHandler.debugMode){
-			SupernaturalsPlugin.log("Regen Were Event: player " + player.getName() + " gained " + healthDelta + " health.");
-		}
-	}
 }

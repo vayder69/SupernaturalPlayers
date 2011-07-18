@@ -128,13 +128,8 @@ public class SuperNPlayer{
 		return false;
 	}
 	
-	public double scaleAttack(double input){
-		double powerPercentage = input*((this.getPower()+1)/10000);
-		return powerPercentage;
-	}
-	
-	public double scaleDefense(double input){
-		double powerPercentage = input*(10000/(this.getPower()+1));
+	public double scale(double input){
+		double powerPercentage = input*(this.getPower()/10000);
 		return powerPercentage;
 	}
 	

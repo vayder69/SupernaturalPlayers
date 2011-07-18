@@ -241,17 +241,14 @@ public class PriestManager {
 			damage = 0;
 		}else if(victim instanceof Player){
 			Player pVictim = (Player) victim;
-			double bonusDamage = 0;
 			if(!SupernaturalsPlugin.instance.getPvP(pVictim))
 				return damage;
 			SuperNPlayer snvictim = SupernaturalManager.get(pVictim);
 			if(snvictim.isSuper()){
 				pVictim.setFireTicks(pVictim.getMaxFireTicks());
-				bonusDamage = damage * SupernaturalManager.get(priest).scaleAttack(SNConfigHandler.priestDamageFactorAttackSuper);
-				damage = damage + bonusDamage;
+				damage += damage * SupernaturalManager.get(priest).scale(SNConfigHandler.priestDamageFactorAttackSuper);
 			}else{
-				bonusDamage = damage * SupernaturalManager.get(priest).scaleAttack(SNConfigHandler.priestDamageFactorAttackHuman); 
-				damage = damage + bonusDamage;
+				damage += damage * SupernaturalManager.get(priest).scale(SNConfigHandler.priestDamageFactorAttackHuman); 
 			}
 		}
 		return damage;

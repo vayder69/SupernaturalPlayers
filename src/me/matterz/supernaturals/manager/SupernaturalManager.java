@@ -365,6 +365,55 @@ public class SupernaturalManager {
 	}
 	
 	// -------------------------------------------- //
+	// 			Regenerate Feature					//
+	// -------------------------------------------- //
+	
+	public void regenAdvanceTime(Player player, int milliseconds){		
+		if(player.isDead())
+			return;
+		
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		int currentHealth = player.getHealth();
+		
+		if(currentHealth == 20){
+			return;
+		}
+		
+		double deltaSeconds = milliseconds/1000D;;
+		double deltaHeal;
+		double deltaBlood;
+		
+		if(snplayer.isVampire()){
+			if(snplayer.getPower() <= SNConfigHandler.vampireHealthCost){
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log("Regen Event: Vampire player " + player.getName() + " not enough power!");
+				return;
+			}
+			deltaHeal = deltaSeconds * SNConfigHandler.vampireTimeHealthGained;
+			deltaBlood = -deltaHeal * SNConfigHandler.vampireHealthCost;
+			
+			if(snplayer.getPower() + deltaBlood <= SNConfigHandler.vampireHealthCost){
+				deltaBlood = 0;
+				deltaHeal = -deltaBlood / SNConfigHandler.vampireHealthCost;
+			}
+			SupernaturalManager.alterPower(snplayer, deltaBlood, "Healing!");
+		}else if(snplayer.isGhoul()){
+			deltaHeal = deltaSeconds * SNConfigHandler.ghoulHealthGained;
+		}else{
+			deltaHeal = deltaSeconds * SNConfigHandler.wereHealthGained;
+		}
+		
+		int healthDelta = (int)deltaHeal;
+		int targetHealth = currentHealth + healthDelta;
+		if(targetHealth > 20)
+			targetHealth = 20;
+		player.setHealth(targetHealth);
+		if(SNConfigHandler.debugMode){
+			SupernaturalsPlugin.log("Regen Event: player " + player.getName() + " gained " + healthDelta + " health.");
+		}
+	}
+	
+	// -------------------------------------------- //
 	// 					Messages					//
 	// -------------------------------------------- //
 	
@@ -419,7 +468,7 @@ public class SupernaturalManager {
 	}
 	
 	public void startTimer(){
-		timer.schedule(new SuperNTaskTimer(plugin),0,200);
+		timer.schedule(new SuperNTaskTimer(plugin),0,1000);
 	}
 	
 	public void cancelTimer(){
@@ -429,37 +478,33 @@ public class SupernaturalManager {
 	public void advanceTime(SuperNPlayer snplayer, int milliseconds) {
 		Player player = plugin.getServer().getPlayer(snplayer.getName());
 		taskCounter++;
-		if(taskCounter>= 150){
+		if(taskCounter>= 30){
 			taskCounter = 0;
 		}
 		
 		if(snplayer.isVampire()) {
-			if(taskCounter%15==0){
-				plugin.getVampireManager().regenAdvanceTime(player, 3000);
+			if(taskCounter%3==0){
+				regenAdvanceTime(player, 3000);
 			}
-			if(taskCounter%15==0){
+			if(taskCounter%3==0){
 				plugin.getVampireManager().combustAdvanceTime(player, 3000);
 				plugin.getVampireManager().gainPowerAdvanceTime(snplayer, 3000);
 			}
 		}else if(snplayer.isGhoul()){
-			if(taskCounter%50==0){
-				plugin.getGhoulManager().regenAdvanceTime(player, 10000);
+			if(taskCounter%10==0){
+				regenAdvanceTime(player, 10000);
 			}
-			if(taskCounter%5==0){
-				plugin.getGhoulManager().waterAdvanceTime(player);
-			}
+			plugin.getGhoulManager().waterAdvanceTime(player);
 		}else if(snplayer.isWere()){
-			if(taskCounter%25==0){
-				plugin.getWereManager().regenAdvanceTime(player, 5000);
+			if(taskCounter%5==0){
+				regenAdvanceTime(player, 5000);
 			}
 		}else if(snplayer.isPriest()){
-			if(taskCounter%5==0){
-				plugin.getPriestManager().armorCheck(player);
-			}
+			plugin.getPriestManager().armorCheck(player);
 		}
 		
 		if(snplayer.isSuper()){
-			if(taskCounter%15==0){
+			if(taskCounter%3==0){
 				truceBreakAdvanceTime(snplayer, 3000);
 			}
 		}
