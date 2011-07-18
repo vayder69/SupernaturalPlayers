@@ -44,10 +44,15 @@ public class SNPlayerListener extends PlayerListener{
 				event.setCancelled(true);
 				return;
 			}else if(snplayer.isWere()){
-				SupernaturalManager.alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
-				if(SNConfigHandler.debugMode)
-					SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
-				return;
+				if(itemMaterial.equals(Material.BREAD)){
+					SupernaturalManager.sendMessage(snplayer, "Werewolves cannot eat Bread.");
+					return;
+				}else{
+					SupernaturalManager.alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
+					return;
+				}
 			}
 		}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.dashMaterial)){
 			if(snplayer.isWere()){

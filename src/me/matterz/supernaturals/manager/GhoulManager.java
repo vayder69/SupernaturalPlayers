@@ -62,7 +62,7 @@ public class GhoulManager {
 	
 	public void summon(Player player, ItemStack item){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonMin)){
+		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonCost)){
 			player.getWorld().spawnCreature(player.getLocation(), CreatureType.ZOMBIE);
 			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.ghoulPowerSummonCost, "Summoning a Zombie!");
 			if(SNConfigHandler.debugMode)

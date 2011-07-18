@@ -213,7 +213,6 @@ private SupernaturalsPlugin plugin;
 			if(snvictim.isSuper()){
 				double power = snvictim.getPower();
 				power *= SNConfigHandler.priestDrainFactor;
-				SupernaturalManager.alterPower(snplayer, (power - SNConfigHandler.priestPowerDrain), "Drained "+victim.getName());
 				SupernaturalManager.alterPower(snvictim, -power, "Drained by "+snplayer.getName());
 				ItemStack item = player.getItemInHand();
 				if(item.getAmount()==1){
@@ -241,9 +240,9 @@ private SupernaturalsPlugin plugin;
 			SuperNPlayer snvictim = SupernaturalManager.get(pVictim);
 			if(snvictim.isSuper()){
 				pVictim.setFireTicks(pVictim.getMaxFireTicks());
-				damage *= SNConfigHandler.priestDamageFactorAttackSuper;
+				damage *= SupernaturalManager.get(priest).scaleAttack(SNConfigHandler.priestDamageFactorAttackSuper);
 			}else{
-				damage *= SNConfigHandler.priestDamageFactorAttackHuman;
+				damage *= SupernaturalManager.get(priest).scaleAttack(SNConfigHandler.priestDamageFactorAttackHuman);
 			}
 		}
 		return damage;

@@ -10,8 +10,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Ghast;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.Event;
@@ -231,7 +231,7 @@ public class SupernaturalManager {
 			if(damager!=null){
 				double random = Math.random();
 				if(random>SNConfigHandler.spreadChance){
-					if((damager instanceof Ghast) && player.getWorld().getEnvironment().equals(Environment.NETHER)){
+					if((damager instanceof PigZombie) && player.getWorld().getEnvironment().equals(Environment.NETHER)){
 						curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
 						SupernaturalManager.sendMessage(snplayer, "You have been transformed into a Ghoul!");
 					}else if((damager instanceof Wolf)){
@@ -257,9 +257,20 @@ public class SupernaturalManager {
 	// 					Movement					//
 	// -------------------------------------------- //
 	
+	public void moveAdvanceTime(SuperNPlayer snplayer){
+		if(snplayer.canMove()){
+			return;
+		}
+		snplayer.setMove(true);
+	}
+	
 	public void jump(Player player, double deltaSpeed, boolean upOnly) {
-		
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		
+		if(!snplayer.canMove()){
+			SupernaturalManager.sendMessage(snplayer, "Ability still on cooldown.");
+			return;
+		}
 		
 		if(upOnly){
 			if(snplayer.getPower() - SNConfigHandler.jumpBloodCost <= 0) {
@@ -267,6 +278,7 @@ public class SupernaturalManager {
 				return;
 			}else{
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.jumpBloodCost, "SuperJump!");
+				snplayer.setMove(false);
 			}
 		}else{
 			if(snplayer.getPower() - SNConfigHandler.dashBloodCost <= 0) {
@@ -274,6 +286,7 @@ public class SupernaturalManager {
 				return;
 			}else{
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.dashBloodCost, "Dash!");
+				snplayer.setMove(false);
 			}
 		}
 		
@@ -435,23 +448,27 @@ public class SupernaturalManager {
 		}
 		
 		if(snplayer.isVampire()) {
+			if(taskCounter%10==0){
+				moveAdvanceTime(snplayer);
+			}
+			if(taskCounter%15==0){
+				plugin.getVampireManager().regenAdvanceTime(player, 3000);
+			}
 			if(taskCounter%15==0){
 				plugin.getVampireManager().combustAdvanceTime(player, 3000);
 				plugin.getVampireManager().gainPowerAdvanceTime(snplayer, 3000);
 			}
-			if(taskCounter==0){
-				plugin.getVampireManager().regenAdvanceTime(player, 30000);
-			}
 		}else if(snplayer.isGhoul()){
-			if(taskCounter%15==0){
-				plugin.getGhoulManager().regenAdvanceTime(player, 3000);
+			if(taskCounter%50==0){
+				plugin.getGhoulManager().regenAdvanceTime(player, 10000);
 			}
 			if(taskCounter%5==0){
 				plugin.getGhoulManager().waterAdvanceTime(player);
 			}
 		}else if(snplayer.isWere()){
-			if(taskCounter%15==0){
-				plugin.getWereManager().regenAdvanceTime(player, 3000);
+			moveAdvanceTime(snplayer);
+			if(taskCounter%25==0){
+				plugin.getWereManager().regenAdvanceTime(player, 5000);
 			}
 		}else if(snplayer.isPriest()){
 			if(taskCounter%5==0){
@@ -461,7 +478,7 @@ public class SupernaturalManager {
 		
 		if(snplayer.isSuper()){
 			if(taskCounter%15==0){
-				this.truceBreakAdvanceTime(snplayer, 3000);
+				truceBreakAdvanceTime(snplayer, 3000);
 			}
 		}
 		

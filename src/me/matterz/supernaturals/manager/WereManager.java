@@ -41,18 +41,28 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	public void summon(Player player, ItemStack item){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		if(SupernaturalManager.worldTimeIsNight(player)){
-			if(snplayer.getPower() > SNConfigHandler.werePowerSummonMin){
-				Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
-				wolf.setTamed(true);
-				wolf.setOwner(player);
-				wolvesMap.put(wolf, snplayer);
-				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
-				if(SNConfigHandler.debugMode)
-					SupernaturalsPlugin.log(snplayer.getName() + " summoned a wolf pet!");
-				if(item.getAmount()==1){
-					player.setItemInHand(null);
+			if(snplayer.getPower() >= SNConfigHandler.werePowerSummonCost){
+				int i = 0;
+				for(Wolf wolf : wolvesMap.keySet()){
+					if(wolvesMap.get(wolf).equals(snplayer)){
+						i++;
+					}
+				}
+				if(i<=4){
+					Wolf wolf = (Wolf) player.getWorld().spawnCreature(player.getLocation(), CreatureType.WOLF);
+					wolf.setTamed(true);
+					wolf.setOwner(player);
+					wolvesMap.put(wolf, snplayer);
+					SupernaturalManager.alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log(snplayer.getName() + " summoned a wolf pet!");
+					if(item.getAmount()==1){
+						player.setItemInHand(null);
+					}else{
+						item.setAmount(player.getItemInHand().getAmount()-1);
+					}
 				}else{
-					item.setAmount(player.getItemInHand().getAmount()-1);
+					SupernaturalManager.sendMessage(snplayer, "You already have all the wolves you can control.");
 				}
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");

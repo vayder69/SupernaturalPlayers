@@ -146,7 +146,7 @@ public class VampireManager{
 		}
 		
 		// Can't regenerate if lacking power
-		if(snplayer.getPower() <= SNConfigHandler.vampireHealingPowerMin){
+		if(snplayer.getPower() <= SNConfigHandler.vampireHealthCost){
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log("Regen Event: player " + player.getName() + " not enough power!");
 			return;
@@ -157,7 +157,7 @@ public class VampireManager{
 		double deltaHeal = deltaSeconds * SNConfigHandler.vampireTimeHealthGained;
 		double deltaBlood = -deltaHeal * SNConfigHandler.vampireHealthCost;
 		
-		if(snplayer.getPower() + deltaBlood <= SNConfigHandler.vampireHealingPowerMin){
+		if(snplayer.getPower() + deltaBlood <= SNConfigHandler.vampireHealthCost){
 			deltaBlood = 0;
 			deltaHeal = -deltaBlood / SNConfigHandler.vampireHealthCost;
 		}
@@ -198,7 +198,6 @@ public class VampireManager{
 	}
 	
 	public boolean standsInSunlight(Player player){
-		
 		// No need to set on fire if the water will put the fire out at once.
 		Material material = player.getLocation().getBlock().getType();
 		World playerWorld = player.getWorld();
