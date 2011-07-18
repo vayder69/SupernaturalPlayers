@@ -17,7 +17,7 @@ public class SNCommandCure extends SNCommand {
 		requiredParameters = new ArrayList<String>();
 		optionalParameters = new ArrayList<String>();
 		senderMustBePlayer = false;
-		requiredParameters.add("playername");
+		optionalParameters.add("playername");
 		permissions = "supernatural.admin.command.cure";
 	}
 	
@@ -30,15 +30,20 @@ public class SNCommandCure extends SNCommand {
 			return;
 		}
 		
-		String playername = parameters.get(0);
-		Player player = SupernaturalsPlugin.instance.getServer().getPlayer(playername);
-		if (player == null) {
-			this.sendMessage("Player not found.");
-			return;
+		if(parameters.isEmpty()){
+			SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
+			SupernaturalManager.cure(snplayer);
+		}else{
+			String playername = parameters.get(0);
+			Player player = SupernaturalsPlugin.instance.getServer().getPlayer(playername);
+			if (player == null) {
+				this.sendMessage("Player not found.");
+				return;
+			}
+			this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " was cured of any curse!");
+			SupernaturalsPlugin.instance.getSuperManager();
+			SuperNPlayer snplayer = SupernaturalManager.get(player);
+			SupernaturalManager.cure(snplayer);
 		}
-		this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " was cured of any curse!");
-		SupernaturalsPlugin.instance.getSuperManager();
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		SupernaturalManager.cure(snplayer);
 	}
 }

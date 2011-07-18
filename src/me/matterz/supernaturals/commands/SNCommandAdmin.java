@@ -23,9 +23,10 @@ public class SNCommandAdmin extends SNCommand{
 	
 	static{
 		adminHelpMessages.add("*** "+ChatColor.WHITE+"Supernatural Admin Help"+ChatColor.RED+" ***");
-		adminHelpMessages.add("/sn cure [PlayerName] "+ChatColor.WHITE+"- Cure a player.");
-		adminHelpMessages.add("/sn convert [PlayerName]  [SupernaturalType] "+ChatColor.WHITE+"- Turn a player into vampire.");
-		adminHelpMessages.add("/sn power [Playername] [Power] "+ChatColor.WHITE+"- Give power to a player.");
+		adminHelpMessages.add("/sn cure <PlayerName> "+ChatColor.WHITE+"- Cure self or player.");
+		adminHelpMessages.add("/sn convert <PlayerName> [SupernaturalType] "+ChatColor.WHITE+"- Turn self or player into any supernatural.");
+		adminHelpMessages.add("/sn reset <PlayerName>"+ChatColor.WHITE+"- Reset self or player's power.");
+		adminHelpMessages.add("/sn power <Playername> [Power] "+ChatColor.WHITE+"- Give power to self or player.");
 		adminHelpMessages.add("/sn save "+ChatColor.WHITE+"- Save data to disk.");
 		adminHelpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
 		adminHelpMessages.add("/sn setchurch "+ChatColor.WHITE+"- Sets your current location as the priests' church.");

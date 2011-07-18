@@ -22,7 +22,7 @@ public class SNCommandPower extends SNCommand {
 		permissions = "supernatural.command.power";
 		optionalParameters.add("playername");
 		optionalParameters.add("power");
-		helpNameAndParams = "";
+		helpNameAndParams = "power [amount] | power [playername] [amount]";
 		helpDescription = "See current power level";
 	}
 	
@@ -46,28 +46,43 @@ public class SNCommandPower extends SNCommand {
 				this.sendMessage("You do not have permissions to use this command.");
 				return;
 			}
-			
-			String playername = parameters.get(0);
-			Player player = SupernaturalsPlugin.instance.getServer().getPlayer(playername);
-			if (player == null) {
-				this.sendMessage("Player not found!");
-				return;
+			if(parameters.size()==1){
+				double powerGain;
+				
+				try{
+					powerGain = Double.parseDouble(parameters.get(1));
+				} catch(NumberFormatException e) {
+					this.sendMessage("Invalid Number.");
+					return;
+				}
+				if(powerGain>=10000D){
+					powerGain=9999;
+				}
+				
+				SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
+				SupernaturalManager.alterPower(snplayer, powerGain, "Admin boost!");
+			}else{
+				String playername = parameters.get(0);
+				Player player = SupernaturalsPlugin.instance.getServer().getPlayer(playername);
+				if (player == null) {
+					this.sendMessage("Player not found!");
+					return;
+				}
+				double powerGain;
+				
+				try{
+					powerGain = Double.parseDouble(parameters.get(1));
+				} catch(NumberFormatException e) {
+					this.sendMessage("Invalid Number.");
+					return;
+				}
+				if(powerGain>=10000D){
+					powerGain=9999;
+				}
+				this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " has been powered up!");
+				SuperNPlayer snplayer = SupernaturalManager.get(player);
+				SupernaturalManager.alterPower(snplayer, powerGain, "Admin boost!");
 			}
-			double powerGain;
-			
-			try{
-				powerGain = Double.parseDouble(parameters.get(1));
-			} catch(NumberFormatException e) {
-				this.sendMessage("Invalid Number.");
-				return;
-			}
-			if(powerGain>=10000D){
-				powerGain=9999;
-			}
-			
-			this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " has been powered up!");
-			SuperNPlayer snplayer = SupernaturalManager.get(player);
-			SupernaturalManager.alterPower(snplayer, powerGain, "Admin boost!");
 		}
 	}
 }

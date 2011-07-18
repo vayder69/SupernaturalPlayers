@@ -236,19 +236,22 @@ public class PriestManager {
 	// 					Damage						//
 	// -------------------------------------------- //
 	
-	public float priestAttack(Player priest, Entity victim, float damage){
+	public double priestAttack(Player priest, Entity victim, double damage){
 		if((victim instanceof Animals) && !(victim instanceof Wolf)){
 			damage = 0;
 		}else if(victim instanceof Player){
 			Player pVictim = (Player) victim;
+			double bonusDamage = 0;
 			if(!SupernaturalsPlugin.instance.getPvP(pVictim))
 				return damage;
 			SuperNPlayer snvictim = SupernaturalManager.get(pVictim);
 			if(snvictim.isSuper()){
 				pVictim.setFireTicks(pVictim.getMaxFireTicks());
-				damage += damage *  SupernaturalManager.get(priest).scaleAttack(SNConfigHandler.priestDamageFactorAttackSuper);
+				bonusDamage = damage * SupernaturalManager.get(priest).scaleAttack(SNConfigHandler.priestDamageFactorAttackSuper);
+				damage = damage + bonusDamage;
 			}else{
-				damage += damage *  SupernaturalManager.get(priest).scaleAttack(SNConfigHandler.priestDamageFactorAttackHuman);
+				bonusDamage = damage * SupernaturalManager.get(priest).scaleAttack(SNConfigHandler.priestDamageFactorAttackHuman); 
+				damage = damage + bonusDamage;
 			}
 		}
 		return damage;

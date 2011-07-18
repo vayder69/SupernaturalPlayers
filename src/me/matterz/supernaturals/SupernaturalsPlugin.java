@@ -14,6 +14,7 @@ import me.matterz.supernaturals.commands.SNCommandPower;
 import me.matterz.supernaturals.commands.SNCommandCure;
 import me.matterz.supernaturals.commands.SNCommandHelp;
 import me.matterz.supernaturals.commands.SNCommandList;
+import me.matterz.supernaturals.commands.SNCommandReset;
 import me.matterz.supernaturals.commands.SNCommandSave;
 import me.matterz.supernaturals.commands.SNCommandConvert;
 import me.matterz.supernaturals.commands.SNCommandSetBanish;
@@ -137,6 +138,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandSetChurch());
 		commands.add(new SNCommandSetBanish());
 		commands.add(new SNCommandSetCoven());
+		commands.add(new SNCommandReset());
 		
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Lowest, this);
