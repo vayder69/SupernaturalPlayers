@@ -46,7 +46,8 @@ private SupernaturalsPlugin plugin;
 						SupernaturalManager.sendMessage(snplayer, "Cannot cure lycanthropy during the night.");
 					}else if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.dashMaterial)){
 						SupernaturalManager.jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
-						SupernaturalsPlugin.log(snplayer.getName() + " used dash!");
+						if(SNConfigHandler.debugMode)
+							SupernaturalsPlugin.log(snplayer.getName() + " used dash!");
 					}
 				}else{
 					if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){

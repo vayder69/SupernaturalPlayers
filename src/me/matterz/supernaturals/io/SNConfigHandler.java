@@ -244,7 +244,7 @@ public class SNConfigHandler {
 		priestBanishLocationZ = config.getInt("Priest.Banish.Location.Z", 0);
 		
 		priestPowerStart = config.getInt("Priest.Power.StartingAmount", 10000);
-		priestDeathPowerPenalty = config.getInt("Priest.Power.DeathPenalty", 2500);
+		priestDeathPowerPenalty = config.getInt("Priest.Power.DeathPenalty", 1500);
 		priestDamageFactorAttackSuper = config.getDouble("Priest.DamageFactor.AttackBonusSuper", 1.0);
 		priestDamageFactorAttackHuman = config.getDouble("Priest.DamageFactor.AttackBonusHuman", 0);
 		priestPowerBanish = config.getInt("Priest.Power.Banish", 4000);
@@ -265,18 +265,18 @@ public class SNConfigHandler {
 		ghoulKillSpreadCurse = config.getBoolean("Ghoul.Kill.SpreadCurse", true);
 		ghoulKillPowerCreatureGain = config.getInt("Ghoul.Power.Kill.CreatureGain", 200);
 		ghoulKillPowerPlayerGain = config.getInt("Ghoul.Power.Kill.PlayerGain", 1000);
-		ghoulDeathPowerPenalty = config.getInt("Ghoul.Power.DeathPenalty", 1000);
+		ghoulDeathPowerPenalty = config.getInt("Ghoul.Power.DeathPenalty", 2000);
 		ghoulDamageReceivedFactor = config.getDouble("Ghoul.DamageFactor.DefenseBonus", 0.65);
 		ghoulWeaponsString = config.getStringList("Material.Weapons", null);
 		ghoulTruceString = config.getStringList("Ghoul.TruceString", null);
-		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.AttackBonus", 4);
-		ghoulDamageWater = config.getInt("Ghoul.WaterDamage", 3);
+		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.AttackBonus", 2);
+		ghoulDamageWater = config.getInt("Ghoul.WaterDamage", 4);
 		ghoulHealthGained = config.getDouble("Ghoul.Time.HealthGained", 0.1);
 		ghoulMaterial = config.getString("Ghoul.Summon.Material", "PORK");
 		ghoulPowerSummonCost = config.getInt("Ghoul.Power.Summon", 1000);
 		ghoulWeaponImmunityString = config.getStringList("Ghoul.Immunity", null);
 		dashDeltaSpeed = config.getDouble("Were.DashDelta", 4);
-		dashBloodCost = config.getInt("Were.Power.Dash", 500);
+		dashBloodCost = config.getInt("Were.Power.Dash", 400);
 		
 		werePowerStart = config.getInt("Were.Power.Start", 5000);
 		wereKillSpreadCurse = config.getBoolean("Were.Kill.SpreadCurse", true);
@@ -388,7 +388,7 @@ public class SNConfigHandler {
 		}
 		
 		if(priestMaterialsString.size() == 0){
-			priestMaterialsString.add("INK_SACK"); 	//Banish
+			priestMaterialsString.add("FEATHER"); 	//Banish
 			priestMaterialsString.add("SUGAR");		//Exorcise
 			priestMaterialsString.add("FLINT");		//Cure
 			priestMaterialsString.add("PAPER");		//Heal

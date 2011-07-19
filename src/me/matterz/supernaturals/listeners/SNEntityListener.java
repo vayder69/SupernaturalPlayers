@@ -104,16 +104,18 @@ public class SNEntityListener extends EntityListener{
 				damage += damage * snpDamager.scale(SNConfigHandler.vampireDamageFactor);
 			}else if(snpDamager.isGhoul()){
 				if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
+					if(SNConfigHandler.debugMode)
 						SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
-						SupernaturalManager.sendMessage(snpDamager, "Ghouls do no damage with weapons!");
-						damage=0;
+					SupernaturalManager.sendMessage(snpDamager, "Ghouls do no damage with weapons!");
+					damage=0;
 				}else{
 					damage += damage * snpDamager.scale(SNConfigHandler.ghoulDamageFactor);
 					}
 			}else if(snpDamager.isWere()){
 				if(SupernaturalManager.worldTimeIsNight(pDamager)){
 					if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
-						SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
+						if(SNConfigHandler.debugMode)
+							SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
 						SupernaturalManager.sendMessage(snpDamager, "Werewolves cannot use weapons at night!");
 						damage=0;
 					}else{

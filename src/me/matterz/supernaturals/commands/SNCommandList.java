@@ -38,7 +38,7 @@ public class SNCommandList extends SNCommand {
 		List<String> ghouls = new ArrayList<String>();
 		List<String> priests = new ArrayList<String>();
 		
-		for (SuperNPlayer snplayer : SupernaturalManager.getSupernaturals()) {
+		for (SuperNPlayer snplayer : SupernaturalManager.findAllOnline()) {
 			if (snplayer.isVampire()) {
 				vampires.add(snplayer.getName());
 			}else if(snplayer.isPriest()){
@@ -52,7 +52,7 @@ public class SNCommandList extends SNCommand {
 		
 		// Create Messages
 		List<String> messages = new ArrayList<String>();
-		messages.add(" ");
+		messages.add("*** "+ChatColor.WHITE +"Online Supernatural Players "+ChatColor.RED +"***");
 		messages.add("Vampires: "+ ChatColor.WHITE + TextUtil.implode(vampires, ", "));
 		messages.add("Werewolves: "+ ChatColor.WHITE + TextUtil.implode(werewolves, ", "));
 		messages.add("Ghouls: "+ ChatColor.WHITE + TextUtil.implode(ghouls, ", "));
