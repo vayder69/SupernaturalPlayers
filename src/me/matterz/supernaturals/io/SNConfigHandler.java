@@ -49,7 +49,6 @@ public class SNConfigHandler {
 	public static int jumpBloodCost;
 	public static int dashBloodCost;
 	public static int truceBreakTime;
-	public static int maxPower;
 	public static int vampireAltarInfectMaterialSurroundCount;
 	public static int vampireAltarCureMaterialSurroundCount;
 	public static int vampirePowerStart;
@@ -187,15 +186,13 @@ public class SNConfigHandler {
 	public static void loadValues(Configuration config){
 		debugMode = config.getBoolean("DebugMode", true);
 		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 120000);
-		maxPower = config.getInt("Supernatural.MaxAllowedPower", 10000);
 		supernaturalTypes = config.getStringList("Supernatural.Types", null);
 		spreadChance = config.getDouble("Supernatural.SpreadChance", 0.35);
 		
-		woodMaterialsString = config.getStringList("Vampire.Materials.Wooden", null);
-		foodMaterialsString = config.getStringList("Vampire.Materials.Food", null);
+		woodMaterialsString = config.getStringList("Material.Wooden", null);
+		foodMaterialsString = config.getStringList("Material.Food", null);
 		
 		jumpMaterial = config.getString("Vampire.Materials.Jump", "RED_ROSE");
-		dashMaterial = config.getString("Were.Materials.Dash", "FEATHER");
 		
 		vampirePowerStart = config.getInt("Vampire.Power.Start", 10000);
 		vampireKillSpreadCurse = config.getBoolean("Vampire.Kill.SpreadCurse",true);
@@ -203,8 +200,8 @@ public class SNConfigHandler {
 		vampireKillPowerCreatureGain = config.getInt("Vampire.Power.Kill.CreatureGain", 100);
 		vampireKillPowerPlayerGain = config.getInt("Vampire.Power.Kill.PlayerGain", 500);
 		vampireDeathPowerPenalty = config.getInt("Vampire.Power.Death.Penalty", 10000);
-		vampireDamageFactor = config.getDouble("Vampire.DamageFactor.Attack", 0.3);
-		vampireDamageReceivedFactor = config.getDouble("Vampire.DamageFactor.Defense", 0.8);
+		vampireDamageFactor = config.getDouble("Vampire.DamageFactor.AttackBonus", 0.3);
+		vampireDamageReceivedFactor = config.getDouble("Vampire.DamageFactor.DefenseBonus", 0.8);
 		woodFactor = config.getDouble("Vampire.DamageFactor.Wood", 1.5);
 		vampireBurnInSunlight = config.getBoolean("Vampire.Burn.InSunlight", true);
 		vampireCombustFireTicks = config.getInt("Vampire.Burn.FireTicks", 3);
@@ -247,9 +244,9 @@ public class SNConfigHandler {
 		priestBanishLocationZ = config.getInt("Priest.Banish.Location.Z", 0);
 		
 		priestPowerStart = config.getInt("Priest.Power.StartingAmount", 10000);
-		priestDeathPowerPenalty = config.getInt("Priest.Death.PowerPenalty", 2500);
-		priestDamageFactorAttackSuper = config.getDouble("Priest.DamageFactor.AttackSuper", 1.0);
-		priestDamageFactorAttackHuman = config.getDouble("Priest.DamageFactor.AttackHuman", 0);
+		priestDeathPowerPenalty = config.getInt("Priest.Power.DeathPenalty", 2500);
+		priestDamageFactorAttackSuper = config.getDouble("Priest.DamageFactor.AttackBonusSuper", 1.0);
+		priestDamageFactorAttackHuman = config.getDouble("Priest.DamageFactor.AttackBonusHuman", 0);
 		priestPowerBanish = config.getInt("Priest.Power.Banish", 4000);
 		priestPowerHeal = config.getInt("Priest.Power.HealOther", 1000);
 		priestHealAmount = config.getInt("Priest.Spell.HealAmount", 10);
@@ -268,31 +265,32 @@ public class SNConfigHandler {
 		ghoulKillSpreadCurse = config.getBoolean("Ghoul.Kill.SpreadCurse", true);
 		ghoulKillPowerCreatureGain = config.getInt("Ghoul.Power.Kill.CreatureGain", 200);
 		ghoulKillPowerPlayerGain = config.getInt("Ghoul.Power.Kill.PlayerGain", 1000);
-		ghoulDeathPowerPenalty = config.getInt("Ghoul.Power.Death.Penalty", 1000);
-		ghoulDamageReceivedFactor = config.getDouble("Ghoul.DamageFactor.Defense", 0.65);
-		ghoulWeaponsString = config.getStringList("Ghoul.Weapon.Disabled", null);
+		ghoulDeathPowerPenalty = config.getInt("Ghoul.Power.DeathPenalty", 1000);
+		ghoulDamageReceivedFactor = config.getDouble("Ghoul.DamageFactor.DefenseBonus", 0.65);
+		ghoulWeaponsString = config.getStringList("Material.Weapons", null);
 		ghoulTruceString = config.getStringList("Ghoul.TruceString", null);
-		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.Attack", 5);
-		ghoulDamageWater = config.getInt("Ghoul.WaterDamage", 5);
+		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.AttackBonus", 5);
+		ghoulDamageWater = config.getInt("Ghoul.WaterDamage", 3);
 		ghoulHealthGained = config.getDouble("Ghoul.Time.HealthGained", 0.1);
 		ghoulMaterial = config.getString("Ghoul.Summon.Material", "PORK");
-		ghoulPowerSummonCost = config.getInt("Ghoul.Power.Summon.Cost", 1000);
-		ghoulWeaponImmunityString = config.getStringList("Ghoul.Weapon.Immunity", null);
-		dashDeltaSpeed = config.getDouble("Were.Dash.Delta", 4);
-		dashBloodCost = config.getInt("Were.Power.Dash.Cost", 500);
+		ghoulPowerSummonCost = config.getInt("Ghoul.Power.Summon", 1000);
+		ghoulWeaponImmunityString = config.getStringList("Ghoul.Immunity", null);
+		dashDeltaSpeed = config.getDouble("Were.DashDelta", 4);
+		dashBloodCost = config.getInt("Were.Power.Dash", 500);
 		
 		werePowerStart = config.getInt("Were.Power.Start", 5000);
 		wereKillSpreadCurse = config.getBoolean("Were.Kill.SpreadCurse", true);
 		wereKillPowerCreatureGain = config.getInt("Were.Power.Kill.CreatureGain", 100);
 		wereKillPowerPlayerGain = config.getInt("Were.Power.Kill.PlayerGain", 500);
 		werePowerFood = config.getInt("Were.Power.Food", 100);
-		wereDeathPowerPenalty = config.getInt("Were.Power.Death.Penalty", 2000);
+		wereDeathPowerPenalty = config.getInt("Were.Power.DeathPenalty", 2000);
 		wereDamageFall = config.getDouble("Were.DamageFactor.Fall", 0.5);
-		wereDamageFactor = config.getDouble("Were.DamageFactor.Attack", 5);
+		wereDamageFactor = config.getDouble("Were.DamageFactor.AttackBonus", 5);
 		wereHealthGained = config.getDouble("Were.Time.HealthGained", 0.2);
-		wolfMaterial = config.getString("Were.Summon.Material", "PORK");
-		werePowerSummonCost = config.getInt("Were.Power.Summon.Cost", 2000);
+		wolfMaterial = config.getString("Were.Material.Summon", "PORK");
+		werePowerSummonCost = config.getInt("Were.Power.Summon", 2000);
 		wolfTruce = config.getBoolean("Were.WolfTruce", true);
+		dashMaterial = config.getString("Were.Material.Dash", "FEATHER");
 		wolfbaneMaterial = config.getString("Were.Wolfbane.Trigger", "BOWL");
 		wereWolfbaneMaterialsString = config.getStringList("Were.Wolfbane.Materials", null);
 		wereWolfbaneQuantities = config.getIntList("Were.Wolfbane.Quantities", null);
@@ -315,7 +313,7 @@ public class SNConfigHandler {
 			woodMaterialsString.add("WOOD_SPADE");
 			woodMaterialsString.add("WOOD_SWORD");
 			woodMaterialsString.add("BOW");
-			config.setProperty("Vampire.Materials.Wooden", woodMaterialsString);
+			config.setProperty("Material.Wooden", woodMaterialsString);
 		}
 		
 		if(foodMaterialsString.size() == 0){
@@ -329,7 +327,7 @@ public class SNConfigHandler {
 			foodMaterialsString.add("PORK");
 			foodMaterialsString.add("CAKE");
 			foodMaterialsString.add("COOKIE");
-			config.setProperty("Vampire.Materials.Food", foodMaterialsString);
+			config.setProperty("Material.Food", foodMaterialsString);
 		}
 		
 		if(vampireTruceString.size() == 0){
@@ -444,13 +442,13 @@ public class SNConfigHandler {
 			ghoulWeaponsString.add("DIAMOND_SPADE");
 			ghoulWeaponsString.add("DIAMOND_AXE");
 			ghoulWeaponsString.add("DIAMOND_HOE");
-			config.setProperty("Ghoul.Weapon.Disabled", ghoulWeaponsString);
+			config.setProperty("Material.Weapons", ghoulWeaponsString);
 		}
 		
 		if(ghoulWeaponImmunityString.size() == 0){
 			ghoulWeaponImmunityString.add("BOW");
 			ghoulWeaponImmunityString.add("DIAMOND_SWORD");
-			config.setProperty("Ghoul.Weapon.Immunity", ghoulWeaponImmunityString);
+			config.setProperty("Ghoul.Immunity", ghoulWeaponImmunityString);
 		}
 		
 		if(ghoulTruceString.size() == 0){

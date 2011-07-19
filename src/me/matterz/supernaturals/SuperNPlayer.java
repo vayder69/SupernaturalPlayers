@@ -1,7 +1,5 @@
 package me.matterz.supernaturals;
 
-import me.matterz.supernaturals.io.SNConfigHandler;
-
 public class SuperNPlayer{
 	
 	private String playername;
@@ -151,6 +149,6 @@ public class SuperNPlayer{
 	}
 	
 	public double limitDouble(double d){
-		return this.limitDouble(d, 0, SNConfigHandler.maxPower);
+		return this.limitDouble(d, 0, 10000);
 	}
 }

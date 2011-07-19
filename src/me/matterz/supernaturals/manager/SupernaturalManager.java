@@ -405,6 +405,8 @@ public class SupernaturalManager {
 		}else if(snplayer.isGhoul()){
 			deltaHeal = deltaSeconds * SNConfigHandler.ghoulHealthGained;
 		}else{
+			if(!worldTimeIsNight(player))
+				return;
 			deltaHeal = deltaSeconds * SNConfigHandler.wereHealthGained;
 		}
 		
