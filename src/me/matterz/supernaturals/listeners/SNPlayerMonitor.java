@@ -109,8 +109,8 @@ private SupernaturalsPlugin plugin;
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.BLUE+player.getName()));
 			plugin.getServer().broadcastMessage(ChatColor.BLUE + "Werewolf " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
 		} else if(snplayer.isGhoul()){
-			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.DARK_RED+player.getName()));
-			plugin.getServer().broadcastMessage(ChatColor.DARK_RED + "Ghoul " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GRAY+player.getName()));
+			plugin.getServer().broadcastMessage(ChatColor.DARK_GRAY + "Ghoul " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
 		} else if(snplayer.isPriest()){
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GOLD+player.getName()));
 			plugin.getServer().broadcastMessage(ChatColor.GOLD + "Priest " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");

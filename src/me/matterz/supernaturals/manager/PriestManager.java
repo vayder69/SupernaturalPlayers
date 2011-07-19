@@ -9,6 +9,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -67,6 +69,8 @@ public class PriestManager {
 							SupernaturalManager.sendMessage(snplayer, "The Church Altar radiates holy power.");
 							if(!snplayer.isHuman()) {
 								SupernaturalManager.sendMessage(snplayer, "The holy power of the Church tears you asunder!");
+								EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.CUSTOM, SNConfigHandler.ghoulDamageWater);
+								player.setLastDamageCause(event);
 								player.setHealth(0);
 								if(snplayer.isGhoul()){
 								double random = Math.random();
