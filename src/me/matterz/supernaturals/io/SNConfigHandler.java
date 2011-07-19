@@ -69,8 +69,6 @@ public class SNConfigHandler {
 	public static int vampireCombustFireTicks;
 	public static int vampireDrowningCost;
 	public static int vampireTeleportCost;
-	public static int priestLightRadius;
-	public static int priestLightIntensity;
 	public static int priestPowerBanish;
 	public static int priestPowerHeal;
 	public static int priestPowerCure;
@@ -252,8 +250,6 @@ public class SNConfigHandler {
 		priestDeathPowerPenalty = config.getInt("Priest.Death.PowerPenalty", 2500);
 		priestDamageFactorAttackSuper = config.getDouble("Priest.DamageFactor.AttackSuper", 1.0);
 		priestDamageFactorAttackHuman = config.getDouble("Priest.DamageFactor.AttackHuman", 0);
-		priestLightRadius = config.getInt("Priest.Light.Radius", 0);
-		priestLightIntensity = config.getInt("Priest.Light.Intensity", 15);
 		priestPowerBanish = config.getInt("Priest.Power.Banish", 4000);
 		priestPowerHeal = config.getInt("Priest.Power.HealOther", 1000);
 		priestHealAmount = config.getInt("Priest.Spell.HealAmount", 10);
