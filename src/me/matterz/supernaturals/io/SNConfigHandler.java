@@ -594,4 +594,9 @@ public class SNConfigHandler {
 		config.load();
 		loadValues(config);
 	}
+	
+	public static Configuration getConfig(){
+		return config;
+	}
+	
 }
