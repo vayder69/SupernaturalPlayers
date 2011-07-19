@@ -186,25 +186,30 @@ public class SupernaturalManager {
 			}
 		}else{
 			double random = Math.random();
-			if(random<SNConfigHandler.spreadChance){
-				if(damager.isVampire()){
-					alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
-					if(SNConfigHandler.vampireKillSpreadCurse && !victim.isSuper())
-					{
+			if(damager.isVampire()){
+				alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
+				if(SNConfigHandler.vampireKillSpreadCurse && !victim.isSuper())
+				{
+
+					if(random<SNConfigHandler.spreadChance){
 						SupernaturalManager.sendMessage(victim, "You feel your heart stop! You have contracted vampirism.");
 						curse(victim, "vampire");
 					}
-				} else if(damager.isGhoul()){
-					alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
-					if(SNConfigHandler.ghoulKillSpreadCurse && !victim.isSuper())
-					{
+				}
+			} else if(damager.isGhoul()){
+				alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
+				if(SNConfigHandler.ghoulKillSpreadCurse && !victim.isSuper())
+				{
+					if(random<SNConfigHandler.spreadChance){
 						SupernaturalManager.sendMessage(victim, "Your body dies... You feel a deep hatred for the living.");
 						curse(victim, "ghoul");
 					}
-				} else if(damager.isWere()){
-					alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
-					if(SNConfigHandler.wereKillSpreadCurse && !victim.isSuper() && worldTimeIsNight(SupernaturalsPlugin.instance.getServer().getPlayer(victim.getName())))
-					{
+				}
+			} else if(damager.isWere()){
+				alterPower(damager, SNConfigHandler.wereKillPowerPlayerGain, "Player killed!!");
+				if(SNConfigHandler.wereKillSpreadCurse && !victim.isSuper() && worldTimeIsNight(SupernaturalsPlugin.instance.getServer().getPlayer(victim.getName())))
+				{
+					if(random<SNConfigHandler.spreadChance){
 						SupernaturalManager.sendMessage(victim, "Your basic nature changes... You feel more in touch with your animal side.");
 						curse(victim, "werewolf");
 					}

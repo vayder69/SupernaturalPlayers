@@ -93,6 +93,12 @@ public class SNEntityListener extends EntityListener{
 			snpDamager = SupernaturalManager.get(pDamager);
 			ItemStack item = pDamager.getItemInHand();
 			
+			//No damage if attacker was casting spells
+			if(item.getType().equals(SNConfigHandler.priestSpellMaterials.get(2)) || item.getType().equals(SNConfigHandler.priestSpellMaterials.get(3))){
+				event.setCancelled(true);
+				return;
+			}
+			
 			//Modify damage if damager is a supernatural
 			if(snpDamager.isVampire()){
 				damage += damage * snpDamager.scale(SNConfigHandler.vampireDamageFactor);

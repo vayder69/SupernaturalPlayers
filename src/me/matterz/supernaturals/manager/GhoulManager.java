@@ -3,6 +3,8 @@ package me.matterz.supernaturals.manager;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 
 import me.matterz.supernaturals.SuperNPlayer;
@@ -24,6 +26,8 @@ public class GhoulManager {
 			int health = (player.getHealth()-SNConfigHandler.ghoulDamageWater);
 			if(health<0)
 				health=0;
+			EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.CUSTOM, SNConfigHandler.ghoulDamageWater);
+			player.setLastDamageCause(event);
 			player.setHealth(health);
 			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Ghouls disintegrate in water!  Get Out Quick!");
 		}

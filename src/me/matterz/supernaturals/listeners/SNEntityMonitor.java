@@ -160,6 +160,9 @@ public class SNEntityMonitor extends EntityListener {
 		if(damager!=null){
 			if(damager instanceof Player){
 				pDamager = (Player) damager;
+				if(SNConfigHandler.debugMode){
+					SupernaturalsPlugin.log("Player "+pDamager.getName()+" has killed "+snplayer.getName());
+				}
 			}else if(damager instanceof Wolf){
 				Wolf wolf = (Wolf) damager;
 				if(!wolf.isTamed()){
@@ -169,6 +172,9 @@ public class SNEntityMonitor extends EntityListener {
 					return;
 				}
 				pDamager = (Player) wolf.getOwner();
+				if(SNConfigHandler.debugMode){
+					SupernaturalsPlugin.log("Player "+pDamager.getName()+" has killed "+snplayer.getName()+" with wolf.");
+				}
 			}else{
 				return;
 			}
