@@ -451,7 +451,7 @@ public class SupernaturalManager {
 		else if(snplayer.isVampire())
 			color=ChatColor.DARK_PURPLE;
 		else if(snplayer.isGhoul())
-			color=ChatColor.GRAY;
+			color=ChatColor.DARK_GRAY;
 		else if(snplayer.isWere())
 			color=ChatColor.BLUE;
 		else

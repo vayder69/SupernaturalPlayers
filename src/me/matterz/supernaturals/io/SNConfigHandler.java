@@ -269,7 +269,7 @@ public class SNConfigHandler {
 		ghoulDamageReceivedFactor = config.getDouble("Ghoul.DamageFactor.DefenseBonus", 0.65);
 		ghoulWeaponsString = config.getStringList("Material.Weapons", null);
 		ghoulTruceString = config.getStringList("Ghoul.TruceString", null);
-		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.AttackBonus", 5);
+		ghoulDamageFactor = config.getDouble("Ghoul.DamageFactor.AttackBonus", 4);
 		ghoulDamageWater = config.getInt("Ghoul.WaterDamage", 3);
 		ghoulHealthGained = config.getDouble("Ghoul.Time.HealthGained", 0.1);
 		ghoulMaterial = config.getString("Ghoul.Summon.Material", "PORK");
