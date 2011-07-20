@@ -26,7 +26,7 @@ public class GhoulManager {
 			int health = (player.getHealth()-SNConfigHandler.ghoulDamageWater);
 			if(health<0)
 				health=0;
-			EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.CUSTOM, SNConfigHandler.ghoulDamageWater);
+			EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.DROWNING, SNConfigHandler.ghoulDamageWater);
 			player.setLastDamageCause(event);
 			player.setHealth(health);
 			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Ghouls disintegrate in water!  Get Out Quick!");

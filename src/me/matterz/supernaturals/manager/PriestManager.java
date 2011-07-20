@@ -67,7 +67,7 @@ public class PriestManager {
 							SupernaturalManager.sendMessage(snplayer, "The Church Altar radiates holy power.");
 							if(!snplayer.isHuman()) {
 								SupernaturalManager.sendMessage(snplayer, "The holy power of the Church tears you asunder!");
-								EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.CUSTOM, SNConfigHandler.ghoulDamageWater);
+								EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, 20);
 								player.setLastDamageCause(event);
 								player.setHealth(0);
 								if(snplayer.isGhoul()){

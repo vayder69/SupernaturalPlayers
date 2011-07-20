@@ -303,7 +303,7 @@ public class SNConfigHandler {
 			supernaturalTypes.add("ghoul");
 			supernaturalTypes.add("priest");
 			supernaturalTypes.add("demon");
-			supernaturalTypes.add("hunter");
+			supernaturalTypes.add("witchhunter");
 			config.setProperty("Supernatural.Types", supernaturalTypes);
 		}
 		

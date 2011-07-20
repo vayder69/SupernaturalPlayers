@@ -28,36 +28,33 @@ public class SNPlayerListener extends PlayerListener{
 			return;
 		}
 		
-		if(!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)){
-			return;
-		}
-		
 		Player player = event.getPlayer();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		Material itemMaterial = event.getMaterial();
 		
-		if(SNConfigHandler.foodMaterials.contains(itemMaterial)){
-			if(snplayer.isVampire())
-			{
-				if(SNConfigHandler.debugMode)
-					SupernaturalsPlugin.log(snplayer.getName() + " attempted to eat " + itemMaterial.toString());
-				SupernaturalManager.sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
-				event.setCancelled(true);
-				return;
-			}else if(snplayer.isWere()){
-				if(itemMaterial.equals(Material.BREAD)){
-					SupernaturalManager.sendMessage(snplayer, "Werewolves do not gain power from Bread.");
-					return;
-				}else{
-					SupernaturalManager.alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
+		
+		if(action == Action.RIGHT_CLICK_AIR){
+			if(SNConfigHandler.foodMaterials.contains(itemMaterial)){
+				if(snplayer.isVampire())
+				{
 					if(SNConfigHandler.debugMode)
-						SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
+						SupernaturalsPlugin.log(snplayer.getName() + " attempted to eat " + itemMaterial.toString());
+					SupernaturalManager.sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
+					event.setCancelled(true);
 					return;
+				}else if(snplayer.isWere()){
+					if(itemMaterial.equals(Material.BREAD)){
+						SupernaturalManager.sendMessage(snplayer, "Werewolves do not gain power from Bread.");
+						return;
+					}else{
+						SupernaturalManager.alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
+						if(SNConfigHandler.debugMode)
+							SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
+						return;
+					}
 				}
 			}
-		}
-		
-		if (action != Action.RIGHT_CLICK_BLOCK){
+		}else if (action != Action.RIGHT_CLICK_BLOCK){
 			return;
 		}
 		
