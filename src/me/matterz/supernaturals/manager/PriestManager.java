@@ -19,8 +19,6 @@ import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 
 public class PriestManager {
-
-//	private Map<SuperNPlayer, String> playerList = new HashMap<SuperNPlayer, String>();
 	
 	// -------------------------------------------- //
 	// 					Church						//

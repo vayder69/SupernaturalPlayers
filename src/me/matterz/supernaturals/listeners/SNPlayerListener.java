@@ -23,6 +23,7 @@ public class SNPlayerListener extends PlayerListener{
 	@Override
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Action action = event.getAction();
+		
 		if(action != Action.RIGHT_CLICK_AIR && event.isCancelled()){
 			return;
 		}
