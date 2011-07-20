@@ -88,7 +88,9 @@ public class SuperNPlayer{
 	// -------------------------------------------- //
 	
 	public boolean isSuper(){
-		if(this.getType().equalsIgnoreCase("human") || this.getType().equalsIgnoreCase("priest"))
+		if(this.getType().equalsIgnoreCase("human") 
+				|| this.getType().equalsIgnoreCase("priest") 
+				|| this.getType().equalsIgnoreCase("hunter"))
 			return false;
 		return true;
 	}
@@ -121,6 +123,20 @@ public class SuperNPlayer{
 	
 	public boolean isGhoul(){
 		if(this.getType().equalsIgnoreCase("ghoul")){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isHunter(){
+		if(this.getType().equalsIgnoreCase("hunter")){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isDemon(){
+		if(this.getType().equalsIgnoreCase("demon")){
 			return true;
 		}
 		return false;

@@ -302,6 +302,8 @@ public class SNConfigHandler {
 			supernaturalTypes.add("werewolf");
 			supernaturalTypes.add("ghoul");
 			supernaturalTypes.add("priest");
+			supernaturalTypes.add("demon");
+			supernaturalTypes.add("hunter");
 			config.setProperty("Supernatural.Types", supernaturalTypes);
 		}
 		

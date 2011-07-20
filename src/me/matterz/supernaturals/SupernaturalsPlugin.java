@@ -26,7 +26,9 @@ import me.matterz.supernaturals.listeners.SNEntityListener;
 import me.matterz.supernaturals.listeners.SNEntityMonitor;
 import me.matterz.supernaturals.listeners.SNPlayerListener;
 import me.matterz.supernaturals.listeners.SNPlayerMonitor;
+import me.matterz.supernaturals.manager.DemonManager;
 import me.matterz.supernaturals.manager.GhoulManager;
+import me.matterz.supernaturals.manager.HunterManager;
 import me.matterz.supernaturals.manager.PriestManager;
 import me.matterz.supernaturals.manager.SNCommand;
 import me.matterz.supernaturals.manager.SupernaturalManager;
@@ -70,6 +72,8 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	private PriestManager priestManager = new PriestManager();
 	private WereManager wereManager = new WereManager();
 	private GhoulManager ghoulManager = new GhoulManager();
+	private HunterManager hunterManager = new HunterManager();
+	private DemonManager demonManager = new DemonManager();
 	
 	public List<SNCommand> commands = new ArrayList<SNCommand>();
 	
@@ -109,6 +113,14 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		return ghoulManager;
 	}
 	
+	public HunterManager getHunterManager(){
+		return hunterManager;
+	}
+	
+	public DemonManager getDemonManager(){
+		return demonManager;
+	}
+	
 	// -------------------------------------------- //
 	// 			Plugin Enable/Disable				//
 	// -------------------------------------------- //
@@ -144,6 +156,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Lowest, this);
 		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Low, this);
 		
+		pm.registerEvent(Type.PLAYER_RESPAWN, this.playerMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
 		

@@ -103,6 +103,10 @@ public class SupernaturalManager {
 		SupernaturalsPlugin.log(snplayer.getName() + " turned into a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
 		
 		updateName(snplayer);
+		if(snplayer.getType().equalsIgnoreCase("hunter"))
+			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
+		else
+			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		
@@ -123,6 +127,10 @@ public class SupernaturalManager {
 		snplayer.setTruce(true);
 		
 		updateName(snplayer);
+		if(snplayer.getType().equalsIgnoreCase("hunter"))
+			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
+		else
+			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		
@@ -144,6 +152,10 @@ public class SupernaturalManager {
 		snplayer.setTruce(true);
 		
 		updateName(snplayer);
+		if(snplayer.getType().equalsIgnoreCase("hunter"))
+			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
+		else
+			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		
@@ -454,6 +466,10 @@ public class SupernaturalManager {
 			color=ChatColor.DARK_GRAY;
 		else if(snplayer.isWere())
 			color=ChatColor.BLUE;
+		else if(snplayer.isHunter())
+			color=ChatColor.GREEN;
+		else if(snplayer.isDemon())
+			color=ChatColor.RED;
 		else
 			color=ChatColor.WHITE;
 		

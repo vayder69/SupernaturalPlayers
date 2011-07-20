@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SNPlayerMonitor extends PlayerListener {
@@ -96,25 +97,39 @@ private SupernaturalsPlugin plugin;
 	}
 	
 	@Override
+	public void onPlayerRespawn(PlayerRespawnEvent event){
+		if(SupernaturalManager.get(event.getPlayer()).isHunter()){
+			event.getPlayer().setSneaking(true);
+		}
+	}
+	
+	@Override
 	public void onPlayerJoin(PlayerJoinEvent event){	    
 		Player player = event.getPlayer();
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		
 		if(snplayer.isHuman()){
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.WHITE+player.getName()));
-			plugin.getServer().broadcastMessage(ChatColor.WHITE + "Human " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+			plugin.getServer().broadcastMessage(ChatColor.WHITE + "Human " + player.getName() + ChatColor.GOLD + " has joined the server.");
 		}else if(snplayer.isVampire()){
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.DARK_PURPLE+player.getName()));
-			plugin.getServer().broadcastMessage(ChatColor.DARK_PURPLE + "Vampire " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+			plugin.getServer().broadcastMessage(ChatColor.DARK_PURPLE + "Vampire " + player.getName() + ChatColor.GOLD + " has joined the server.");
 		} else if(snplayer.isWere()){
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.BLUE+player.getName()));
-			plugin.getServer().broadcastMessage(ChatColor.BLUE + "Werewolf " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+			plugin.getServer().broadcastMessage(ChatColor.BLUE + "Werewolf " + player.getName() + ChatColor.GOLD + " has joined the server.");
 		} else if(snplayer.isGhoul()){
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GRAY+player.getName()));
-			plugin.getServer().broadcastMessage(ChatColor.DARK_GRAY + "Ghoul " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+			plugin.getServer().broadcastMessage(ChatColor.DARK_GRAY + "Ghoul " + player.getName() + ChatColor.GOLD + " has joined the server.");
 		} else if(snplayer.isPriest()){
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GOLD+player.getName()));
-			plugin.getServer().broadcastMessage(ChatColor.GOLD + "Priest " + event.getPlayer().getName() + ChatColor.GOLD + " has joined the server.");
+			plugin.getServer().broadcastMessage(ChatColor.GOLD + "Priest " + player.getName() + ChatColor.GOLD + " has joined the server.");
+		} else if(snplayer.isHunter()){
+			player.setSneaking(true);
+			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GOLD+player.getName()));
+			plugin.getServer().broadcastMessage(ChatColor.GREEN + "WitchHunter " + player.getName() + ChatColor.GOLD + " has joined the server.");
+		} else if(snplayer.isDemon()){
+			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GOLD+player.getName()));
+			plugin.getServer().broadcastMessage(ChatColor.RED + "Demon " + player.getName() + ChatColor.GOLD + " has joined the server.");
 		}
 		
 	}
