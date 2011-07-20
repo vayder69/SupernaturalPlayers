@@ -78,6 +78,10 @@ public class SNConfigHandler {
 	public static int werePowerSummonCost;
 	public static int werePowerFood;
 	public static int ghoulPowerSummonCost;
+	public static int demonHealing;
+	public static int demonDeathPowerPenalty;
+	public static int demonPowerFireball;
+	public static int hunterDeathPowerPenalty;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -89,6 +93,7 @@ public class SNConfigHandler {
 	public static String vampireMaterial;
 	public static String jumpMaterial;
 	public static String dashMaterial;
+	public static String demonMaterial;
 	public static Location vampireTeleportLocation;
 	public static Location priestChurchLocation;
 	public static Location priestBanishLocation;
@@ -295,6 +300,12 @@ public class SNConfigHandler {
 		wereWolfbaneMaterialsString = config.getStringList("Were.Wolfbane.Materials", null);
 		wereWolfbaneQuantities = config.getIntList("Were.Wolfbane.Quantities", null);
 		
+		demonHealing = config.getInt("Demon.Healing", 1);
+		demonDeathPowerPenalty = config.getInt("Demon.Power.DeathPenalty", 1000);
+		demonMaterial = config.getString("demon.Material", "REDSTONE");
+		demonPowerFireball = config.getInt("Demon.Power.Fireball", 200);
+		
+		hunterDeathPowerPenalty = config.getInt("WitchHunter.Power.DeathPenalty", 1000);
 		
 		if(supernaturalTypes.size() == 0){
 			supernaturalTypes.add("human");

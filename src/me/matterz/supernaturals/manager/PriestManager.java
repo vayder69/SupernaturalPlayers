@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -252,45 +252,10 @@ public class PriestManager {
 			}else{
 				damage += damage * SupernaturalManager.get(priest).scale(SNConfigHandler.priestDamageFactorAttackHuman); 
 			}
+		}else if(victim instanceof Monster){
+			Monster mVictim = (Monster) victim;
+			mVictim.setFireTicks(mVictim.getMaxFireTicks());
 		}
 		return damage;
 	}
-	
-	// -------------------------------------------- //
-	// 					Armor						//
-	// -------------------------------------------- //
-	
-	public void armorCheck(Player player){
-		PlayerInventory inv = player.getInventory();
-		ItemStack helmet = inv.getHelmet();
-		ItemStack chest = inv.getChestplate();
-		ItemStack leggings = inv.getLeggings();
-		ItemStack boots = inv.getBoots();
-		
-		if(helmet.getTypeId()!=0){
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
-			inv.setHelmet(null);
-			Item newItem = player.getWorld().dropItem(player.getLocation(), helmet);
-			newItem.setItemStack(helmet);
-		}
-		if(chest.getTypeId()!=0){
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
-			inv.setChestplate(null);
-			Item newItem = player.getWorld().dropItem(player.getLocation(), chest);
-			newItem.setItemStack(chest);
-		}
-		if(leggings.getTypeId()!=0){
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
-			inv.setLeggings(null);
-			Item newItem = player.getWorld().dropItem(player.getLocation(), leggings);
-			newItem.setItemStack(leggings);
-		}
-		if(boots.getTypeId()!=0){
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
-			inv.setBoots(null);
-			Item newItem = player.getWorld().dropItem(player.getLocation(), boots);
-			newItem.setItemStack(boots);
-		}
-	}
-
 }

@@ -53,7 +53,9 @@ public class SNPlayerListener extends PlayerListener{
 						return;
 					}
 				}
+				return;
 			}
+			return;
 		}else if (action != Action.RIGHT_CLICK_BLOCK){
 			return;
 		}

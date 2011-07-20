@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
@@ -17,6 +18,8 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByProjectileEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
 import me.matterz.supernaturals.SuperNPlayer;
@@ -235,6 +238,8 @@ public class SupernaturalManager {
 		if(!snplayer.isSuper()){
 			if(snplayer.isPriest()){
 				alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
+			}else if(snplayer.isHunter()){
+				alterPower(snplayer, -SNConfigHandler.hunterDeathPowerPenalty, "You died!");
 			}
 			
 			Entity damager = null;
@@ -247,7 +252,7 @@ public class SupernaturalManager {
 			
 			if(damager!=null){
 				double random = Math.random();
-				if(random>SNConfigHandler.spreadChance){
+				if(random<SNConfigHandler.spreadChance){
 					if((damager instanceof PigZombie) && player.getWorld().getEnvironment().equals(Environment.NETHER)){
 						curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
 						SupernaturalManager.sendMessage(snplayer, "You have been transformed into a Ghoul!");
@@ -266,6 +271,8 @@ public class SupernaturalManager {
 				alterPower(snplayer, -SNConfigHandler.ghoulDeathPowerPenalty, "You died!");
 			} else if(snplayer.isWere()){
 				alterPower(snplayer, -SNConfigHandler.wereDeathPowerPenalty, "You died!");
+			} else if(snplayer.isDemon()){
+				alterPower(snplayer, -SNConfigHandler.demonDeathPowerPenalty, "You died!");
 			}
 		}
 	}
@@ -437,6 +444,43 @@ public class SupernaturalManager {
 	}
 	
 	// -------------------------------------------- //
+	// 					Armor						//
+	// -------------------------------------------- //
+	
+	public void armorCheck(Player player){
+		PlayerInventory inv = player.getInventory();
+		ItemStack helmet = inv.getHelmet();
+		ItemStack chest = inv.getChestplate();
+		ItemStack leggings = inv.getLeggings();
+		ItemStack boots = inv.getBoots();
+		
+		if(helmet.getTypeId()!=0){
+			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
+			inv.setHelmet(null);
+			Item newItem = player.getWorld().dropItem(player.getLocation(), helmet);
+			newItem.setItemStack(helmet);
+		}
+		if(chest.getTypeId()!=0){
+			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
+			inv.setChestplate(null);
+			Item newItem = player.getWorld().dropItem(player.getLocation(), chest);
+			newItem.setItemStack(chest);
+		}
+		if(leggings.getTypeId()!=0){
+			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
+			inv.setLeggings(null);
+			Item newItem = player.getWorld().dropItem(player.getLocation(), leggings);
+			newItem.setItemStack(leggings);
+		}
+		if(boots.getTypeId()!=0){
+			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
+			inv.setBoots(null);
+			Item newItem = player.getWorld().dropItem(player.getLocation(), boots);
+			newItem.setItemStack(boots);
+		}
+	}
+	
+	// -------------------------------------------- //
 	// 					Messages					//
 	// -------------------------------------------- //
 	
@@ -526,8 +570,8 @@ public class SupernaturalManager {
 			if(taskCounter%5==0){
 				regenAdvanceTime(player, 5000);
 			}
-		}else if(snplayer.isPriest()){
-			plugin.getPriestManager().armorCheck(player);
+		}else if(snplayer.isPriest() || snplayer.isDemon()){
+			armorCheck(player);
 		}
 		
 		if(snplayer.isSuper()){

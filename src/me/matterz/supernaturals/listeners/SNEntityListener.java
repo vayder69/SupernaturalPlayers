@@ -73,6 +73,17 @@ public class SNEntityListener extends EntityListener{
 					event.setCancelled(true);
 					return;
 				}
+			}else if(snpVictim.isDemon()){
+				if(event.getCause().equals(DamageCause.LAVA) 
+						|| event.getCause().equals(DamageCause.FIRE) 
+						|| event.getCause().equals(DamageCause.BLOCK_EXPLOSION)
+						|| event.getCause().equals(DamageCause.ENTITY_EXPLOSION)){
+					plugin.getDemonManager().heal(pVictim);
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log(snpVictim.getName()+" is immune to fire damage.");
+					event.setCancelled(true);
+					return;
+				}
 			}
 		}
 		

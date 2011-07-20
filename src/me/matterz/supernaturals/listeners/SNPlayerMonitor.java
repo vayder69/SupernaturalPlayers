@@ -9,6 +9,7 @@ import me.matterz.supernaturals.manager.SupernaturalManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -91,6 +92,16 @@ private SupernaturalsPlugin plugin;
 							}
 						}
 					}
+				}
+			}else if(snplayer.isDemon()){
+				if(item.getType().toString().equalsIgnoreCase(SNConfigHandler.demonMaterial)){
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log(player.getName()+" is casting FIREBALL with "+item.getType().toString());
+					plugin.getDemonManager().fireball(player);
+				}
+			}else if(snplayer.isHunter()){
+				if(item.getType().equals(Material.BOW)){
+					plugin.getHunterManager().changeArrowType(snplayer);
 				}
 			}
 		}

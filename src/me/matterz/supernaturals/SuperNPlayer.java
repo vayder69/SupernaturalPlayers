@@ -9,6 +9,7 @@ public class SuperNPlayer{
 	private double superPower = 0;
 	private boolean truce = true;
 	private int truceTimer = 0;
+	private String arrowType = "normal";
 	
 	public SuperNPlayer(){}
 	
@@ -20,6 +21,7 @@ public class SuperNPlayer{
 		this.superPower = 0;
 		this.truce = true;
 		this.truceTimer = 0;
+		this.arrowType = "normal";
 	}
 	
 	// -------------------------------------------- //
@@ -83,6 +85,14 @@ public class SuperNPlayer{
 		this.truceTimer=timer;
 	}
 	
+	public void setArrowType(String type){
+		this.arrowType=type;
+	}
+	
+	public String getArrowType(){
+		return this.arrowType;
+	}
+	
 	// -------------------------------------------- //
 	// 					Booleans					//
 	// -------------------------------------------- //
@@ -90,7 +100,7 @@ public class SuperNPlayer{
 	public boolean isSuper(){
 		if(this.getType().equalsIgnoreCase("human") 
 				|| this.getType().equalsIgnoreCase("priest") 
-				|| this.getType().equalsIgnoreCase("hunter"))
+				|| this.getType().equalsIgnoreCase("witchhunter"))
 			return false;
 		return true;
 	}
@@ -129,7 +139,7 @@ public class SuperNPlayer{
 	}
 	
 	public boolean isHunter(){
-		if(this.getType().equalsIgnoreCase("hunter")){
+		if(this.getType().equalsIgnoreCase("witchhunter")){
 			return true;
 		}
 		return false;
