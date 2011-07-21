@@ -3,12 +3,11 @@ package me.matterz.supernaturals.util;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Ghast;
 
 public class EntityUtil{
 	
 	public static CreatureType creatureTypeFromEntity(Entity entity){
-		if(!(entity instanceof Creature) && !(entity instanceof Ghast)){
+		if(!(entity instanceof Creature)){
 			return null;
 		}
 		

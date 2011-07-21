@@ -55,25 +55,34 @@ public class SNPlayerListener extends PlayerListener{
 					return;
 				}
 			}else if(snplayer.isWere()){
-				if(SupernaturalManager.worldTimeIsNight(player)){
 					if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.wolfMaterial)){
-						plugin.getWereManager().summon(player);
-						event.setCancelled(true);
-						return;
+						if(SupernaturalManager.worldTimeIsNight(player)){
+							plugin.getWereManager().summon(player);
+							event.setCancelled(true);
+							return;
+						}else{
+							SupernaturalManager.sendMessage(snplayer, "Cannot use this ability during the day.");
+							return;
+						}
 					}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
-						SupernaturalManager.sendMessage(snplayer, "Cannot cure lycanthropy during the night.");
+						if(SupernaturalManager.worldTimeIsNight(player)){
+							SupernaturalManager.sendMessage(snplayer, "Cannot cure lycanthropy during the night.");
+							return;
+						}else{
+							plugin.getWereManager().wolfbane(player);
+							event.setCancelled(true);
+							return;
+						}
 					}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.dashMaterial)){
-						SupernaturalManager.jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
-						event.setCancelled(true);
-						return;
+						if(SupernaturalManager.worldTimeIsNight(player)){
+							SupernaturalManager.jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
+							event.setCancelled(true);
+							return;
+						}else{
+							SupernaturalManager.sendMessage(snplayer, "Cannot use this ability during the day.");
+							return;
+						}
 					}
-				}else{
-					if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
-						plugin.getWereManager().wolfbane(player);
-						event.setCancelled(true);
-						return;
-					}
-				}
 			}else if(snplayer.isGhoul()){
 				if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.ghoulMaterial)){
 					plugin.getGhoulManager().summon(player);
