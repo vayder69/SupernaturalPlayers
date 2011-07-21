@@ -7,6 +7,7 @@ import me.matterz.supernaturals.manager.SupernaturalManager;
 import me.matterz.supernaturals.manager.WereManager;
 import me.matterz.supernaturals.util.EntityUtil;
 
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.EntityDamageByProjectileEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class SNEntityMonitor extends EntityListener {
 	
@@ -25,6 +27,20 @@ public class SNEntityMonitor extends EntityListener {
 	public SNEntityMonitor(SupernaturalsPlugin instance){
 		SNEntityMonitor.plugin = instance;
 	}
+	
+	@Override
+	public void onProjectileHit(ProjectileHitEvent event) {
+        if(event.getEntity() instanceof Arrow) {
+            Arrow arrow = (Arrow)event.getEntity();
+            if(plugin.getHunterManager().getArrowMap().containsKey(arrow)){
+            	if(plugin.getHunterManager().getArrowMap().get(arrow).equalsIgnoreCase("grapple")){
+            		Player player = (Player)arrow.getShooter();
+                    plugin.getHunterManager().startGrappling(player, arrow.getLocation());
+                    plugin.getHunterManager().removeArrow(arrow);
+            	}
+            }
+        }
+    }
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event){

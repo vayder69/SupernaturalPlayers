@@ -46,7 +46,7 @@ private SupernaturalsPlugin plugin;
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GOLD+player.getName()));
 			plugin.getServer().broadcastMessage(ChatColor.GOLD + "Priest " + player.getName() + ChatColor.GOLD + " has joined the server.");
 		} else if(snplayer.isHunter()){
-			player.setSneaking(true);
+//			player.setSneaking(true);
 			player.setDisplayName(player.getDisplayName().trim().replace(player.getName(), ChatColor.GREEN+player.getName()));
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "WitchHunter " + player.getName() + ChatColor.GOLD + " has joined the server.");
 		} else if(snplayer.isDemon()){

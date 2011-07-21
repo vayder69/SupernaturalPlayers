@@ -9,7 +9,6 @@ public class SuperNPlayer{
 	private double superPower = 0;
 	private boolean truce = true;
 	private int truceTimer = 0;
-	private String arrowType = "normal";
 	
 	public SuperNPlayer(){}
 	
@@ -21,7 +20,6 @@ public class SuperNPlayer{
 		this.superPower = 0;
 		this.truce = true;
 		this.truceTimer = 0;
-		this.arrowType = "normal";
 	}
 	
 	// -------------------------------------------- //
@@ -83,14 +81,6 @@ public class SuperNPlayer{
 	
 	public void setTruceTimer(int timer){
 		this.truceTimer=timer;
-	}
-	
-	public void setArrowType(String type){
-		this.arrowType=type;
-	}
-	
-	public String getArrowType(){
-		return this.arrowType;
 	}
 	
 	// -------------------------------------------- //

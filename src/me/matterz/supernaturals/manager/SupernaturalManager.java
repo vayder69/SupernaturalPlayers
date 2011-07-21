@@ -106,10 +106,10 @@ public class SupernaturalManager {
 		SupernaturalsPlugin.log(snplayer.getName() + " turned into a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
 		
 		updateName(snplayer);
-		if(snplayer.getType().equalsIgnoreCase("hunter"))
-			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
-		else
-			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
+//		if(snplayer.getType().equalsIgnoreCase("hunter"))
+//			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
+//		else
+//			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		
@@ -130,10 +130,10 @@ public class SupernaturalManager {
 		snplayer.setTruce(true);
 		
 		updateName(snplayer);
-		if(snplayer.getType().equalsIgnoreCase("hunter"))
-			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
-		else
-			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
+//		if(snplayer.getType().equalsIgnoreCase("hunter"))
+//			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
+//		else
+//			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		
@@ -155,10 +155,10 @@ public class SupernaturalManager {
 		snplayer.setTruce(true);
 		
 		updateName(snplayer);
-		if(snplayer.getType().equalsIgnoreCase("hunter"))
-			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
-		else
-			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
+//		if(snplayer.getType().equalsIgnoreCase("hunter"))
+//			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
+//		else
+//			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(false);
 		if(snplayer.getOldType().equals("werewolf"))
 			WereManager.removePlayer(snplayer);
 		

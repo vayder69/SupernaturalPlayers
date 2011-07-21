@@ -82,6 +82,9 @@ public class SNConfigHandler {
 	public static int demonDeathPowerPenalty;
 	public static int demonPowerFireball;
 	public static int hunterDeathPowerPenalty;
+	public static int hunterPowerArrowFire;
+	public static int hunterPowerArrowTriple;
+	public static int hunterPowerArrowGrapple;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -306,6 +309,9 @@ public class SNConfigHandler {
 		demonPowerFireball = config.getInt("Demon.Power.Fireball", 200);
 		
 		hunterDeathPowerPenalty = config.getInt("WitchHunter.Power.DeathPenalty", 1000);
+		hunterPowerArrowFire = config.getInt("WitchHunter.Power.Arrow.Fire", 200);
+		hunterPowerArrowTriple = config.getInt("WitchHunter.Power.Arrow.Triple", 200);
+		hunterPowerArrowGrapple = config.getInt("WitchHunter.Power.Arrow.Grapple", 1000);
 		
 		if(supernaturalTypes.size() == 0){
 			supernaturalTypes.add("human");

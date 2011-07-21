@@ -26,6 +26,16 @@ public class SNPlayerListener extends PlayerListener{
 		SNPlayerListener.plugin = instance;
 	}
 	
+//	@Override
+//	public void onPlayerToggleSneak(PlayerToggleSneakEvent event){
+//		Player player = event.getPlayer();
+//		SuperNPlayer snplayer = SupernaturalManager.get(player);
+//		if(snplayer.isHunter()){
+//			player.setSneaking(true);
+//			event.setCancelled(true);
+//		}
+//	}
+	
 	@Override
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Action action = event.getAction();		
