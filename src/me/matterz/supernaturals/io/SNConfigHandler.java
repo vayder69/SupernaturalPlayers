@@ -46,6 +46,7 @@ public class SNConfigHandler {
 	public static double priestDamageFactorAttackSuper;
 	public static double priestDamageFactorAttackHuman;
 	public static double priestDrainFactor;
+	public static double hunterPowerArrowDamage;
 	public static int jumpBloodCost;
 	public static int dashBloodCost;
 	public static int truceBreakTime;
@@ -85,6 +86,8 @@ public class SNConfigHandler {
 	public static int hunterPowerArrowFire;
 	public static int hunterPowerArrowTriple;
 	public static int hunterPowerArrowGrapple;
+	public static int hunterPowerArrowPower;
+	public static int hunterCooldown;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -110,6 +113,8 @@ public class SNConfigHandler {
 	public static List<CreatureType> ghoulTruce = new ArrayList<CreatureType>();
 	public static List<Material> priestSpellMaterials = new ArrayList<Material>();
 	public static HashMap<Material, Integer> priestDonationMap = new HashMap<Material, Integer>();
+	public static List<Material> burnableBlocks = new ArrayList<Material>();
+	public static List<Material> hunterArmor = new ArrayList<Material>();
 	
 	public static String vampireTeleportWorld;
 	public static int vampireTeleportLocationX;
@@ -141,6 +146,8 @@ public class SNConfigHandler {
 	private static List<String> wereWolfbaneMaterialsString = new ArrayList<String>();
 	private static List<Integer> wereWolfbaneQuantities = new ArrayList<Integer>();
 	private static List<Integer> priestDonationRewards = new ArrayList<Integer>();
+	private static List<String> burnableBlocksString = new ArrayList<String>();
+	private static List<String> hunterArmorString = new ArrayList<String>();
 	
 	public static Map<Material,Double> materialOpacity = new HashMap<Material,Double>();
 	public static HashSet<Byte> transparent = new HashSet<Byte>();
@@ -199,6 +206,7 @@ public class SNConfigHandler {
 		
 		woodMaterialsString = config.getStringList("Material.Wooden", null);
 		foodMaterialsString = config.getStringList("Material.Food", null);
+		burnableBlocksString = config.getStringList("BurnableBlocks", null);
 		
 		jumpMaterial = config.getString("Vampire.Materials.Jump", "RED_ROSE");
 		
@@ -309,9 +317,13 @@ public class SNConfigHandler {
 		demonPowerFireball = config.getInt("Demon.Power.Fireball", 200);
 		
 		hunterDeathPowerPenalty = config.getInt("WitchHunter.Power.DeathPenalty", 1000);
-		hunterPowerArrowFire = config.getInt("WitchHunter.Power.Arrow.Fire", 200);
-		hunterPowerArrowTriple = config.getInt("WitchHunter.Power.Arrow.Triple", 200);
-		hunterPowerArrowGrapple = config.getInt("WitchHunter.Power.Arrow.Grapple", 1000);
+		hunterPowerArrowFire = config.getInt("WitchHunter.Power.ArrowFire", 200);
+		hunterPowerArrowTriple = config.getInt("WitchHunter.Power.ArrowTriple", 200);
+		hunterPowerArrowGrapple = config.getInt("WitchHunter.Power.ArrowGrapple", 1000);
+		hunterPowerArrowPower = config.getInt("WitchHunter.Power.ArrowPower", 1000);
+		hunterPowerArrowDamage = config.getDouble("WitchHunter.ArrowPower.DamageFactor", 2.0);
+		hunterArmorString = config.getStringList("WitchHunter.Armor", null);
+		hunterCooldown = config.getInt("WitchHunter.PowerArrow.Cooldown", 15000);
 		
 		if(supernaturalTypes.size() == 0){
 			supernaturalTypes.add("human");
@@ -347,6 +359,16 @@ public class SNConfigHandler {
 			foodMaterialsString.add("CAKE");
 			foodMaterialsString.add("COOKIE");
 			config.setProperty("Material.Food", foodMaterialsString);
+		}
+		
+		if(burnableBlocksString.size() == 0){
+			burnableBlocksString.add("GRASS");
+			burnableBlocksString.add("LEAVES");
+			burnableBlocksString.add("AIR");
+			burnableBlocksString.add("SEEDS");
+			burnableBlocksString.add("WOOD");
+			burnableBlocksString.add("BOOKSHELF");
+			config.setProperty("BurnableBlocks", burnableBlocksString);
 		}
 		
 		if(vampireTruceString.size() == 0){
@@ -496,6 +518,15 @@ public class SNConfigHandler {
 			wereWolfbaneQuantities.add(1);
 			config.setProperty("Were.Wolfbane.Quantities", wereWolfbaneQuantities);
 		}
+		
+		if(hunterArmorString.size() == 0){
+			hunterArmorString.add("AIR");
+			hunterArmorString.add("LEATHER_HELMET");
+			hunterArmorString.add("LEATHER_CHESTPLATE");
+			hunterArmorString.add("LEATHER_LEGGINGS");
+			hunterArmorString.add("LEATHER_BOOTS");
+			config.setProperty("WitchHunter.Armor", hunterArmorString);
+		}
 
 		config.save();
 		
@@ -505,6 +536,10 @@ public class SNConfigHandler {
 		
 		for(String food : foodMaterialsString){
 			foodMaterials.add(Material.getMaterial(food));
+		}
+		
+		for(String block : burnableBlocksString){
+			burnableBlocks.add(Material.getMaterial(block));
 		}
 		
 		for(String creature : vampireTruceString){
@@ -529,6 +564,10 @@ public class SNConfigHandler {
 		
 		for(String weapon : ghoulWeaponImmunityString){
 			ghoulWeaponImmunity.add(Material.getMaterial(weapon));
+		}
+		
+		for(String armor : hunterArmorString){
+			hunterArmor.add(Material.getMaterial(armor));
 		}
 		
 		for(int i=0; i<vampireAltarInfectMaterialsString.size();i++){

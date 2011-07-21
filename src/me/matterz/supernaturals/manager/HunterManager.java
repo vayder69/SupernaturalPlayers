@@ -18,7 +18,8 @@ public class HunterManager {
 
 	private HashMap<Arrow, String> arrowMap = new HashMap<Arrow, String>();
 	private HashMap<SuperNPlayer, String> hunterMap = new HashMap<SuperNPlayer, String>();
-	public ArrayList<Player> grapplingPlayers= new ArrayList<Player>();
+	private ArrayList<Player> grapplingPlayers = new ArrayList<Player>();
+	private ArrayList<Player> drainedPlayers = new ArrayList<Player>();
 	
 	public void sneak(Player player){
 		player.setSneaking(true);
@@ -37,8 +38,11 @@ public class HunterManager {
 			nextType = "triple";
 		}else if(currentType.equalsIgnoreCase("triple")){
 			nextType = "grapple";
-		}else
+		}else if(currentType.equalsIgnoreCase("grapple")){
+			nextType = "power";
+		}else{
 			nextType = "normal";
+		}
 
 		hunterMap.put(snplayer, nextType);
 		SupernaturalManager.sendMessage(snplayer, "Changed to arrow type: " +ChatColor.WHITE+ nextType);
@@ -55,19 +59,28 @@ public class HunterManager {
 		return this.arrowMap;
 	}
 	
-	public void removeArrow(Arrow arrow){
-		arrowMap.remove(arrow);
+	public void removeArrow(final Arrow arrow){
+		SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
+            public void run() {
+            	arrowMap.remove(arrow);
+            }
+        }, 20);
 	}
 	
-	public boolean shoot(Player player){
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+	public boolean shoot(final Player player){
+		final SuperNPlayer snplayer = SupernaturalManager.get(player);
+		if(drainedPlayers.contains(player)){
+			SupernaturalManager.sendMessage(snplayer, "You are still recovering from Power Shot.");
+			return true;
+		}
+		
 		String arrowType = hunterMap.get(snplayer);
 		if(arrowType == null){
 			arrowType = "normal";
 		}
 		
 		if(SNConfigHandler.debugMode)
-			SupernaturalsPlugin.log(snplayer.getName()+"is firing "+arrowType+" arrows.");
+			SupernaturalsPlugin.log(snplayer.getName()+" is firing "+arrowType+" arrows.");
 		
 		if(arrowType.equalsIgnoreCase("fire")){
 			if(snplayer.getPower()>SNConfigHandler.hunterPowerArrowFire){
@@ -78,18 +91,48 @@ public class HunterManager {
 				return true;
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Fire Arrows!");
+				SupernaturalManager.sendMessage(snplayer, "Switching to normal arrows.");
+				hunterMap.put(snplayer, "normal");
 				return false;
 			}
 		}else if(arrowType.equalsIgnoreCase("triple")){
 			if(snplayer.getPower()>SNConfigHandler.hunterPowerArrowTriple){
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowTriple, "Triple Arrow!");
-				Arrow arrow = player.shootArrow();
+				final Arrow arrow = player.shootArrow();
 				arrowMap.put(arrow, arrowType);
-				ArrowUtil au = new ArrowUtil(player, arrow);
-				SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, au, 3);
+				SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
+	                public void run() {
+	                	splitArrow(player, arrow);
+	                }
+	            }, 4);
 				return true;
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Triple Arrows!");
+				SupernaturalManager.sendMessage(snplayer, "Switching to normal arrows.");
+				hunterMap.put(snplayer, "normal");
+				return false;
+			}
+		}else if(arrowType.equalsIgnoreCase("power")){
+			if(snplayer.getPower()>SNConfigHandler.hunterPowerArrowPower){
+				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowPower, "Power Arrow!");
+				Arrow arrow = player.shootArrow();
+				arrowMap.put(arrow, arrowType);
+				drainedPlayers.add(player);
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(snplayer.getName()+" is drained.");
+				SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
+	                public void run() {
+	                	drainedPlayers.remove(player);
+	                	if(player.isOnline())
+	                		SupernaturalManager.sendMessage(snplayer, "You can shoot again!");
+	                	SupernaturalsPlugin.log(snplayer.getName()+" is no longer drained.");
+	                }
+	            }, (SNConfigHandler.hunterCooldown/50));
+				return true;
+			}else{
+				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Power Arrows!");
+				SupernaturalManager.sendMessage(snplayer, "Switching to normal arrows.");
+				hunterMap.put(snplayer, "normal");
 				return false;
 			}
 		}else if(arrowType.equalsIgnoreCase("grapple")){
@@ -100,6 +143,8 @@ public class HunterManager {
 				return true;
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Grapple Arrow!");
+				SupernaturalManager.sendMessage(snplayer, "Switching to normal arrows.");
+				hunterMap.put(snplayer, "normal");
 				return false;
 			}
 		}else{
@@ -107,41 +152,43 @@ public class HunterManager {
 		}
 	}
 	
-	public void splitArrow(Player player, Arrow arrow){
+	public void splitArrow(final Player player, final Arrow arrow){
 		if(SNConfigHandler.debugMode)
 			SupernaturalsPlugin.log(player.getName()+"'s triple arrow event.");
 		player.shootArrow();
 		String arrowType = arrowMap.get(arrow);
 		if(arrowType.equals("triple")){
 			arrowMap.put(arrow, "double");
-			ArrowUtil au = new ArrowUtil(player, arrow);
-			SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, au, 3);
+			SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
+                public void run() {
+                	splitArrow(player, arrow);
+                }
+            }, 4);
 		}else{
 			arrowMap.remove(arrow);
 		}
 	}
 	
 	 public boolean isGrappling(Player player) {
-	        return grapplingPlayers.contains(player);
-	    }
+	       return grapplingPlayers.contains(player);
+	   }
 	    
-	    public void startGrappling(Player player, Location targetLocation) {
-	        if(isGrappling(player)) return;
-	        player.sendMessage("Weeeeeeee!");
-	        ArrowUtil gh = new ArrowUtil(player, targetLocation);
-	        grapplingPlayers.add(player);
-	        SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, gh);
-	    }
-	    
-	    public void stopGrappling(final Player player) {
-	        if(isGrappling(player)) {
-	            Vector v = new Vector(0, 0, 0);
-	            player.setVelocity(v);
-	            SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
-	                public void run() {
-	                    grapplingPlayers.remove(player);
-	                }
-	            }, 20*2);
-	        }
-	    }
+    public void startGrappling(Player player, Location targetLocation) {
+        if(isGrappling(player)) return;
+        ArrowUtil gh = new ArrowUtil(player, targetLocation);
+        grapplingPlayers.add(player);
+        SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, gh);
+    }
+    
+    public void stopGrappling(final Player player) {
+        if(isGrappling(player)) {
+            Vector v = new Vector(0, 0, 0);
+            player.setVelocity(v);
+            SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
+                public void run() {
+                    grapplingPlayers.remove(player);
+                }
+            }, 20*2);
+        }
+    }
 }

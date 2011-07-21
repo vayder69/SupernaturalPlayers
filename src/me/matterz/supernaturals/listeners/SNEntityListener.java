@@ -6,6 +6,7 @@ import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 import me.matterz.supernaturals.util.EntityUtil;
 
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -19,6 +20,9 @@ import org.bukkit.inventory.ItemStack;
 public class SNEntityListener extends EntityListener{
 
 	private SupernaturalsPlugin plugin;
+
+	private boolean projectileCalled = false;
+	private String arrowType;
 	
 	public SNEntityListener(SupernaturalsPlugin instance){
 		this.plugin = instance;
@@ -78,6 +82,7 @@ public class SNEntityListener extends EntityListener{
 						|| event.getCause().equals(DamageCause.FIRE) 
 						|| event.getCause().equals(DamageCause.BLOCK_EXPLOSION)
 						|| event.getCause().equals(DamageCause.ENTITY_EXPLOSION)){
+					pVictim.setFireTicks(0);
 					plugin.getDemonManager().heal(pVictim);
 					if(SNConfigHandler.debugMode)
 						SupernaturalsPlugin.log(snpVictim.getName()+" is immune to fire damage.");
@@ -98,16 +103,27 @@ public class SNEntityListener extends EntityListener{
 			return;	
 		
 		if(edbeEvent instanceof EntityDamageByProjectileEvent){
+			projectileCalled = true;
+			EntityDamageByProjectileEvent edpeEvent = (EntityDamageByProjectileEvent) edbeEvent;
+			if(edpeEvent.getProjectile() instanceof Arrow){
+				Arrow arrow = (Arrow) edpeEvent.getProjectile();
+				if(plugin.getHunterManager().getArrowMap().containsKey(arrow)){
+					arrowType = plugin.getHunterManager().getArrowType(arrow);
+				}else{
+					arrowType = "normal";
+				}
+			}
 			return;
 		}else{
 			pDamager = (Player)damager;
 			snpDamager = SupernaturalManager.get(pDamager);
 			ItemStack item = pDamager.getItemInHand();
 			
-			//No damage if attacker was casting spells
-			if(item.getType().equals(SNConfigHandler.priestSpellMaterials.get(2)) || item.getType().equals(SNConfigHandler.priestSpellMaterials.get(3))){
-				event.setCancelled(true);
-				return;
+			if(projectileCalled){
+				if(arrowType.equalsIgnoreCase("power")){
+					damage += damage * SNConfigHandler.hunterPowerArrowDamage;
+				}
+				projectileCalled = false;
 			}
 			
 			//Modify damage if damager is a supernatural

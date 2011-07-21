@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class SNPlayerMonitor extends PlayerListener {
 	
@@ -18,12 +17,12 @@ private SupernaturalsPlugin plugin;
 		this.plugin = instance;
 	}
 	
-	@Override
-	public void onPlayerRespawn(PlayerRespawnEvent event){
-		if(SupernaturalManager.get(event.getPlayer()).isHunter()){
-			event.getPlayer().setSneaking(true);
-		}
-	}
+//	@Override
+//	public void onPlayerRespawn(PlayerRespawnEvent event){
+//		if(SupernaturalManager.get(event.getPlayer()).isHunter()){
+//			event.getPlayer().setSneaking(true);
+//		}
+//	}
 	
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event){	    

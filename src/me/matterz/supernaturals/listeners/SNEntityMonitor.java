@@ -7,6 +7,8 @@ import me.matterz.supernaturals.manager.SupernaturalManager;
 import me.matterz.supernaturals.manager.WereManager;
 import me.matterz.supernaturals.util.EntityUtil;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
@@ -22,7 +24,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class SNEntityMonitor extends EntityListener {
 	
-	public static SupernaturalsPlugin plugin;
+	private static SupernaturalsPlugin plugin;
 	
 	public SNEntityMonitor(SupernaturalsPlugin instance){
 		SNEntityMonitor.plugin = instance;
@@ -33,11 +35,18 @@ public class SNEntityMonitor extends EntityListener {
         if(event.getEntity() instanceof Arrow) {
             Arrow arrow = (Arrow)event.getEntity();
             if(plugin.getHunterManager().getArrowMap().containsKey(arrow)){
-            	if(plugin.getHunterManager().getArrowMap().get(arrow).equalsIgnoreCase("grapple")){
+            	String arrowType = plugin.getHunterManager().getArrowMap().get(arrow);
+            	if(arrowType.equalsIgnoreCase("grapple")){
             		Player player = (Player)arrow.getShooter();
                     plugin.getHunterManager().startGrappling(player, arrow.getLocation());
-                    plugin.getHunterManager().removeArrow(arrow);
+            	}else if(arrowType.equalsIgnoreCase("fire")){
+            		arrow.getLocation();
+            		Block block = arrow.getWorld().getBlockAt(arrow.getLocation());
+            		if(SNConfigHandler.burnableBlocks.contains(block.getType())){
+            			block.setType(Material.FIRE);
+            		}
             	}
+            	plugin.getHunterManager().removeArrow(arrow);
             }
         }
     }
@@ -51,7 +60,7 @@ public class SNEntityMonitor extends EntityListener {
 		if(event instanceof EntityDamageByProjectileEvent){
 			EntityDamageByProjectileEvent edbpEvent = (EntityDamageByProjectileEvent)event;
 			
-			// Define local fields
+			//Define local fields
 			Entity victim = event.getEntity();
 			
 			Entity damager = edbpEvent.getDamager();

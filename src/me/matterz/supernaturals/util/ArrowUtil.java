@@ -41,6 +41,7 @@ public class ArrowUtil implements Runnable{
     public void run() {
     	if(arrow!=null){
     		SupernaturalsPlugin.instance.getHunterManager().splitArrow(this.player, this.arrow);
+    		return;
     	}else{
 	        if(player.getLocation().distance(targetLocation) < 3) {
 	            SupernaturalsPlugin.instance.getHunterManager().stopGrappling(player);

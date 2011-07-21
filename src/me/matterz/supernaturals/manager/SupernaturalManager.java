@@ -459,30 +459,50 @@ public class SupernaturalManager {
 		ItemStack leggings = inv.getLeggings();
 		ItemStack boots = inv.getBoots();
 		
-		if(helmet.getTypeId()!=0){
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
-			inv.setHelmet(null);
-			Item newItem = player.getWorld().dropItem(player.getLocation(), helmet);
-			newItem.setItemStack(helmet);
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		
+		if(snplayer.isPriest() || snplayer.isDemon()){
+			if(helmet.getTypeId()!=0){
+				inv.setHelmet(null);
+				dropItem(player, helmet);
+			}
+			if(chest.getTypeId()!=0){
+				inv.setChestplate(null);
+				dropItem(player, chest);
+			}
+			if(leggings.getTypeId()!=0){
+				inv.setLeggings(null);
+				dropItem(player, leggings);
+			}
+			if(boots.getTypeId()!=0){
+				inv.setBoots(null);
+				dropItem(player, boots);
+			}
+		}else if(snplayer.isHunter()){
+			if(!(SNConfigHandler.hunterArmor.contains(helmet.getType()))){
+				inv.setHelmet(null);
+				dropItem(player, helmet);
+			}
+			if(!(SNConfigHandler.hunterArmor.contains(chest.getType()))){
+				inv.setChestplate(null);
+				dropItem(player, chest);
+			}
+			if(!(SNConfigHandler.hunterArmor.contains(leggings.getType()))){
+				inv.setLeggings(null);
+				dropItem(player, leggings);
+			}
+			if(!(SNConfigHandler.hunterArmor.contains(boots.getType()))){
+				inv.setBoots(null);
+				dropItem(player, boots);
+			}
 		}
-		if(chest.getTypeId()!=0){
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
-			inv.setChestplate(null);
-			Item newItem = player.getWorld().dropItem(player.getLocation(), chest);
-			newItem.setItemStack(chest);
-		}
-		if(leggings.getTypeId()!=0){
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
-			inv.setLeggings(null);
-			Item newItem = player.getWorld().dropItem(player.getLocation(), leggings);
-			newItem.setItemStack(leggings);
-		}
-		if(boots.getTypeId()!=0){
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Priests cannot wear armor!");
-			inv.setBoots(null);
-			Item newItem = player.getWorld().dropItem(player.getLocation(), boots);
-			newItem.setItemStack(boots);
-		}
+	}
+	
+	public void dropItem(Player player, ItemStack item){
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SupernaturalManager.sendMessage(snplayer, "Your class cannot wear this type of armor!");
+		Item newItem = player.getWorld().dropItem(player.getLocation(), item);
+		newItem.setItemStack(item);
 	}
 	
 	// -------------------------------------------- //
@@ -575,7 +595,7 @@ public class SupernaturalManager {
 			if(taskCounter%5==0){
 				regenAdvanceTime(player, 5000);
 			}
-		}else if(snplayer.isPriest() || snplayer.isDemon()){
+		}else if(snplayer.isPriest() || snplayer.isDemon() || snplayer.isHunter()){
 			armorCheck(player);
 		}
 		
