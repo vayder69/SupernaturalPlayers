@@ -60,7 +60,7 @@ public class PriestManager {
 									inv.remove(mat);
 								}
 								player.updateInventory();
-								SupernaturalManager.sendMessage(snplayer, "The Church accepts your gracious donations.");
+								SupernaturalManager.sendMessage(snplayer, "The Church accepts your gracious donations of Bread, Fish, Grilled Pork and Apples.");
 								SupernaturalManager.alterPower(snplayer, delta, "Donations!");
 							}
 						}else{

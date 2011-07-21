@@ -296,8 +296,8 @@ public class SNConfigHandler {
 		
 		werePowerStart = config.getInt("Were.Power.Start", 5000);
 		wereKillSpreadCurse = config.getBoolean("Were.Kill.SpreadCurse", true);
-		wereKillPowerCreatureGain = config.getInt("Were.Power.Kill.CreatureGain", 100);
-		wereKillPowerPlayerGain = config.getInt("Were.Power.Kill.PlayerGain", 500);
+		wereKillPowerCreatureGain = config.getInt("Were.Power.Kill.CreatureGain", 20);
+		wereKillPowerPlayerGain = config.getInt("Were.Power.Kill.PlayerGain", 100);
 		werePowerFood = config.getInt("Were.Power.Food", 100);
 		wereDeathPowerPenalty = config.getInt("Were.Power.DeathPenalty", 2000);
 		wereDamageFall = config.getDouble("Were.DamageFactor.Fall", 0.5);
@@ -448,10 +448,10 @@ public class SNConfigHandler {
 		
 		if(priestDonationRewards.size() == 0){
 			priestDonationRewards.add(9000);
-			priestDonationRewards.add(310);
-			priestDonationRewards.add(300);
-			priestDonationRewards.add(110);
-			priestDonationRewards.add(40);
+			priestDonationRewards.add(510);
+			priestDonationRewards.add(500);
+			priestDonationRewards.add(210);
+			priestDonationRewards.add(80);
 			config.setProperty("Priest.Church.Donation.Rewards", priestDonationRewards);
 		}
 		
@@ -487,7 +487,6 @@ public class SNConfigHandler {
 		}
 		
 		if(ghoulWeaponImmunityString.size() == 0){
-			ghoulWeaponImmunityString.add("BOW");
 			ghoulWeaponImmunityString.add("DIAMOND_SWORD");
 			config.setProperty("Ghoul.Immunity", ghoulWeaponImmunityString);
 		}
