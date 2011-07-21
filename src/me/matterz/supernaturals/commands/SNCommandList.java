@@ -37,6 +37,8 @@ public class SNCommandList extends SNCommand {
 		List<String> werewolves = new ArrayList<String>();
 		List<String> ghouls = new ArrayList<String>();
 		List<String> priests = new ArrayList<String>();
+		List<String> hunters = new ArrayList<String>();
+		List<String> demons = new ArrayList<String>();
 		
 		for (SuperNPlayer snplayer : SupernaturalManager.findAllOnline()) {
 			if (snplayer.isVampire()) {
@@ -47,6 +49,10 @@ public class SNCommandList extends SNCommand {
 				werewolves.add(snplayer.getName());
 			}else if(snplayer.isGhoul()){
 				ghouls.add(snplayer.getName());
+			}else if(snplayer.isHunter()){
+				hunters.add(snplayer.getName());
+			}else if(snplayer.isDemon()){
+				demons.add(snplayer.getName());
 			}
 		}
 		
@@ -56,7 +62,9 @@ public class SNCommandList extends SNCommand {
 		messages.add("Vampires: "+ ChatColor.WHITE + TextUtil.implode(vampires, ", "));
 		messages.add("Werewolves: "+ ChatColor.WHITE + TextUtil.implode(werewolves, ", "));
 		messages.add("Ghouls: "+ ChatColor.WHITE + TextUtil.implode(ghouls, ", "));
-		messages.add("Priest: "+ ChatColor.WHITE + TextUtil.implode(priests, ", "));
+		messages.add("Priests: "+ ChatColor.WHITE + TextUtil.implode(priests, ", "));
+		messages.add("WitchHunters: "+ ChatColor.WHITE + TextUtil.implode(hunters, ", "));
+		messages.add("Demons: "+ ChatColor.WHITE + TextUtil.implode(demons, ", "));
 		
 		// Send them
 		this.sendMessage(messages);

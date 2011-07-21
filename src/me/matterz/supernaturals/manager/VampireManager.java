@@ -28,8 +28,9 @@ public class VampireManager{
 	// 					Movement					//
 	// -------------------------------------------- //
 	
-	public void teleport(Player player, ItemStack item){
+	public boolean teleport(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		ItemStack item = player.getItemInHand();
 		if(snplayer.getPower()>SNConfigHandler.vampireTeleportCost){
 			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.vampireTeleportCost, "Teleport!");
 			player.teleport(SNConfigHandler.vampireTeleportLocation);
@@ -38,8 +39,10 @@ public class VampireManager{
 			}else{
 				item.setAmount(player.getItemInHand().getAmount()-1);
 			}
+			return true;
 		}else{
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to teleport.");
+			return false;
 		}
 	}
 	

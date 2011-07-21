@@ -99,12 +99,12 @@ public class PriestManager {
 	// 					Spells						//
 	// -------------------------------------------- //
 	
-	public void banish(Player player, Player victim){
+	public boolean banish(Player player, Player victim){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
 		if(!SupernaturalsPlugin.instance.getPvP(victim)){
 			SupernaturalManager.sendMessage(snplayer, "Cannot cast in a non-PvP zone.");
-			return;
+			return false;
 		}
 		if(snplayer.getPower() > SNConfigHandler.priestPowerBanish){
 			if(snvictim.isSuper()){
@@ -117,13 +117,17 @@ public class PriestManager {
 				}else{
 					item.setAmount(player.getItemInHand().getAmount()-1);
 				}
+				return true;
 			}
+			SupernaturalManager.sendMessage(snplayer, "Can only banish supernatural players.");
+			return false;
 		}else{
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to banish.");
+			return false;
 		}
 	}
 	
-	public void heal(Player player, Player victim){
+	public boolean heal(Player player, Player victim){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
 		if(snplayer.getPower() > SNConfigHandler.priestPowerHeal){
@@ -140,20 +144,23 @@ public class PriestManager {
 				}else{
 					item.setAmount(player.getItemInHand().getAmount()-1);
 				}
+				return true;
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Player cannot be healed.");
+				return false;
 			}
 		}else{
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to heal.");
+			return false;
 		}
 	}
 	
-	public void exorcise(Player player, Player victim){
+	public boolean exorcise(Player player, Player victim){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
 		if(!SupernaturalsPlugin.instance.getPvP(victim)){
 			SupernaturalManager.sendMessage(snplayer, "Cannot cast in a non-PvP zone.");
-			return;
+			return false;
 		}
 		if(snplayer.getPower() > SNConfigHandler.priestPowerExorcise){
 			if(snvictim.isSuper()){
@@ -166,15 +173,18 @@ public class PriestManager {
 				}else{
 					item.setAmount(player.getItemInHand().getAmount()-1);
 				}
+				return true;
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Only supernatural players can be exorcised.");
+				return false;
 			}
 		}else{
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to exorcise.");
+			return false;
 		}
 	}
 	
-	public void cure(Player player, Player victim, Material material){
+	public boolean cure(Player player, Player victim, Material material){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
 		if(snplayer.getPower() > SNConfigHandler.priestPowerCure){
@@ -195,24 +205,28 @@ public class PriestManager {
 					}else{
 						item2.setAmount(victim.getItemInHand().getAmount()-1);
 					}
+					return true;
 				}else{
 					SupernaturalManager.sendMessage(snplayer, ChatColor.WHITE+snvictim.getName()+ChatColor.RED
 							+" is not holding "+ChatColor.WHITE+material.toString()+ChatColor.RED+".");
+					return false;
 				}
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "You can only cure supernatural players.");
+				return false;
 			}
 		}else{
-			SupernaturalManager.sendMessage(snplayer, "Not enough power to banish.");
+			SupernaturalManager.sendMessage(snplayer, "Not enough power to cure.");
+			return false;
 		}
 	}
 	
-	public void drainPower(Player player, Player victim){
+	public boolean drainPower(Player player, Player victim){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		SuperNPlayer snvictim = SupernaturalManager.get(victim);
 		if(!SupernaturalsPlugin.instance.getPvP(victim)){
 			SupernaturalManager.sendMessage(snplayer, "Cannot cast in a non-PvP zone.");
-			return;
+			return false;
 		}
 		if(snplayer.getPower() > SNConfigHandler.priestPowerDrain){
 			if(snvictim.isSuper()){
@@ -226,11 +240,14 @@ public class PriestManager {
 				}else{
 					item.setAmount(player.getItemInHand().getAmount()-1);
 				}
+				return true;
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Only supernatural players can be power drained.");
+				return false;
 			}
 		}else{
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to drain power.");
+			return false;
 		}
 	}
 	
@@ -240,6 +257,7 @@ public class PriestManager {
 	
 	public double priestAttack(Player priest, Entity victim, double damage){
 		if((victim instanceof Animals) && !(victim instanceof Wolf)){
+			SupernaturalManager.sendMessage(SupernaturalManager.get(priest), "You cannot hurt innocent animals.");
 			damage = 0;
 		}else if(victim instanceof Player){
 			Player pVictim = (Player) victim;

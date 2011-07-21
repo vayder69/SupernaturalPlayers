@@ -39,7 +39,7 @@ public class SNCommandPower extends SNCommand {
 			}
 			SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
 					
-			this.sendMessage("Your current power level is: " + (int) snplayer.getPower());
+			this.sendMessage("You are a "+ChatColor.WHITE+snplayer.getType()+ChatColor.RED+" and your current power level is: " +ChatColor.WHITE+ (int) snplayer.getPower());
 			return;
 		} else {
 			if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions2)){

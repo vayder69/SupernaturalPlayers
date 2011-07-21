@@ -155,9 +155,9 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Lowest, this);
 		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Low, this);
+		pm.registerEvent(Type.PLAYER_TOGGLE_SNEAK, this.playerListener, Priority.Low, this);
 		
 		pm.registerEvent(Type.PLAYER_RESPAWN, this.playerMonitor, Priority.Monitor, this);
-		pm.registerEvent(Type.PLAYER_ANIMATION, this.playerMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
 		
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);

@@ -26,8 +26,10 @@ public class SNCommandClasses extends SNCommand{
 		classMessages.add("Human: "+ChatColor.WHITE+"- Your standard run of the mill person.");
 		classMessages.add("Priest: "+ChatColor.WHITE+"- A person with significant power over the unholy.");
 		classMessages.add("Vampire: "+ChatColor.WHITE+"- No they don't sparkle!");
-		classMessages.add("Ghoul: "+ChatColor.WHITE+"- Slow and very powerful.");
+		classMessages.add("Ghoul: "+ChatColor.WHITE+"- Slow and very durable.");
 		classMessages.add("Werewolf: "+ChatColor.WHITE+"- Gain significant powers at night.");
+		classMessages.add("WitchHunter: "+ChatColor.WHITE+"- Expert at bows and stealth.");
+		classMessages.add("Demon: "+ChatColor.WHITE+"- Possesses an unholy union with fire.");
 	}
 	
 	@Override

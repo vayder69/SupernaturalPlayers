@@ -37,11 +37,12 @@ public class GhoulManager {
 	// 					Summonings					//
 	// -------------------------------------------- //
 	
-	public void summon(Player player, ItemStack item){
+	public boolean summon(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		ItemStack item = player.getItemInHand();
 		if(!SupernaturalsPlugin.instance.getSpawn(player)){
 			SupernaturalManager.sendMessage(snplayer, "You cannot summon here.");
-			return;
+			return false;
 		}
 		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonCost)){
 			player.getWorld().spawnCreature(player.getLocation(), CreatureType.ZOMBIE);
@@ -53,8 +54,10 @@ public class GhoulManager {
 			}else{
 				item.setAmount(player.getItemInHand().getAmount()-1);
 			}
+			return true;
 		} else {
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
+			return false;
 		}
 	}
 }

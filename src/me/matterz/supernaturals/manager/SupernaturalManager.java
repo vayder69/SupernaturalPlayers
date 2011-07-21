@@ -281,22 +281,26 @@ public class SupernaturalManager {
 	// 					Movement					//
 	// -------------------------------------------- //
 	
-	public static void jump(Player player, double deltaSpeed, boolean upOnly) {
+	public static boolean jump(Player player, double deltaSpeed, boolean upOnly) {
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		
 		if(upOnly){
 			if(snplayer.getPower() - SNConfigHandler.jumpBloodCost <= 0) {
 				SupernaturalManager.sendMessage(snplayer, "Not enough Power to jump.");
-				return;
+				return false;
 			}else{
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.jumpBloodCost, "SuperJump!");
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(snplayer.getName() + " used jump!");
 			}
 		}else{
 			if(snplayer.getPower() - SNConfigHandler.dashBloodCost <= 0) {
 				SupernaturalManager.sendMessage(snplayer, "Not enough Power to dash.");
-				return;
+				return false;
 			}else{
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.dashBloodCost, "Dash!");
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log(snplayer.getName() + " used dash!");
 			}
 		}
 		
@@ -311,6 +315,7 @@ public class SupernaturalManager {
 		vjadd.multiply(deltaSpeed);
 		
 		player.setVelocity(player.getVelocity().add(vjadd));
+		return true;
 	}
 	
 	// -------------------------------------------- //

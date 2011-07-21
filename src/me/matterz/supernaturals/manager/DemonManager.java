@@ -24,17 +24,18 @@ public class DemonManager {
 			SupernaturalsPlugin.log(player.getName()+" was healed to "+health+" by fire");
 	}
 	
-	public void fireball(Player player){
+	public boolean fireball(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		if(snplayer.getPower() < SNConfigHandler.demonPowerFireball){
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to cast fireball!");
-			return;
+			return false;
 		}
 		Location loc = player.getEyeLocation().toVector().add(player.getLocation().getDirection().multiply(2)).toLocation(player.getWorld(), 
 				player.getLocation().getYaw(), player.getLocation().getPitch());
 		Fireball fireball = player.getWorld().spawn(loc, Fireball.class);
 		fireball.setShooter(player);
 		SupernaturalManager.alterPower(SupernaturalManager.get(player), -SNConfigHandler.demonPowerFireball, "Fireball!");
+		return true;
 	}
 
 }

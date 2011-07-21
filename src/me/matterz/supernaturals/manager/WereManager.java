@@ -21,16 +21,18 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	// 					Wolfbane					//
 	// -------------------------------------------- //
 
-	public void wolfbane(Player player){
+	public boolean wolfbane(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		if(SNConfigHandler.wereWolfbaneRecipe.playerHasEnough(player)) {
 			SupernaturalManager.sendMessage(snplayer, "You create a wolfbane potion!");
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.wereWolfbaneRecipe.getRecipeLine());
 			SNConfigHandler.wereWolfbaneRecipe.removeFromPlayer(player);
 			SupernaturalManager.cure(snplayer);
+			return true;
 		}else{
 			SupernaturalManager.sendMessage(snplayer, "You cannot create a Wolfbane potion without the following: ");
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.wereWolfbaneRecipe.getRecipeLine());
+			return false;
 		}
 	}
 	
@@ -38,11 +40,12 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	// 					Summonings					//
 	// -------------------------------------------- //
 	
-	public void summon(Player player, ItemStack item){
+	public boolean summon(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		ItemStack item = player.getItemInHand();
 		if(!SupernaturalsPlugin.instance.getSpawn(player)){
 			SupernaturalManager.sendMessage(snplayer, "You cannot summon here.");
-			return;
+			return false;
 		}
 		if(SupernaturalManager.worldTimeIsNight(player)){
 			if(snplayer.getPower() >= SNConfigHandler.werePowerSummonCost){
@@ -66,14 +69,18 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 					}else{
 						item.setAmount(player.getItemInHand().getAmount()-1);
 					}
+					return true;
 				}else{
 					SupernaturalManager.sendMessage(snplayer, "You already have all the wolves you can control.");
+					return false;
 				}
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
+				return false;
 			}
 		}else{
 			SupernaturalManager.sendMessage(snplayer, "Cannot use werewolf abilities during the day!");
+			return false;
 		}
 	}
 	
