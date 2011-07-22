@@ -202,7 +202,11 @@ public class SupernaturalManager {
 		}else{
 			double random = Math.random();
 			if(damager.isVampire()){
-				alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
+				if(victim.getPower() > SNConfigHandler.vampireKillPowerPlayerGain){
+					alterPower(damager, SNConfigHandler.vampireKillPowerPlayerGain, "Player killed!");
+				}else{
+					SupernaturalManager.sendMessage(damager, "You cannot gain power from a player with no power themselves.");
+				}
 				if(SNConfigHandler.vampireKillSpreadCurse && !victim.isSuper())
 				{
 
@@ -212,7 +216,11 @@ public class SupernaturalManager {
 					}
 				}
 			} else if(damager.isGhoul()){
-				alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!!");
+				if(victim.getPower() > SNConfigHandler.ghoulKillPowerPlayerGain){
+					alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!");
+				}else{
+					SupernaturalManager.sendMessage(damager, "You cannot gain power from a player with no power themselves.");
+				}
 				if(SNConfigHandler.ghoulKillSpreadCurse && !victim.isSuper())
 				{
 					if(random<SNConfigHandler.spreadChance){
@@ -221,7 +229,11 @@ public class SupernaturalManager {
 					}
 				}
 			} else if(damager.isWere()){
-				alterPower(damager, SNConfigHandler.wereKillPowerPlayerGain, "Player killed!!");
+				if(victim.getPower() > SNConfigHandler.wereKillPowerPlayerGain){
+					alterPower(damager, SNConfigHandler.wereKillPowerPlayerGain, "Player killed!");
+				}else{
+					SupernaturalManager.sendMessage(damager, "You cannot gain power from a player with no power themselves.");
+				}
 				if(SNConfigHandler.wereKillSpreadCurse && !victim.isSuper() && worldTimeIsNight(SupernaturalsPlugin.instance.getServer().getPlayer(victim.getName())))
 				{
 					if(random<SNConfigHandler.spreadChance){
