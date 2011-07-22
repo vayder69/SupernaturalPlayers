@@ -547,7 +547,8 @@ public class SupernaturalManager {
 		} else
 			updatedname = displayname.replaceFirst(name, color+name);
 		
-		player.setDisplayName(updatedname);
+		if(SNConfigHandler.enableColors)
+			player.setDisplayName(updatedname);
 	}
 	
 	// -------------------------------------------- //

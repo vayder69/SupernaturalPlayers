@@ -26,6 +26,7 @@ public class SNConfigHandler {
 	public static boolean wereKillSpreadCurse;
 	public static boolean vampireBurnInSunlight;
 	public static boolean wolfTruce;
+	public static boolean enableColors;
 	public static double spreadChance;
 	public static double vampireDamageFactor;
 	public static double ghoulDamageFactor;
@@ -200,6 +201,7 @@ public class SNConfigHandler {
 	
 	public static void loadValues(Configuration config){
 		debugMode = config.getBoolean("DebugMode", true);
+		enableColors = config.getBoolean("EnableChatColors", true);
 		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 120000);
 		supernaturalTypes = config.getStringList("Supernatural.Types", null);
 		spreadChance = config.getDouble("Supernatural.SpreadChance", 0.35);
