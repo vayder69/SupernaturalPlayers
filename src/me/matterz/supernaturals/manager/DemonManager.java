@@ -1,14 +1,52 @@
 package me.matterz.supernaturals.manager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 
 public class DemonManager {
+	
+	private HashMap<Block, Location> webMap = new HashMap<Block, Location>();
+	
+	// -------------------------------------------- //
+	// 					WebMap						//
+	// -------------------------------------------- //
+	
+	public HashMap<Block, Location> getWebs(){
+		return this.webMap;
+	}
+	
+	public void removeWeb(Block block){
+		webMap.remove(block);
+	}
+	
+	// -------------------------------------------- //
+	// 					Power Loss					//
+	// -------------------------------------------- //
+	
+	public void powerAdvanceTime(Player player, int seconds){
+		if(!player.getWorld().getEnvironment().equals(Environment.NETHER)){
+			SuperNPlayer snplayer = SupernaturalManager.get(player);
+			SupernaturalManager.alterPower(snplayer, -(SNConfigHandler.demonPowerLoss*seconds));
+		}
+	}
+	
+	// -------------------------------------------- //
+	// 						Healing					//
+	// -------------------------------------------- //
 	
 	public void heal(Player player){
 		if(player.isDead() || player.getHealth() == 20)
@@ -19,10 +57,11 @@ public class DemonManager {
 		if(health>20)
 			health=20;
 		player.setHealth(health);
-		player.setFireTicks(0);
-		if(SNConfigHandler.debugMode)
-			SupernaturalsPlugin.log(player.getName()+" was healed to "+health+" by fire");
 	}
+	
+	// -------------------------------------------- //
+	// 					Spells						//
+	// -------------------------------------------- //
 	
 	public boolean fireball(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
@@ -35,6 +74,69 @@ public class DemonManager {
 		Fireball fireball = player.getWorld().spawn(loc, Fireball.class);
 		fireball.setShooter(player);
 		SupernaturalManager.alterPower(SupernaturalManager.get(player), -SNConfigHandler.demonPowerFireball, "Fireball!");
+		ItemStack item = player.getItemInHand();
+		if(item.getAmount()==1){
+			player.setItemInHand(null);
+		}else{
+			item.setAmount(player.getItemInHand().getAmount()-1);
+		}
+		return true;
+	}
+	
+	public boolean snare(Player player, Player target){
+		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		if(snplayer.getPower() < SNConfigHandler.demonPowerSnare){
+			SupernaturalManager.sendMessage(snplayer, "Not enough power to cast snare!");
+			return false;
+		}
+		Block block;
+		
+		if(target == null){
+			block = player.getTargetBlock(null, 20);
+		}else{
+			block = target.getLocation().getBlock();
+		}
+		
+		final Location loc = block.getLocation();
+
+		for(int x = loc.getBlockX()-1; x < loc.getBlockX()+2; x++){
+			for(int y = loc.getBlockY()-1; y < loc.getBlockY()+2; y++){
+				for(int z = loc.getBlockZ()-1; z < loc.getBlockZ()+2; z++){
+					Location newLoc = new Location(block.getWorld(), x, y, z);
+					Block newBlock = newLoc.getBlock();
+					if(newBlock.getTypeId()==0){
+						newBlock.setType(Material.WEB);
+						webMap.put(newBlock, loc);
+					}
+				}
+			}
+		}
+		
+		SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
+            public void run() {
+            	List<Block> blocks = new ArrayList<Block>();
+            	for(Block block : webMap.keySet()){
+            		if(webMap.get(block).equals(loc)){
+            			block.setType(Material.AIR);
+            			blocks.add(block);            			
+            		}
+            	}
+            	for(Block block : blocks){
+            		webMap.remove(block);
+            		if(SNConfigHandler.debugMode)
+    					SupernaturalsPlugin.log("Removed web block.");
+            	}
+            }
+        }, (SNConfigHandler.demonSnareDuration/50));
+		
+		ItemStack item = player.getItemInHand();
+		if(item.getAmount()==1){
+			player.setItemInHand(null);
+		}else{
+			item.setAmount(player.getItemInHand().getAmount()-1);
+		}
+		
+		SupernaturalManager.alterPower(SupernaturalManager.get(player), -SNConfigHandler.demonPowerSnare, "Snare!");
 		return true;
 	}
 

@@ -265,14 +265,14 @@ public class PriestManager {
 				return damage;
 			SuperNPlayer snvictim = SupernaturalManager.get(pVictim);
 			if(snvictim.isSuper()){
-				pVictim.setFireTicks(pVictim.getMaxFireTicks());
+				pVictim.setFireTicks(SNConfigHandler.priestFireTicks);
 				damage += damage * SupernaturalManager.get(priest).scale(SNConfigHandler.priestDamageFactorAttackSuper);
 			}else{
 				damage += damage * SupernaturalManager.get(priest).scale(SNConfigHandler.priestDamageFactorAttackHuman); 
 			}
 		}else if(victim instanceof Monster){
 			Monster mVictim = (Monster) victim;
-			mVictim.setFireTicks(mVictim.getMaxFireTicks());
+			mVictim.setFireTicks(SNConfigHandler.priestFireTicks);
 		}
 		return damage;
 	}

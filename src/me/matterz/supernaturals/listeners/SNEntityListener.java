@@ -1,11 +1,15 @@
 package me.matterz.supernaturals.listeners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 import me.matterz.supernaturals.util.EntityUtil;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -22,7 +26,9 @@ public class SNEntityListener extends EntityListener{
 	private SupernaturalsPlugin plugin;
 
 	private boolean projectileCalled = false;
-	private String arrowType;
+	private String arrowType = "normal";
+	
+	private List<Player> demons = new ArrayList<Player>();
 	
 	public SNEntityListener(SupernaturalsPlugin instance){
 		this.plugin = instance;
@@ -81,12 +87,30 @@ public class SNEntityListener extends EntityListener{
 				if(event.getCause().equals(DamageCause.LAVA) 
 						|| event.getCause().equals(DamageCause.FIRE) 
 						|| event.getCause().equals(DamageCause.BLOCK_EXPLOSION)
-						|| event.getCause().equals(DamageCause.ENTITY_EXPLOSION)){
+						|| event.getCause().equals(DamageCause.ENTITY_EXPLOSION)
+						|| event.getCause().equals(DamageCause.FIRE_TICK)){
+					final Player dPlayer = pVictim;
+					if(!demons.contains(dPlayer)){
+						demons.add(dPlayer);
+						plugin.getDemonManager().heal(pVictim);
+						if(event.getCause().equals(DamageCause.LAVA))
+							SupernaturalManager.alterPower(snpVictim, SNConfigHandler.demonPowerGain, "Lava!");
+						SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
+			                public void run() {
+			                	demons.remove(dPlayer);
+			                }
+			            }, 20);
+					}
 					pVictim.setFireTicks(0);
-					plugin.getDemonManager().heal(pVictim);
-					if(SNConfigHandler.debugMode)
-						SupernaturalsPlugin.log(snpVictim.getName()+" is immune to fire damage.");
 					event.setCancelled(true);
+					return;
+				}
+			}else if(snpVictim.isHunter()){
+				if(event.getCause().equals(DamageCause.FALL)){
+					int newDamage = event.getDamage()-SNConfigHandler.hunterFallReduction;
+					if(newDamage < 0)
+						newDamage = 0;
+					event.setDamage(newDamage);
 					return;
 				}
 			}
@@ -122,6 +146,8 @@ public class SNEntityListener extends EntityListener{
 			if(projectileCalled){
 				if(arrowType.equalsIgnoreCase("power")){
 					damage += damage * SNConfigHandler.hunterPowerArrowDamage;
+				}else if(arrowType.equalsIgnoreCase("fire")){
+					victim.setFireTicks(300);
 				}
 				projectileCalled = false;
 			}
@@ -151,6 +177,15 @@ public class SNEntityListener extends EntityListener{
 				}
 			}else if(snpDamager.isPriest()){
 				damage = plugin.getPriestManager().priestAttack(pDamager, victim, damage);
+			}else if(snpDamager.isHunter()){
+				if(SNConfigHandler.ghoulWeapons.contains(item.getType())){
+					if(!item.getType().equals(Material.BOW)){
+						damage = 0;
+						if(SNConfigHandler.debugMode)
+							SupernaturalsPlugin.log(pDamager.getName() + " was not allowed to use "+item.getType().toString());
+						SupernaturalManager.sendMessage(snpDamager, "WitchHunters cannot use melee weapons!");
+					}
+				}
 			}
 			
 			// Modify damage if victim is a supernatural
@@ -188,13 +223,17 @@ public class SNEntityListener extends EntityListener{
 			return;
 		}
 		
+		if(event.getEntity()==null){
+			return;
+		}
+		
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)event.getTarget());
 
 		if(!snplayer.getTruce()) {
 			return;
 		}
 		
-		if(EntityUtil.creatureTypeFromEntity(event.getEntity()).equals(null)){
+		if(EntityUtil.creatureTypeFromEntity(event.getEntity())==null){
 			return;
 		}
 		

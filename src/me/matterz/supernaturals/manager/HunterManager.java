@@ -10,8 +10,10 @@ import me.matterz.supernaturals.util.ArrowUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class HunterManager {
@@ -30,18 +32,17 @@ public class HunterManager {
 		if(currentType == null){
 			currentType = "normal";
 		}
-		String nextType;
 		
-		if(currentType.equalsIgnoreCase("normal")){
-			nextType = "fire";
-		}else if(currentType.equalsIgnoreCase("fire")){
-			nextType = "triple";
-		}else if(currentType.equalsIgnoreCase("triple")){
-			nextType = "grapple";
-		}else if(currentType.equalsIgnoreCase("grapple")){
-			nextType = "power";
-		}else{
-			nextType = "normal";
+		String nextType = "normal";
+		
+		for(int i = 0; i < SNConfigHandler.hunterArrowTypes.size(); i++){
+			if(SNConfigHandler.hunterArrowTypes.get(i).equalsIgnoreCase(currentType)){
+				int newI = i + 1;
+				if(newI >= SNConfigHandler.hunterArrowTypes.size())
+					newI = 0;
+				nextType = SNConfigHandler.hunterArrowTypes.get(newI);
+				break;
+			}
 		}
 
 		hunterMap.put(snplayer, nextType);
@@ -70,6 +71,7 @@ public class HunterManager {
 	public boolean shoot(final Player player){
 		final SuperNPlayer snplayer = SupernaturalManager.get(player);
 		if(drainedPlayers.contains(player)){
+			player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.ARROW, 1));
 			SupernaturalManager.sendMessage(snplayer, "You are still recovering from Power Shot.");
 			return true;
 		}
@@ -87,7 +89,7 @@ public class HunterManager {
 				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowFire, "Fire Arrow!");
 				Arrow arrow = player.shootArrow();
 				arrowMap.put(arrow, arrowType);
-				arrow.setFireTicks(300);
+				arrow.setFireTicks(SNConfigHandler.hunterFireArrowFireTicks);
 				return true;
 			}else{
 				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Fire Arrows!");

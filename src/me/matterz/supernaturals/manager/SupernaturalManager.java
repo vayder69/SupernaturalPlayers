@@ -7,7 +7,9 @@ import java.util.Set;
 import java.util.Timer;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -194,10 +196,12 @@ public class SupernaturalManager {
 		if(victim==null){
 			if(damager.isVampire()){
 				alterPower(damager, SNConfigHandler.vampireKillPowerCreatureGain, "Creature death!");
-			} else if(damager.isGhoul()){
+			}else if(damager.isGhoul()){
 				alterPower(damager, SNConfigHandler.ghoulKillPowerCreatureGain, "Creature death!");
-			} else if(damager.isWere()){
+			}else if(damager.isWere()){
 				alterPower(damager, SNConfigHandler.wereKillPowerCreatureGain, "Creature death!");
+			}else if(damager.isDemon()){
+				alterPower(damager, SNConfigHandler.demonKillPowerCreatureGain, "Creature death!");
 			}
 		}else{
 			double random = Math.random();
@@ -215,7 +219,7 @@ public class SupernaturalManager {
 						curse(victim, "vampire");
 					}
 				}
-			} else if(damager.isGhoul()){
+			}else if(damager.isGhoul()){
 				if(victim.getPower() > SNConfigHandler.ghoulKillPowerPlayerGain){
 					alterPower(damager, SNConfigHandler.ghoulKillPowerPlayerGain, "Player killed!");
 				}else{
@@ -228,7 +232,7 @@ public class SupernaturalManager {
 						curse(victim, "ghoul");
 					}
 				}
-			} else if(damager.isWere()){
+			}else if(damager.isWere()){
 				if(victim.getPower() > SNConfigHandler.wereKillPowerPlayerGain){
 					alterPower(damager, SNConfigHandler.wereKillPowerPlayerGain, "Player killed!");
 				}else{
@@ -240,6 +244,18 @@ public class SupernaturalManager {
 						SupernaturalManager.sendMessage(victim, "Your basic nature changes... You feel more in touch with your animal side.");
 						curse(victim, "werewolf");
 					}
+				}
+			}else if(damager.isDemon()){
+				if(victim.getPower() > SNConfigHandler.demonKillPowerPlayerGain){
+					alterPower(damager, SNConfigHandler.demonKillPowerPlayerGain, "Player killed!");
+				}else{
+					SupernaturalManager.sendMessage(damager, "You cannot gain power from a player with no power themselves.");
+				}
+			}else if(damager.isHunter()){
+				if(victim.getPower() > SNConfigHandler.hunterKillPowerPlayerGain){
+					alterPower(damager, SNConfigHandler.hunterKillPowerPlayerGain, "Player killed!");
+				}else{
+					SupernaturalManager.sendMessage(damager, "You cannot gain power from a player with no power themselves.");
 				}
 			}
 		}
@@ -518,6 +534,29 @@ public class SupernaturalManager {
 	}
 	
 	// -------------------------------------------- //
+	// 					Targetting					//
+	// -------------------------------------------- //
+	
+	public Player getTarget(Player player){
+		List<Block> blocks = player.getLineOfSight(SNConfigHandler.transparent, 20);
+		List<Entity> entities = player.getNearbyEntities(21, 21, 21);
+		for(Block block : blocks){
+			for(Entity entity : entities){
+				if(entity instanceof Player){
+					Player victim = (Player) entity;
+					Location location = victim.getLocation();
+					Location feetLocation = new Location(location.getWorld(), location.getX(), location.getY()-1, location.getZ());
+					Location groundLocation = new Location(location.getWorld(), location.getX(), location.getY()-2, location.getZ());
+					if(location.getBlock().equals(block) || feetLocation.getBlock().equals(block) || groundLocation.getBlock().equals(block)){
+						return victim;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	// -------------------------------------------- //
 	// 					Messages					//
 	// -------------------------------------------- //
 	
@@ -610,6 +649,12 @@ public class SupernaturalManager {
 			}
 		}else if(snplayer.isPriest() || snplayer.isDemon() || snplayer.isHunter()){
 			armorCheck(player);
+		}
+		
+		if(snplayer.isDemon()){
+			if(taskCounter%5==0){
+				plugin.getDemonManager().powerAdvanceTime(player, 5);
+			}
 		}
 		
 		if(snplayer.isSuper()){

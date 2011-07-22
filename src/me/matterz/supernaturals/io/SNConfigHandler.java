@@ -77,18 +77,28 @@ public class SNConfigHandler {
 	public static int priestPowerDrain;
 	public static int priestHealAmount;
 	public static int priestPowerStart;
+	public static int priestFireTicks;
 	public static int werePowerSummonCost;
 	public static int werePowerFood;
 	public static int ghoulPowerSummonCost;
 	public static int demonHealing;
 	public static int demonDeathPowerPenalty;
 	public static int demonPowerFireball;
+	public static int demonPowerSnare;
+	public static int demonSnareDuration;
+	public static int demonPowerGain;
+	public static int demonPowerLoss;
 	public static int hunterDeathPowerPenalty;
 	public static int hunterPowerArrowFire;
 	public static int hunterPowerArrowTriple;
 	public static int hunterPowerArrowGrapple;
 	public static int hunterPowerArrowPower;
 	public static int hunterCooldown;
+	public static int demonKillPowerCreatureGain;
+	public static int demonKillPowerPlayerGain;
+	public static int hunterKillPowerPlayerGain;
+	public static int hunterFallReduction;
+	public static int hunterFireArrowFireTicks;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -101,10 +111,12 @@ public class SNConfigHandler {
 	public static String jumpMaterial;
 	public static String dashMaterial;
 	public static String demonMaterial;
+	public static String demonSnareMaterial;
 	public static Location vampireTeleportLocation;
 	public static Location priestChurchLocation;
 	public static Location priestBanishLocation;
 	public static List<String> supernaturalTypes = new ArrayList<String>();
+	public static List<String> hunterArrowTypes = new ArrayList<String>();
 	
 	public static List<Material> woodMaterials = new ArrayList<Material>();
 	public static List<CreatureType> vampireTruce = new ArrayList<CreatureType>();
@@ -265,6 +277,7 @@ public class SNConfigHandler {
 		priestDeathPowerPenalty = config.getInt("Priest.Power.DeathPenalty", 1500);
 		priestDamageFactorAttackSuper = config.getDouble("Priest.DamageFactor.AttackBonusSuper", 1.0);
 		priestDamageFactorAttackHuman = config.getDouble("Priest.DamageFactor.AttackBonusHuman", 0);
+		priestFireTicks = config.getInt("Priest.DamageFactor.FireTicks", 100);
 		priestPowerBanish = config.getInt("Priest.Power.Banish", 4000);
 		priestPowerHeal = config.getInt("Priest.Power.HealOther", 1000);
 		priestHealAmount = config.getInt("Priest.Spell.HealAmount", 10);
@@ -315,8 +328,15 @@ public class SNConfigHandler {
 		
 		demonHealing = config.getInt("Demon.Healing", 1);
 		demonDeathPowerPenalty = config.getInt("Demon.Power.DeathPenalty", 1000);
-		demonMaterial = config.getString("demon.Material", "REDSTONE");
+		demonMaterial = config.getString("Demon.FireballMaterial", "REDSTONE");
 		demonPowerFireball = config.getInt("Demon.Power.Fireball", 200);
+		demonPowerGain = config.getInt("Demon.Power.Gain", 30);
+		demonPowerLoss = config.getInt("Demon.Power.Loss", 10);
+		demonKillPowerCreatureGain = config.getInt("Demon.Power.CreatureKill", 10);
+		demonKillPowerPlayerGain = config.getInt("Demon.Power.PlayerKill", 10);
+		demonPowerSnare = config.getInt("Demon.Power.Snare", 200);
+		demonSnareDuration = config.getInt("Demon.Snare.Duration", 10000);
+		demonSnareMaterial = config.getString("Demon.Snare.Material", "INK_SACK");
 		
 		hunterDeathPowerPenalty = config.getInt("WitchHunter.Power.DeathPenalty", 1000);
 		hunterPowerArrowFire = config.getInt("WitchHunter.Power.ArrowFire", 200);
@@ -326,6 +346,9 @@ public class SNConfigHandler {
 		hunterPowerArrowDamage = config.getDouble("WitchHunter.ArrowPower.DamageFactor", 2.0);
 		hunterArmorString = config.getStringList("WitchHunter.Armor", null);
 		hunterCooldown = config.getInt("WitchHunter.PowerArrow.Cooldown", 15000);
+		hunterFallReduction = config.getInt("WitchHunter.FallReduction", 2);
+		hunterFireArrowFireTicks = config.getInt("WitchHunter.FireArrow.FireTicks", 100);
+		hunterArrowTypes = config.getStringList("WitchHunter.ArrowTypes", null);
 		
 		if(supernaturalTypes.size() == 0){
 			supernaturalTypes.add("human");
@@ -529,6 +552,15 @@ public class SNConfigHandler {
 			config.setProperty("WitchHunter.Armor", hunterArmorString);
 		}
 
+		if(hunterArrowTypes.size() == 0){
+			hunterArrowTypes.add("fire");
+			hunterArrowTypes.add("triple");
+			hunterArrowTypes.add("power");
+			hunterArrowTypes.add("grapple");
+			hunterArrowTypes.add("normal");
+			config.setProperty("WitchHunter.ArrowTypes", hunterArrowTypes);
+		}
+		
 		config.save();
 		
 		for(String wood : woodMaterialsString){

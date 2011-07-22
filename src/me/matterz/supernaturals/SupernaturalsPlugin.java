@@ -22,6 +22,7 @@ import me.matterz.supernaturals.commands.SNCommandSetChurch;
 import me.matterz.supernaturals.commands.SNCommandSetCoven;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.io.SNPlayerHandler;
+import me.matterz.supernaturals.listeners.SNBlockListener;
 import me.matterz.supernaturals.listeners.SNEntityListener;
 import me.matterz.supernaturals.listeners.SNEntityMonitor;
 import me.matterz.supernaturals.listeners.SNPlayerListener;
@@ -66,6 +67,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	private final SNPlayerListener playerListener = new SNPlayerListener(this);
 	private final SNPlayerMonitor playerMonitor = new SNPlayerMonitor(this);
 	private final SNEntityMonitor entityMonitor = new SNEntityMonitor(this);
+	private final SNBlockListener blockListener = new SNBlockListener(this);
 	
 	private SupernaturalManager superManager = new SupernaturalManager(this);
 	private VampireManager vampManager = new VampireManager();
@@ -164,6 +166,8 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.ENTITY_DEATH, this.entityMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.PROJECTILE_HIT, this.entityMonitor, Priority.Monitor, this);
+		
+		pm.registerEvent(Type.BLOCK_BREAK, this.blockListener, Priority.Low, this);
 		
         PluginDescriptionFile pdfFile = this.getDescription();
         log(pdfFile.getName() + " version " + pdfFile.getVersion() + " enabled.");

@@ -1,16 +1,11 @@
 package me.matterz.supernaturals.listeners;
 
-import java.util.List;
-
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
@@ -101,49 +96,46 @@ public class SNPlayerListener extends PlayerListener{
 				}
 			}else if(snplayer.isPriest()){
 				if(SNConfigHandler.priestSpellMaterials.contains(itemMaterial)){
-					List<Block> blocks = player.getLineOfSight(SNConfigHandler.transparent, 20);
-					List<Entity> entities = player.getNearbyEntities(21, 21, 21);
 					if(SNConfigHandler.debugMode)
 						SupernaturalsPlugin.log(snplayer.getName() + " is attempting to cast a spell...");
-					for(Block block : blocks){
-						for(Entity entity : entities){
-							if(entity instanceof Player){
-								Player victim = (Player) entity;
-								Location location = victim.getLocation();
-								Location feetLocation = new Location(location.getWorld(), location.getX(), location.getY()-1, location.getZ());
-								Location groundLocation = new Location(location.getWorld(), location.getX(), location.getY()-2, location.getZ());
-								if(location.getBlock().equals(block) || feetLocation.getBlock().equals(block) || groundLocation.getBlock().equals(block)){
-									if(SNConfigHandler.debugMode)
-										SupernaturalsPlugin.log(victim.getName()+" is targetted by spell.");
-									if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(0))){
-										plugin.getPriestManager().banish(player, victim);
-										cancelled = false;
-									}else if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(1))){
-										plugin.getPriestManager().exorcise(player, victim);
-										cancelled = false;
-									}else if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(2))){
-										cancelled = plugin.getPriestManager().cure(player, victim, itemMaterial);
-									}else if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(3))){
-										cancelled = plugin.getPriestManager().heal(player, victim);
-									}else{
-										plugin.getPriestManager().drainPower(player, victim);
-										cancelled = false;
-									}
-									if(!event.isCancelled())
-										event.setCancelled(cancelled);
-									return;
-								}
-							}
-						}
+					Player victim = plugin.getSuperManager().getTarget(player);
+					if(victim == null)
+						return;
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log(victim.getName()+" is targetted by spell.");
+					if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(0))){
+						plugin.getPriestManager().banish(player, victim);
+						cancelled = false;
+					}else if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(1))){
+						plugin.getPriestManager().exorcise(player, victim);
+						cancelled = false;
+					}else if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(2))){
+						cancelled = plugin.getPriestManager().cure(player, victim, itemMaterial);
+					}else if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(3))){
+						cancelled = plugin.getPriestManager().heal(player, victim);
+					}else if(itemMaterial.equals(SNConfigHandler.priestSpellMaterials.get(4))){
+						plugin.getPriestManager().drainPower(player, victim);
+						cancelled = false;
 					}
+					if(!event.isCancelled())
+						event.setCancelled(cancelled);
+					return;
 				}
 			}else if(snplayer.isDemon()){
 				if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.demonMaterial)){
 					if(SNConfigHandler.debugMode)
 						SupernaturalsPlugin.log(player.getName()+" is casting FIREBALL with "+itemMaterial.toString());
 					cancelled = plugin.getDemonManager().fireball(player);
-					if(!event.isCancelled())
-						event.setCancelled(cancelled);
+					if(!event.isCancelled() && cancelled)
+						event.setCancelled(true);
+					return;
+				}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.demonSnareMaterial)){
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log(player.getName()+" is casting SNARE with "+itemMaterial.toString());
+					Player target = plugin.getSuperManager().getTarget(player);
+					cancelled = plugin.getDemonManager().snare(player, target);
+					if(!event.isCancelled() && cancelled)
+						event.setCancelled(true);
 					return;
 				}
 			}else if(snplayer.isHunter()){
