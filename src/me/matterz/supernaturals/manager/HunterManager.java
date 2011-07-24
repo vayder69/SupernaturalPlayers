@@ -23,9 +23,29 @@ public class HunterManager {
 	private ArrayList<Player> grapplingPlayers = new ArrayList<Player>();
 	private ArrayList<Player> drainedPlayers = new ArrayList<Player>();
 	
-	public void sneak(Player player){
-		player.setSneaking(true);
+	
+	
+	// -------------------------------------------- //
+	// 					Join Event					//
+	// -------------------------------------------- //
+	
+	public void invite(final SuperNPlayer snplayer){
+		SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
+            public void run() {
+            	SupernaturalManager.sendMessage(snplayer, "You have been invited to join the WitchHunter society!");
+        		SupernaturalManager.sendMessage(snplayer, "If you wish to accept this invitation visit a WitchHunters' Hall");
+            }
+        }, 200);
 	}
+	
+	public boolean join(SuperNPlayer snplayer){
+		SupernaturalManager.sendMessage(snplayer, "Welcome to the WitchHunter society!");
+		return true;
+	}
+	
+	// -------------------------------------------- //
+	// 				Arrow Management				//
+	// -------------------------------------------- //
 	
 	public boolean changeArrowType(SuperNPlayer snplayer){
 		String currentType = hunterMap.get(snplayer);
@@ -66,7 +86,11 @@ public class HunterManager {
             	arrowMap.remove(arrow);
             }
         }, 20);
-	}
+	}	
+	
+	// -------------------------------------------- //
+	// 					Attacks						//
+	// -------------------------------------------- //
 	
 	public boolean shoot(final Player player){
 		final SuperNPlayer snplayer = SupernaturalManager.get(player);

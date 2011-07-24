@@ -5,13 +5,17 @@ import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.material.Door;
 
 public class SNPlayerListener extends PlayerListener{
 
@@ -193,6 +197,37 @@ public class SNPlayerListener extends PlayerListener{
 		}
 		
 		Material blockMaterial = event.getClickedBlock().getType();
+		
+		Block block = event.getClickedBlock();
+		if(block.getType().equals(Material.IRON_DOOR_BLOCK) || block.getType().equals(Material.WOODEN_DOOR)){
+			Location blockLoc = block.getLocation();
+			for(int x = blockLoc.getBlockX()-2; x < blockLoc.getBlockX()+3; x++){
+				for(int y = blockLoc.getBlockY()-2; y < blockLoc.getBlockY()+3; y++){
+					for(int z = blockLoc.getBlockZ()-2; z < blockLoc.getBlockZ()+3; z++){
+						Location newLoc = new Location(block.getWorld(), x, y, z);
+						Block newBlock = newLoc.getBlock();
+						if(newBlock.getType().equals(Material.SIGN_POST)){
+							Sign sign = (Sign) newBlock;
+							String[] text = sign.getLines();
+							for(int i = 0; i < text.length; i++){
+								if(text[i].contains("WitchHunters' Hall")){
+									Door door = (Door) block;
+									if(snplayer.isHuman()){
+										boolean open = plugin.getHunterManager().join(snplayer);
+										event.setCancelled(open);
+										return;
+									}else if(snplayer.isHunter()){
+										door.setOpen(true);
+										event.setCancelled(true);
+										return;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		
 		if(blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterial)) {
 			if(SNConfigHandler.debugMode)

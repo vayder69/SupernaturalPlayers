@@ -1,5 +1,8 @@
 package me.matterz.supernaturals.listeners;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
@@ -25,6 +28,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 public class SNEntityMonitor extends EntityListener {
 	
 	private static SupernaturalsPlugin plugin;
+	private static HashMap<Player, ArrayList<String>> hunterApps = new HashMap<Player, ArrayList<String>>();
 	
 	public SNEntityMonitor(SupernaturalsPlugin instance){
 		SNEntityMonitor.plugin = instance;
@@ -171,7 +175,8 @@ public class SNEntityMonitor extends EntityListener {
 		if(!(entity instanceof Player)) {
 			return;
 		}
-		SuperNPlayer snplayer = SupernaturalManager.get((Player)entity);
+		Player pVictim = (Player) entity;
+		SuperNPlayer snplayer = SupernaturalManager.get(pVictim);
 		SupernaturalManager.deathEvent((Player) entity);
 		
 		Entity damager = null;
@@ -185,8 +190,33 @@ public class SNEntityMonitor extends EntityListener {
 		if(damager!=null){
 			if(damager instanceof Player){
 				pDamager = (Player) damager;
+				SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
 				if(SNConfigHandler.debugMode){
-					SupernaturalsPlugin.log("Player "+pDamager.getName()+" has killed "+snplayer.getName());
+					SupernaturalsPlugin.log("Player "+snDamager.getName()+" has killed "+snplayer.getName());
+				}
+				if(snplayer.isHunter()){
+					if(snDamager.equals(snplayer)){
+						SupernaturalManager.sendMessage(snplayer, "You have killed yourself!");
+						SupernaturalManager.sendMessage(snplayer, "This action, voluntary or not, has rescinded your status as a WitchHunter.");
+						SupernaturalManager.cure(snplayer);
+						if(SNConfigHandler.debugMode){
+							SupernaturalsPlugin.log("Player "+pDamager.getName()+" cured themselves.");
+						}
+					}
+				}else if(snDamager.isHuman()){
+					ArrayList<String> supersKilled = new ArrayList<String>();
+					if(hunterApps.containsKey(pDamager)){
+						supersKilled = hunterApps.get(pDamager);
+						if(!supersKilled.contains(snplayer.getType())){
+							supersKilled.add(snplayer.getType());
+							if(supersKilled.size()>=3){
+								plugin.getHunterManager().invite(snDamager);
+							}
+						}
+					}else{
+						supersKilled.add(snplayer.getType());
+					}
+					hunterApps.put(pDamager, supersKilled);
 				}
 			}else if(damager instanceof Wolf){
 				Wolf wolf = (Wolf) damager;
