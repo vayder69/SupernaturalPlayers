@@ -33,7 +33,7 @@ public class SNCommandPower extends SNCommand {
 		String permissions2 = "supernatural.admin.command.power";
 		
 		if(parameters.isEmpty()){
-			if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions)){
+			if(!SupernaturalsPlugin.hasPermissions(senderPlayer, permissions)){
 				this.sendMessage("You do not have permissions to use this command.");
 				return;
 			}
@@ -42,7 +42,7 @@ public class SNCommandPower extends SNCommand {
 			this.sendMessage("You are a "+ChatColor.WHITE+snplayer.getType()+ChatColor.RED+" and your current power level is: " +ChatColor.WHITE+ (int) snplayer.getPower());
 			return;
 		} else {
-			if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions2)){
+			if(!SupernaturalsPlugin.hasPermissions(senderPlayer, permissions2)){
 				this.sendMessage("You do not have permissions to use this command.");
 				return;
 			}

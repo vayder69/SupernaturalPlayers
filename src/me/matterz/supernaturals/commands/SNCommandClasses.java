@@ -37,7 +37,7 @@ public class SNCommandClasses extends SNCommand{
 	{
 		Player senderPlayer = (Player) sender;
 		
-		if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions)){
+		if(!SupernaturalsPlugin.hasPermissions(senderPlayer, permissions)){
 			this.sendMessage("You do not have permissions to use this command.");
 			return;
 		}

@@ -38,7 +38,7 @@ public class SNCommandAdmin extends SNCommand{
 	public void perform()
 	{
 		Player player = (Player) sender;
-		if(SupernaturalsPlugin.permissionHandler.has(player, permissions)){
+		if(SupernaturalsPlugin.hasPermissions(player, permissions)){
 			this.sendMessage(adminHelpMessages);
 		} else {
 			this.sendMessage("You do not have permissions to use this command.");

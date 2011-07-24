@@ -81,7 +81,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	private static File dataFolder;
 	
-	public static PermissionHandler permissionHandler;
+	private static PermissionHandler permissionHandler;
 	
 	public SupernaturalsPlugin(){
 		SupernaturalsPlugin.instance = this;
@@ -260,39 +260,51 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	    if (permissionHandler != null) {
 	        return;
 	    }
-	    
+
 	    Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-	    
+
 	    if (permissionsPlugin == null) {
 	        log("Permission system not detected, defaulting to OP");
 	        return;
 	    }
-	    
+
 	    permissionHandler = ((Permissions) permissionsPlugin).getHandler();
 	    log("Found and will use plugin "+((Permissions)permissionsPlugin).getDescription().getFullName());
 	}
-	
+
+	public static boolean hasPermissions(Player player, String permissions){
+		if(permissionHandler == null){
+			return player.isOp();
+		}else{
+			return permissionHandler.has(player, permissions);
+		}
+	}
+
 	private WorldGuardPlugin getWorldGuard() {
 	    Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
-	 
+
 	    // WorldGuard may not be loaded
 	    if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
 	        return null; // Maybe you want throw an exception instead
 	    }
-	 
+
 	    return (WorldGuardPlugin) plugin;
 	}
-	
+
 	public boolean getPvP(Player player){
 		WorldGuardPlugin worldGuard = SupernaturalsPlugin.instance.getWorldGuard();
+		if(worldGuard == null)
+			return true;
 		Vector pt = toVector(player.getLocation());
 		RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
 		ApplicableRegionSet set = regionManager.getApplicableRegions(pt);
 		return set.allows(DefaultFlag.PVP);
 	}
-	
+
 	public boolean getSpawn(Player player){
 		WorldGuardPlugin worldGuard = SupernaturalsPlugin.instance.getWorldGuard();
+		if(worldGuard == null)
+			return true;
 		Vector pt = toVector(player.getLocation());
 		RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
 		ApplicableRegionSet set = regionManager.getApplicableRegions(pt);

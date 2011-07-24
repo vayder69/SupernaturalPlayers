@@ -34,13 +34,13 @@ public class SNCommandHelp extends SNCommand{
 		String permissions2 = "supernatural.command.adminhelp";
 		Player senderPlayer = (Player) sender;
 		
-		if(SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions2)){
+		if(!SupernaturalsPlugin.hasPermissions(senderPlayer, permissions2)){
 			if(helpMessages.size()==4){
 				helpMessages.add("/sn admin "+ChatColor.WHITE+"- Show list of admin-only commands");
 			}
 		}
 		
-		if(!SupernaturalsPlugin.permissionHandler.has(senderPlayer, permissions)){
+		if(!SupernaturalsPlugin.hasPermissions(senderPlayer, permissions)){
 			this.sendMessage("You do not have permissions to use this command.");
 			return;
 		}		

@@ -51,24 +51,28 @@ public class VampireManager{
 	// -------------------------------------------- //
 	
 	public void useAltarInfect(Player player, Block centerBlock) {
-		
+
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		
+
 		// The altar must be big enough
 		int count = GeometryUtil.countNearby(centerBlock, Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterialSurround), 
 				SNConfigHandler.vampireAltarInfectMaterialRadius);
 		if (count == 0) {
 			return;
 		}
-		
+
 		if (count < SNConfigHandler.vampireAltarInfectMaterialSurroundCount) {
-			SupernaturalManager.sendMessage(snplayer, "Something happens... The gold draws energy from the obsidian... But there don't seem to be enough obsidian nearby.");
+			SupernaturalManager.sendMessage(snplayer, "Something happens... The "
+					+SNConfigHandler.vampireAltarInfectMaterial.toLowerCase()
+					+" draws energy from the "+SNConfigHandler.vampireAltarInfectMaterialSurround.toLowerCase()
+					+"... But there doesn't seem to be enough "+SNConfigHandler.vampireAltarInfectMaterialSurround.toLowerCase()
+					+" nearby.");
 			return;
 		}
-		
+
 		// Always examine first
 		SupernaturalManager.sendMessage(snplayer, "This altar looks really evil.");
-		
+
 		// Is Vampire
 		if (snplayer.isVampire()) {
 			SupernaturalManager.sendMessage(snplayer, "This is of no use to you as you are already a vampire.");
@@ -77,12 +81,15 @@ public class VampireManager{
 			SupernaturalManager.sendMessage(snplayer, "This is of no use to you as you are already supernatural.");
 			return;
 		}
-		
+
 		// Is healthy and thus can be infected...
 		if (SNConfigHandler.vampireAltarInfectRecipe.playerHasEnough(player)) {
 			SupernaturalManager.sendMessage(snplayer, "You use these items on the altar:");
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
-			SupernaturalManager.sendMessage(snplayer, "The gold draws energy from the obsidian... The energy rushes through you and you feel a bitter cold...");
+			SupernaturalManager.sendMessage(snplayer, "The "
+					+SNConfigHandler.vampireAltarInfectMaterial.toLowerCase()
+					+" draws energy from the "+SNConfigHandler.vampireAltarInfectMaterialSurround.toLowerCase()
+					+"... The energy rushes through you and you feel a bitter cold...");
 			SNConfigHandler.vampireAltarInfectRecipe.removeFromPlayer(player);
 			SupernaturalManager.curse(snplayer, "vampire", SNConfigHandler.vampirePowerStart);
 		} else {
@@ -90,37 +97,44 @@ public class VampireManager{
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
 		}
 	}
-	
+
 	public void useAltarCure(Player player, Block centerBlock) {		
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
-		
+
 		//Altar must be big enough
 		int count = GeometryUtil.countNearby(centerBlock, Material.getMaterial(SNConfigHandler.vampireAltarCureMaterialSurround), 
 				SNConfigHandler.vampireAltarCureMaterialRadius);
 		if (count == 0) {
 			return;
 		}
-		
+
 		if (count < SNConfigHandler.vampireAltarCureMaterialSurroundCount) {
-			SupernaturalManager.sendMessage(snplayer, "Something happens... The lapiz draws energy from the glowstone... But there don't seem to be enough glowstone nearby.");
+			SupernaturalManager.sendMessage(snplayer, "Something happens... The "
+					+SNConfigHandler.vampireAltarCureMaterial.toLowerCase()
+					+" draws energy from the "+SNConfigHandler.vampireAltarCureMaterialSurround.toLowerCase()
+					+"... But there doesn't seem to be enough "+SNConfigHandler.vampireAltarCureMaterialSurround.toLowerCase()
+					+" nearby.");
 			return;
 		}
-		
+
 		// Always examine first
 		SupernaturalManager.sendMessage(snplayer, "This altar looks pure and clean.");
-		
+
 		// If healthy
 		if (!snplayer.isVampire()) {
 			SupernaturalManager.sendMessage(snplayer, "It can probably cure curses, but you feel fine.");
 			return;
 		}
-		
+
 		// Is vampire and thus can be cured...
 		else if(SNConfigHandler.vampireAltarCureRecipe.playerHasEnough(player))
 		{
 			SupernaturalManager.sendMessage(snplayer, "You use these items on the altar:");
 			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
-			SupernaturalManager.sendMessage(snplayer, "The lapiz draws energy from the glowstone... Then the energy rushes through you and you feel pure and clean.");
+			SupernaturalManager.sendMessage(snplayer, "The "
+					+SNConfigHandler.vampireAltarCureMaterial.toLowerCase()
+					+" draws energy from the "+SNConfigHandler.vampireAltarCureMaterialSurround.toLowerCase()
+					+"... Then the energy rushes through you and you feel pure and clean.");
 			SNConfigHandler.vampireAltarCureRecipe.removeFromPlayer(player);
 			SupernaturalManager.cure(snplayer);
 		}
@@ -147,7 +161,7 @@ public class VampireManager{
 		int ticksTillNext = (int) (milliseconds / 1000D * 20D); // 20 minecraft ticks is a second.
 		ticksTillNext += 5; // just to be on the safe side.
 		
-		if (player.getFireTicks() <= 0){
+		if (player.getFireTicks() <= 0 && SNConfigHandler.vampireBurnMessageEnabled){
 			SupernaturalManager.sendMessage(snplayer, "Vampires burn in sunlight! Take cover!");
 		}
 		

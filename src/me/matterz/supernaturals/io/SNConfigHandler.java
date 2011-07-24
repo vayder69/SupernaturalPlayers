@@ -25,6 +25,7 @@ public class SNConfigHandler {
 	public static boolean ghoulKillSpreadCurse;
 	public static boolean wereKillSpreadCurse;
 	public static boolean vampireBurnInSunlight;
+	public static boolean vampireBurnMessageEnabled;
 	public static boolean wolfTruce;
 	public static boolean enableColors;
 	public static double spreadChance;
@@ -217,53 +218,53 @@ public class SNConfigHandler {
 		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 120000);
 		supernaturalTypes = config.getStringList("Supernatural.Types", null);
 		spreadChance = config.getDouble("Supernatural.SpreadChance", 0.35);
-		
+
 		woodMaterialsString = config.getStringList("Material.Wooden", null);
 		foodMaterialsString = config.getStringList("Material.Food", null);
-		burnableBlocksString = config.getStringList("BurnableBlocks", null);
-		
+
 		jumpMaterial = config.getString("Vampire.Materials.Jump", "RED_ROSE");
-		
+
 		vampirePowerStart = config.getInt("Vampire.Power.Start", 10000);
 		vampireKillSpreadCurse = config.getBoolean("Vampire.Kill.SpreadCurse",true);
 		vampireTimePowerGained = config.getDouble("Vampire.Time.PowerGained", 15);
 		vampireKillPowerCreatureGain = config.getInt("Vampire.Power.Kill.CreatureGain", 100);
 		vampireKillPowerPlayerGain = config.getInt("Vampire.Power.Kill.PlayerGain", 500);
-		vampireDeathPowerPenalty = config.getInt("Vampire.Power.Death.Penalty", 10000);
+		vampireDeathPowerPenalty = config.getInt("Vampire.Power.DeathPenalty", 10000);
 		vampireDamageFactor = config.getDouble("Vampire.DamageFactor.AttackBonus", 0.3);
 		vampireDamageReceivedFactor = config.getDouble("Vampire.DamageFactor.DefenseBonus", 0.8);
 		woodFactor = config.getDouble("Vampire.DamageFactor.Wood", 1.5);
 		vampireBurnInSunlight = config.getBoolean("Vampire.Burn.InSunlight", true);
+		vampireBurnMessageEnabled = config.getBoolean("Vampire.Burn.MessageEnabled", true);
 		vampireCombustFireTicks = config.getInt("Vampire.Burn.FireTicks", 3);
-		
-		jumpDeltaSpeed = config.getDouble("Vampire.Jump.Delta", 1.2);
-		jumpBloodCost = config.getInt("Vampire.Power.Jump.Cost", 1000);
+
+		jumpDeltaSpeed = config.getDouble("Vampire.JumpDelta", 1.2);
+		jumpBloodCost = config.getInt("Vampire.Power.JumpCost", 1000);
 		vampireTimeHealthGained = config.getDouble("Vampire.Time.HealthGained", 0.5);
-		vampireHealthCost = config.getDouble("Vampire.Power.Healing.Cost",60);
-		vampireDrowningCost = config.getInt("Vampire.Power.Drowning.Cost", 90);
+		vampireHealthCost = config.getDouble("Vampire.Power.HealingCost",60);
+		vampireDrowningCost = config.getInt("Vampire.Power.DrowningCost", 90);
 		vampireTeleportCost = config.getInt("Vampire.Power.TeleportCost", 9000);
 		vampireTruceString = config.getStringList("Vampire.Truce.Creatures", null);
 		vampireMaterial = config.getString("Vampire.Spell.Material", "BOOK");
-		
+
 		vampireAltarInfectMaterial = config.getString("Vampire.Altar.Infect.Material","GOLD_BLOCK");
 		vampireAltarInfectMaterialSurround = config.getString("Vampire.Altar.Infect.Surrounding.Material","OBSIDIAN");
 		vampireAltarInfectMaterialRadius = config.getDouble("Vampire.Altar.Infect.Surrounding.Radius",7D);
 		vampireAltarInfectMaterialSurroundCount = config.getInt("Vampire.Altar.Infect.Surrounding.Count",20);
 		vampireAltarInfectMaterialsString = config.getStringList("Vampire.Altar.Infect.Recipe.Materials", null);
 		vampireAltarInfectQuantities = config.getIntList("Vampire.Altar.Infect.Recipe.Quantities", null);
-		
+
 		vampireAltarCureMaterial = config.getString("Vampire.Altar.Cure.Material","LAPIS_BLOCK");
 		vampireAltarCureMaterialSurround = config.getString("Vampire.Altar.Cure.Surrounding.Material","GLOWSTONE");
 		vampireAltarCureMaterialRadius = config.getDouble("Vampire.Altar.Cure.Surrounding.Radius", 7D);
 		vampireAltarCureMaterialSurroundCount = config.getInt("Vampire.Altar.Cure.Surrounding.Count",20);
 		vampireAltarCureMaterialsString = config.getStringList("Vampire.Altar.Cure.Recipe.Materials", null);
 		vampireAltarCureQuantities = config.getIntList("Vampire.Altar.Cure.Recipe.Quantities", null);
-		
+
 		vampireTeleportWorld = config.getString("Vampire.Teleport.World", "world");
 		vampireTeleportLocationX = config.getInt("Vampire.Teleport.Location.X", 0);
 		vampireTeleportLocationY = config.getInt("Vampire.Teleport.Location.Y", 80);
 		vampireTeleportLocationZ = config.getInt("Vampire.Teleport.Location.Z", 0);
-		
+
 		priestChurchWorld = config.getString("Priest.Church.World", "world");
 		priestChurchLocationX = config.getInt("Priest.Church.Location.X", 0);
 		priestChurchLocationY = config.getInt("Priest.Church.Location.Y", 80);
@@ -272,26 +273,25 @@ public class SNConfigHandler {
 		priestBanishLocationX = config.getInt("Priest.Banish.Location.X", 0);
 		priestBanishLocationY = config.getInt("Priest.Banish.Location.Y", 80);
 		priestBanishLocationZ = config.getInt("Priest.Banish.Location.Z", 0);
-		
+
 		priestPowerStart = config.getInt("Priest.Power.StartingAmount", 10000);
 		priestDeathPowerPenalty = config.getInt("Priest.Power.DeathPenalty", 1500);
 		priestDamageFactorAttackSuper = config.getDouble("Priest.DamageFactor.AttackBonusSuper", 1.0);
 		priestDamageFactorAttackHuman = config.getDouble("Priest.DamageFactor.AttackBonusHuman", 0);
-		priestFireTicks = config.getInt("Priest.DamageFactor.FireTicks", 100);
 		priestPowerBanish = config.getInt("Priest.Power.Banish", 4000);
 		priestPowerHeal = config.getInt("Priest.Power.HealOther", 1000);
 		priestHealAmount = config.getInt("Priest.Spell.HealAmount", 10);
 		priestPowerExorcise = config.getInt("Priest.Power.Exorcise", 9000);
 		priestPowerCure = config.getInt("Priest.Power.Cure", 1000);
 		priestPowerDrain = config.getInt("Priest.Power.Drain", 1000);
-		priestDrainFactor = config.getDouble("Priest.Spell.DrainFactor", 0.1);
-		priestAltarMaterial = config.getString("Priest.Church.Altar.Material","DIAMOND_BLOCK");
+		priestDrainFactor = config.getDouble("Priest.Spell.DrainFactor", 0.15);
+		priestAltarMaterial = config.getString("Priest.Church.AltarMaterial","DIAMOND_BLOCK");
 		priestMaterialsString = config.getStringList("Priest.Spell.Material", null);
 		priestAltarMaterialsString = config.getStringList("Priest.Church.Recipe.Materials", null);
 		priestAltarQuantities = config.getIntList("Priest.Church.Recipe.Quantities", null);
 		priestDonationMaterialsString = config.getStringList("Priest.Church.Donation.Materials", null);
 		priestDonationRewards = config.getIntList("Priest.Church.Donation.Rewards", null);
-		
+
 		ghoulPowerStart = config.getInt("Ghoul.Power.Start", 5000);
 		ghoulKillSpreadCurse = config.getBoolean("Ghoul.Kill.SpreadCurse", true);
 		ghoulKillPowerCreatureGain = config.getInt("Ghoul.Power.Kill.CreatureGain", 200);
@@ -308,7 +308,7 @@ public class SNConfigHandler {
 		ghoulWeaponImmunityString = config.getStringList("Ghoul.Immunity", null);
 		dashDeltaSpeed = config.getDouble("Were.DashDelta", 4);
 		dashBloodCost = config.getInt("Were.Power.Dash", 400);
-		
+
 		werePowerStart = config.getInt("Were.Power.Start", 5000);
 		wereKillSpreadCurse = config.getBoolean("Were.Kill.SpreadCurse", true);
 		wereKillPowerCreatureGain = config.getInt("Were.Power.Kill.CreatureGain", 20);

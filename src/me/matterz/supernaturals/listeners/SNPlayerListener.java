@@ -20,6 +20,8 @@ import org.bukkit.material.Door;
 public class SNPlayerListener extends PlayerListener{
 
 	public static SupernaturalsPlugin plugin;
+	private String permissions = "supernatural.player.shrineuse";
+	private String permissions2 = "supernatural.player.wolfbane";
 	
 	public SNPlayerListener(SupernaturalsPlugin instance){
 		SNPlayerListener.plugin = instance;
@@ -74,6 +76,9 @@ public class SNPlayerListener extends PlayerListener{
 							return;
 						}
 					}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
+						if(!SupernaturalsPlugin.hasPermissions(player, permissions2)){
+							return;
+						}
 						if(SupernaturalManager.worldTimeIsNight(player)){
 							SupernaturalManager.sendMessage(snplayer, "Cannot cure lycanthropy during the night.");
 							return;
@@ -227,6 +232,10 @@ public class SNPlayerListener extends PlayerListener{
 					}
 				}
 			}
+		}
+		
+		if(!SupernaturalsPlugin.hasPermissions(player, permissions)){
+			return;
 		}
 		
 		if(blockMaterial == Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterial)) {
