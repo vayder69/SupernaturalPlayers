@@ -268,6 +268,8 @@ public class SupernaturalManager {
 				alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
 			}else if(snplayer.isHunter()){
 				alterPower(snplayer, -SNConfigHandler.hunterDeathPowerPenalty, "You died!");
+			}else if(snplayer.isHuman()){
+				SupernaturalsPlugin.instance.getHunterManager().removePlayerApp(player);
 			}
 			
 			Entity damager = null;
@@ -438,7 +440,6 @@ public class SupernaturalManager {
 		
 		double deltaSeconds = milliseconds/1000D;;
 		double deltaHeal;
-		double deltaBlood;
 		
 		if(snplayer.isVampire()){
 			if(snplayer.getPower() <= SNConfigHandler.vampireHealthCost){
@@ -446,14 +447,10 @@ public class SupernaturalManager {
 					SupernaturalsPlugin.log("Regen Event: Vampire player " + player.getName() + " not enough power!");
 				return;
 			}
-			deltaHeal = deltaSeconds * SNConfigHandler.vampireTimeHealthGained;
-			deltaBlood = -deltaHeal * SNConfigHandler.vampireHealthCost;
 			
-			if(snplayer.getPower() + deltaBlood <= SNConfigHandler.vampireHealthCost){
-				deltaBlood = 0;
-				deltaHeal = -deltaBlood / SNConfigHandler.vampireHealthCost;
-			}
-			SupernaturalManager.alterPower(snplayer, deltaBlood, "Healing!");
+			deltaHeal = deltaSeconds * SNConfigHandler.vampireTimeHealthGained;
+			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.vampireHealthCost, "Healing!");
+			
 		}else if(snplayer.isGhoul()){
 			deltaHeal = deltaSeconds * SNConfigHandler.ghoulHealthGained;
 		}else{

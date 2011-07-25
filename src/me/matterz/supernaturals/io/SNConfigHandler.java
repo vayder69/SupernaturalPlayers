@@ -100,6 +100,7 @@ public class SNConfigHandler {
 	public static int hunterKillPowerPlayerGain;
 	public static int hunterFallReduction;
 	public static int hunterFireArrowFireTicks;
+	public static int hunterPowerStart;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -113,6 +114,7 @@ public class SNConfigHandler {
 	public static String dashMaterial;
 	public static String demonMaterial;
 	public static String demonSnareMaterial;
+	public static String hunterHallMessage;
 	public static Location vampireTeleportLocation;
 	public static Location priestChurchLocation;
 	public static Location priestBanishLocation;
@@ -349,6 +351,8 @@ public class SNConfigHandler {
 		hunterFallReduction = config.getInt("WitchHunter.FallReduction", 2);
 		hunterFireArrowFireTicks = config.getInt("WitchHunter.FireArrow.FireTicks", 100);
 		hunterArrowTypes = config.getStringList("WitchHunter.ArrowTypes", null);
+		hunterPowerStart = config.getInt("WitchHunter.Power.StartingPower", 10000);
+		hunterHallMessage = config.getString("WitchHunter.Hall.Message", "WitchHunter");
 		
 		if(supernaturalTypes.size() == 0){
 			supernaturalTypes.add("human");

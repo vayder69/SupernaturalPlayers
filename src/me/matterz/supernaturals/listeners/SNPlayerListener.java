@@ -50,6 +50,52 @@ public class SNPlayerListener extends PlayerListener{
 		boolean cancelled = false;
 		Material itemMaterial = event.getMaterial();
 		
+		Location blockLoc;
+		
+		Block block = event.getClickedBlock();
+		try{
+			blockLoc = block.getLocation();
+		}catch(NullPointerException e){
+			SupernaturalsPlugin.log("Door trying to close.");
+			event.setCancelled(true);
+			return;
+		}
+		
+		if(block.getType().equals(Material.IRON_DOOR_BLOCK)){
+			if(SNConfigHandler.debugMode)
+				SupernaturalsPlugin.log(snplayer.getName()+" activated an Iron Door.");
+			for(int x = blockLoc.getBlockX()-2; x < blockLoc.getBlockX()+3; x++){
+				for(int y = blockLoc.getBlockY()-2; y < blockLoc.getBlockY()+3; y++){
+					for(int z = blockLoc.getBlockZ()-2; z < blockLoc.getBlockZ()+3; z++){
+						Location newLoc = new Location(block.getWorld(), x, y, z);
+						Block newBlock = newLoc.getBlock();
+						if(newBlock.getType().equals(Material.SIGN) || newBlock.getType().equals(Material.WALL_SIGN)){
+							if(SNConfigHandler.debugMode)
+								SupernaturalsPlugin.log(snplayer.getName()+" found a sign.");
+							Sign sign = (Sign) newBlock.getState();
+							String[] text = sign.getLines();
+							for(int i = 0; i < text.length; i++){
+								if(SNConfigHandler.debugMode)
+									SupernaturalsPlugin.log("The sign says: "+text[i]);
+								if(text[i].contains(SNConfigHandler.hunterHallMessage)){
+									if(plugin.getHunterManager().doorIsOpening(blockLoc)){
+										if(SNConfigHandler.debugMode)
+											SupernaturalsPlugin.log("Cancelled door event.");
+										event.setCancelled(true);
+										return;
+									}
+									Door door = (Door) block.getState().getData();
+									boolean open = plugin.getHunterManager().doorEvent(player, block, door);
+									event.setCancelled(open);
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		if(action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)){
 			if(player.getItemInHand()==null){
 				return;
@@ -202,37 +248,6 @@ public class SNPlayerListener extends PlayerListener{
 		}
 		
 		Material blockMaterial = event.getClickedBlock().getType();
-		
-		Block block = event.getClickedBlock();
-		if(block.getType().equals(Material.IRON_DOOR_BLOCK) || block.getType().equals(Material.WOODEN_DOOR)){
-			Location blockLoc = block.getLocation();
-			for(int x = blockLoc.getBlockX()-2; x < blockLoc.getBlockX()+3; x++){
-				for(int y = blockLoc.getBlockY()-2; y < blockLoc.getBlockY()+3; y++){
-					for(int z = blockLoc.getBlockZ()-2; z < blockLoc.getBlockZ()+3; z++){
-						Location newLoc = new Location(block.getWorld(), x, y, z);
-						Block newBlock = newLoc.getBlock();
-						if(newBlock.getType().equals(Material.SIGN_POST)){
-							Sign sign = (Sign) newBlock;
-							String[] text = sign.getLines();
-							for(int i = 0; i < text.length; i++){
-								if(text[i].contains("WitchHunters' Hall")){
-									Door door = (Door) block;
-									if(snplayer.isHuman()){
-										boolean open = plugin.getHunterManager().join(snplayer);
-										event.setCancelled(open);
-										return;
-									}else if(snplayer.isHunter()){
-										door.setOpen(true);
-										event.setCancelled(true);
-										return;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 		
 		if(!SupernaturalsPlugin.hasPermissions(player, permissions)){
 			return;

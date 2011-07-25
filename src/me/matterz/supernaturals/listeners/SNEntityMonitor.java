@@ -1,7 +1,6 @@
 package me.matterz.supernaturals.listeners;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
@@ -28,7 +27,6 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 public class SNEntityMonitor extends EntityListener {
 	
 	private static SupernaturalsPlugin plugin;
-	private static HashMap<Player, ArrayList<String>> hunterApps = new HashMap<Player, ArrayList<String>>();
 	
 	public SNEntityMonitor(SupernaturalsPlugin instance){
 		SNEntityMonitor.plugin = instance;
@@ -176,6 +174,10 @@ public class SNEntityMonitor extends EntityListener {
 			return;
 		}
 		Player pVictim = (Player) entity;
+		
+		if(!pVictim.isOnline())
+			return;
+		
 		SuperNPlayer snplayer = SupernaturalManager.get(pVictim);
 		SupernaturalManager.deathEvent((Player) entity);
 		
@@ -205,8 +207,8 @@ public class SNEntityMonitor extends EntityListener {
 					}
 				}else if(snDamager.isHuman()){
 					ArrayList<String> supersKilled = new ArrayList<String>();
-					if(hunterApps.containsKey(pDamager)){
-						supersKilled = hunterApps.get(pDamager);
+					if(plugin.getHunterManager().playerHasApp(pDamager)){
+						supersKilled = plugin.getHunterManager().getPlayerApp(pDamager);
 						if(!supersKilled.contains(snplayer.getType())){
 							supersKilled.add(snplayer.getType());
 							if(supersKilled.size()>=3){
@@ -216,7 +218,7 @@ public class SNEntityMonitor extends EntityListener {
 					}else{
 						supersKilled.add(snplayer.getType());
 					}
-					hunterApps.put(pDamager, supersKilled);
+					plugin.getHunterManager().addPlayerApp(pDamager, supersKilled);
 				}
 			}else if(damager instanceof Wolf){
 				Wolf wolf = (Wolf) damager;
