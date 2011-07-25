@@ -180,7 +180,7 @@ public class SNEntityMonitor extends EntityListener {
 			return;
 		
 		SuperNPlayer snplayer = SupernaturalManager.get(pVictim);
-		SupernaturalManager.deathEvent(pVictim);
+		//SupernaturalManager.deathEvent(pVictim);
 		
 		Entity damager = null;
 		EntityDamageEvent e = entity.getLastDamageCause();
@@ -240,5 +240,6 @@ public class SNEntityMonitor extends EntityListener {
 			SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
 			SupernaturalManager.killEvent(snDamager, snplayer);
 		}
+		SupernaturalManager.deathEvent(pVictim);
 	}
 }
