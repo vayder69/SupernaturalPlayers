@@ -157,13 +157,13 @@ public class HunterManager {
 			if(door.isTopHalf()){
 				newLoc = new Location(loc.getWorld(),loc.getBlockX(),loc.getBlockY()-1,loc.getBlockZ());
 				newBlock = newLoc.getBlock();
-				block.setTypeIdAndData(71, (byte)13, false);
-				newBlock.setTypeIdAndData(71, (byte)5, false);
+				block.setTypeIdAndData(71, (byte)(block.getData()+4), false);
+				newBlock.setTypeIdAndData(71,(byte)(newBlock.getData()+4), false);
 			}else{
 				newLoc = new Location(loc.getWorld(),loc.getBlockX(),loc.getBlockY()+1,loc.getBlockZ());
 				newBlock = newLoc.getBlock();
-				block.setTypeIdAndData(71, (byte)5, false);
-				newBlock.setTypeIdAndData(71, (byte)13, false);
+				block.setTypeIdAndData(71, (byte)(block.getData()+4), false);
+				newBlock.setTypeIdAndData(71, (byte)(newBlock.getData()+4), false);
 			}
 			
 			addDoorLocation(loc);
@@ -194,13 +194,13 @@ public class HunterManager {
 		if(door.isTopHalf()){
 			newLoc = new Location(loc.getWorld(),loc.getBlockX(),loc.getBlockY()-1,loc.getBlockZ());
 			newBlock = newLoc.getBlock();
-			block.setTypeIdAndData(71, (byte)9, false);
-			newBlock.setTypeIdAndData(71, (byte)1, false);
+			block.setTypeIdAndData(71, (byte)(block.getData()-4), false);
+			newBlock.setTypeIdAndData(71, (byte)(newBlock.getData()-4), false);
 		}else{
 			newLoc = new Location(loc.getWorld(),loc.getBlockX(),loc.getBlockY()+1,loc.getBlockZ());
 			newBlock = newLoc.getBlock();
-			block.setTypeIdAndData(71, (byte)1, false);
-			newBlock.setTypeIdAndData(71, (byte)9, false);
+			block.setTypeIdAndData(71, (byte)(block.getData()-4), false);
+			newBlock.setTypeIdAndData(71, (byte)(newBlock.getData()-4), false);
 		}
 		
 		removeDoorLocation(loc);
