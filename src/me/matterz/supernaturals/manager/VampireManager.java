@@ -9,10 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.matterz.supernaturals.SuperNPlayer;
+import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.util.GeometryUtil;
 
 public class VampireManager{
+	
+	private String permissions = "supernatural.player.preventsundamage";
 
 	// -------------------------------------------- //
 	// 					Power Altering				//
@@ -173,6 +176,9 @@ public class VampireManager{
 		// No need to set on fire if the water will put the fire out at once.
 		Material material = player.getLocation().getBlock().getType();
 		World playerWorld = player.getWorld();
+		
+		if(SupernaturalsPlugin.hasPermissions(player, permissions))
+			return false;
 		
 		if ((player.getWorld().getEnvironment().equals(Environment.NETHER)) 
 				|| SupernaturalManager.worldTimeIsNight(player) || this.isUnderRoof(player) || material == Material.STATIONARY_WATER
