@@ -89,18 +89,22 @@ public class SNConfigHandler {
 	public static int demonSnareDuration;
 	public static int demonPowerGain;
 	public static int demonPowerLoss;
+	public static int demonPowerStart;
+	public static int demonKillPowerCreatureGain;
+	public static int demonKillPowerPlayerGain;
+	public static int demonSnowballAmount;
 	public static int hunterDeathPowerPenalty;
 	public static int hunterPowerArrowFire;
 	public static int hunterPowerArrowTriple;
 	public static int hunterPowerArrowGrapple;
 	public static int hunterPowerArrowPower;
 	public static int hunterCooldown;
-	public static int demonKillPowerCreatureGain;
-	public static int demonKillPowerPlayerGain;
 	public static int hunterKillPowerPlayerGain;
 	public static int hunterFallReduction;
 	public static int hunterFireArrowFireTicks;
 	public static int hunterPowerStart;
+	public static int hunterMaxBounties;
+	public static int hunterBountyCompletion;
 	public static String vampireAltarInfectMaterial;
 	public static String vampireAltarCureMaterial;
 	public static String vampireAltarInfectMaterialSurround;
@@ -277,7 +281,7 @@ public class SNConfigHandler {
 		priestBanishLocationZ = config.getInt("Priest.Banish.Location.Z", 0);
 
 		priestPowerStart = config.getInt("Priest.Power.StartingAmount", 10000);
-		priestDeathPowerPenalty = config.getInt("Priest.Power.DeathPenalty", 1500);
+		priestDeathPowerPenalty = config.getInt("Priest.Power.DeathPenalty", 2000);
 		priestDamageFactorAttackSuper = config.getDouble("Priest.DamageFactor.AttackBonusSuper", 1.0);
 		priestDamageFactorAttackHuman = config.getDouble("Priest.DamageFactor.AttackBonusHuman", 0);
 		priestPowerBanish = config.getInt("Priest.Power.Banish", 4000);
@@ -328,31 +332,36 @@ public class SNConfigHandler {
 		wereWolfbaneMaterialsString = config.getStringList("Were.Wolfbane.Materials", null);
 		wereWolfbaneQuantities = config.getIntList("Were.Wolfbane.Quantities", null);
 		
+		demonPowerStart = config.getInt("Demon.Power.Start", 10000);
+		demonDeathPowerPenalty = config.getInt("Demon.Power.DeathPenalty", 10000);
+		demonKillPowerCreatureGain = config.getInt("Demon.Power.CreatureKill", 20);
+		demonKillPowerPlayerGain = config.getInt("Demon.Power.PlayerKill", 100);
+		demonPowerGain = config.getInt("Demon.Power.Gain", 40);
+		demonPowerLoss = config.getInt("Demon.Power.Loss", 15);
+		demonPowerFireball = config.getInt("Demon.Power.Fireball", 2000);
 		demonHealing = config.getInt("Demon.Healing", 1);
-		demonDeathPowerPenalty = config.getInt("Demon.Power.DeathPenalty", 1000);
 		demonMaterial = config.getString("Demon.FireballMaterial", "REDSTONE");
-		demonPowerFireball = config.getInt("Demon.Power.Fireball", 200);
-		demonPowerGain = config.getInt("Demon.Power.Gain", 30);
-		demonPowerLoss = config.getInt("Demon.Power.Loss", 10);
-		demonKillPowerCreatureGain = config.getInt("Demon.Power.CreatureKill", 10);
-		demonKillPowerPlayerGain = config.getInt("Demon.Power.PlayerKill", 10);
-		demonPowerSnare = config.getInt("Demon.Power.Snare", 200);
+		demonPowerSnare = config.getInt("Demon.Power.Snare", 1000);
 		demonSnareDuration = config.getInt("Demon.Snare.Duration", 10000);
 		demonSnareMaterial = config.getString("Demon.Snare.Material", "INK_SACK");
+		demonSnowballAmount = config.getInt("Demon.SnowballAmount", 30);
 		
-		hunterDeathPowerPenalty = config.getInt("WitchHunter.Power.DeathPenalty", 1000);
-		hunterPowerArrowFire = config.getInt("WitchHunter.Power.ArrowFire", 200);
-		hunterPowerArrowTriple = config.getInt("WitchHunter.Power.ArrowTriple", 200);
-		hunterPowerArrowGrapple = config.getInt("WitchHunter.Power.ArrowGrapple", 1000);
-		hunterPowerArrowPower = config.getInt("WitchHunter.Power.ArrowPower", 1000);
+		hunterPowerStart = config.getInt("WitchHunter.Power.StartingPower", 10000);
+		hunterDeathPowerPenalty = config.getInt("WitchHunter.Power.DeathPenalty", 500);
+		hunterKillPowerPlayerGain = config.getInt("WitchHunter.Power.PlayerKill", 2000);
+		hunterBountyCompletion = config.getInt("WitchHunter.Bounty.CompletionBonus", 8000);
+		hunterPowerArrowFire = config.getInt("WitchHunter.Power.ArrowFire", 100);
+		hunterPowerArrowTriple = config.getInt("WitchHunter.Power.ArrowTriple", 100);
+		hunterPowerArrowGrapple = config.getInt("WitchHunter.Power.ArrowGrapple", 500);
+		hunterPowerArrowPower = config.getInt("WitchHunter.Power.ArrowPower", 2000);
 		hunterPowerArrowDamage = config.getDouble("WitchHunter.ArrowPower.DamageFactor", 2.0);
-		hunterArmorString = config.getStringList("WitchHunter.Armor", null);
 		hunterCooldown = config.getInt("WitchHunter.PowerArrow.Cooldown", 15000);
-		hunterFallReduction = config.getInt("WitchHunter.FallReduction", 2);
+		hunterArmorString = config.getStringList("WitchHunter.Armor", null);
+		hunterFallReduction = config.getInt("WitchHunter.FallReduction", 3);
 		hunterFireArrowFireTicks = config.getInt("WitchHunter.FireArrow.FireTicks", 100);
 		hunterArrowTypes = config.getStringList("WitchHunter.ArrowTypes", null);
-		hunterPowerStart = config.getInt("WitchHunter.Power.StartingPower", 10000);
 		hunterHallMessage = config.getString("WitchHunter.Hall.Message", "WitchHunter");
+		hunterMaxBounties = config.getInt("WitchHunter.Bounty.MaxNumber", 5);
 		
 		if(supernaturalTypes.size() == 0){
 			supernaturalTypes.add("human");

@@ -15,11 +15,53 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 
 public class DemonManager {
 	
 	private HashMap<Block, Location> webMap = new HashMap<Block, Location>();
+	private ArrayList<Player> demonApps = new ArrayList<Player>();
+	
+	// -------------------------------------------- //
+	// 				Demon Applications				//
+	// -------------------------------------------- //
+	
+	public void checkInventory(Player player){
+		PlayerInventory inv = player.getInventory();
+		if(SNConfigHandler.debugMode)
+			SupernaturalsPlugin.log("Player teleported to Nether.  Checking inventory...");
+		ItemStack helmet = inv.getHelmet();
+		ItemStack chestplate = inv.getChestplate();
+		ItemStack leggings = inv.getLeggings();
+		ItemStack boots = inv.getBoots();
+		if(helmet.getType().equals(Material.LEATHER_HELMET)){
+			if(SNConfigHandler.debugMode)
+				SupernaturalsPlugin.log("Leather Helm");
+			if(chestplate.getType().equals(Material.LEATHER_CHESTPLATE)){
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log("Leather Chest");
+				if(leggings.getType().equals(Material.LEATHER_LEGGINGS)){
+					if(SNConfigHandler.debugMode)
+						SupernaturalsPlugin.log("Leather Legs");
+					if(boots.getType().equals(Material.LEATHER_BOOTS)){
+						if(SNConfigHandler.debugMode)
+							SupernaturalsPlugin.log("Leather Boots");
+						demonApps.add(player);
+						return;
+					}
+				}
+			}
+		}
+	}
+	
+	public boolean checkPlayerApp(Player player){
+		if(demonApps.contains(player)){
+			demonApps.remove(player);
+			return true;
+		}
+		return false;
+	}
 	
 	// -------------------------------------------- //
 	// 					WebMap						//

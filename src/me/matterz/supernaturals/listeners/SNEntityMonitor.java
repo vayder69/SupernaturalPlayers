@@ -173,16 +173,18 @@ public class SNEntityMonitor extends EntityListener {
 		if(!(entity instanceof Player)) {
 			return;
 		}
+		
 		Player pVictim = (Player) entity;
 		
 		if(!pVictim.isOnline())
 			return;
 		
 		SuperNPlayer snplayer = SupernaturalManager.get(pVictim);
-		SupernaturalManager.deathEvent((Player) entity);
+		SupernaturalManager.deathEvent(pVictim);
 		
 		Entity damager = null;
-		Event e = entity.getLastDamageCause();
+		EntityDamageEvent e = entity.getLastDamageCause();
+		
 		if(e instanceof EntityDamageByEntityEvent){
 			damager = ((EntityDamageByEntityEvent) e).getDamager();
 		} else if(e instanceof EntityDamageByProjectileEvent){
@@ -202,7 +204,7 @@ public class SNEntityMonitor extends EntityListener {
 						SupernaturalManager.sendMessage(snplayer, "This action, voluntary or not, has rescinded your status as a WitchHunter.");
 						SupernaturalManager.cure(snplayer);
 						if(SNConfigHandler.debugMode){
-							SupernaturalsPlugin.log("Player "+pDamager.getName()+" cured themselves.");
+							SupernaturalsPlugin.log("Player "+pDamager.getName()+" cured themself.");
 						}
 					}
 				}else if(snDamager.isHuman()){

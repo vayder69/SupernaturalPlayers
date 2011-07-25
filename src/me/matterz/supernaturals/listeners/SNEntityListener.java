@@ -27,7 +27,6 @@ public class SNEntityListener extends EntityListener{
 
 	private boolean projectileCalled = false;
 	private String arrowType = "normal";
-	
 	private List<Player> demons = new ArrayList<Player>();
 	
 	public SNEntityListener(SupernaturalsPlugin instance){
@@ -93,8 +92,8 @@ public class SNEntityListener extends EntityListener{
 					if(!demons.contains(dPlayer)){
 						demons.add(dPlayer);
 						plugin.getDemonManager().heal(pVictim);
-						if(event.getCause().equals(DamageCause.LAVA))
-							SupernaturalManager.alterPower(snpVictim, SNConfigHandler.demonPowerGain, "Lava!");
+						if(event.getCause().equals(DamageCause.FIRE_TICK))
+							SupernaturalManager.alterPower(snpVictim, SNConfigHandler.demonPowerGain, "Fire!");
 						SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
 			                public void run() {
 			                	demons.remove(dPlayer);
@@ -147,7 +146,7 @@ public class SNEntityListener extends EntityListener{
 				if(arrowType.equalsIgnoreCase("power")){
 					damage += damage * SNConfigHandler.hunterPowerArrowDamage;
 				}else if(arrowType.equalsIgnoreCase("fire")){
-					victim.setFireTicks(300);
+					victim.setFireTicks(SNConfigHandler.hunterFireArrowFireTicks);
 				}
 				projectileCalled = false;
 			}

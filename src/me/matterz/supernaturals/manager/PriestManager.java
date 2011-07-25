@@ -65,7 +65,7 @@ public class PriestManager {
 							}
 						}else{
 							SupernaturalManager.sendMessage(snplayer, "The Church Altar radiates holy power.");
-							if(!snplayer.isHuman()) {
+							if(snplayer.isSuper()) {
 								SupernaturalManager.sendMessage(snplayer, "The holy power of the Church tears you asunder!");
 								EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, 20);
 								player.setLastDamageCause(event);

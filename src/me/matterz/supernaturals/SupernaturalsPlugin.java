@@ -9,12 +9,14 @@ import java.util.logging.Logger;
 
 import me.matterz.supernaturals.commands.SNCommandAdmin;
 import me.matterz.supernaturals.commands.SNCommandClasses;
+import me.matterz.supernaturals.commands.SNCommandKillList;
 import me.matterz.supernaturals.commands.SNCommandReload;
 import me.matterz.supernaturals.commands.SNCommandPower;
 import me.matterz.supernaturals.commands.SNCommandCure;
 import me.matterz.supernaturals.commands.SNCommandHelp;
 import me.matterz.supernaturals.commands.SNCommandList;
 import me.matterz.supernaturals.commands.SNCommandReset;
+import me.matterz.supernaturals.commands.SNCommandRmTarget;
 import me.matterz.supernaturals.commands.SNCommandSave;
 import me.matterz.supernaturals.commands.SNCommandConvert;
 import me.matterz.supernaturals.commands.SNCommandSetBanish;
@@ -153,12 +155,15 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandSetBanish());
 		commands.add(new SNCommandSetCoven());
 		commands.add(new SNCommandReset());
+		commands.add(new SNCommandKillList());
+		commands.add(new SNCommandRmTarget());
 		
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Lowest, this);
 		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Low, this);
 		
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
+		pm.registerEvent(Type.PLAYER_PORTAL, this.playerMonitor, Priority.Monitor, this);
 		
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
 		pm.registerEvent(Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
@@ -168,6 +173,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.PROJECTILE_HIT, this.entityMonitor, Priority.Monitor, this);
 		
 		pm.registerEvent(Type.BLOCK_BREAK, this.blockListener, Priority.Low, this);
+		pm.registerEvent(Type.SIGN_CHANGE, this.blockListener, Priority.Low, this);
 		
         PluginDescriptionFile pdfFile = this.getDescription();
         log(pdfFile.getName() + " version " + pdfFile.getVersion() + " enabled.");
@@ -178,6 +184,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 
 	    loadData();
 	    superManager.startTimer();
+	    HunterManager.createBounties();
 	    setupPermissions();	    
 	}
 	

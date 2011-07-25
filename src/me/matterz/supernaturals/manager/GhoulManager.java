@@ -13,6 +13,8 @@ import me.matterz.supernaturals.io.SNConfigHandler;
 
 public class GhoulManager {
 	
+	private String permissions = "supernatural.player.preventwaterdamage";
+	
 	// -------------------------------------------- //
 	// 				Water Damage					//
 	// -------------------------------------------- //
@@ -20,6 +22,9 @@ public class GhoulManager {
 	public void waterAdvanceTime(Player player){
 		if(player.isDead())
 			return;
+		if(SupernaturalsPlugin.hasPermissions(player, permissions))
+			return;
+		
 		Material material = player.getLocation().getBlock().getType();
 		
 		if(material == Material.STATIONARY_WATER || material == Material.WATER){

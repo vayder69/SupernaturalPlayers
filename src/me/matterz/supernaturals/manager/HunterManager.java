@@ -2,6 +2,8 @@ package me.matterz.supernaturals.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
@@ -27,6 +29,93 @@ public class HunterManager {
 	private ArrayList<Location> hallDoors = new ArrayList<Location>();
 	private static HashMap<Player, ArrayList<String>> hunterApps = new HashMap<Player, ArrayList<String>>();
 	private ArrayList<SuperNPlayer> playerInvites = new ArrayList<SuperNPlayer>();
+	private static ArrayList<SuperNPlayer> bountyList = new ArrayList<SuperNPlayer>();
+	
+	// -------------------------------------------- //
+	// 					Bounties					//
+	// -------------------------------------------- //
+	
+	public static ArrayList<SuperNPlayer> getBountyList(){
+		return bountyList;
+	}
+	
+	public static boolean checkBounty(SuperNPlayer snplayer){
+		if(bountyList.contains(snplayer))
+			return true;
+		return false;
+	}
+	
+	public static boolean removeBounty(SuperNPlayer snplayer){
+		if(bountyList.contains(snplayer)){
+			bountyList.remove(snplayer);
+			return true;
+		}
+		return false;
+	}
+	
+	public static void addBounty(){
+		List<SuperNPlayer> targets = SupernaturalManager.getSupernaturals();
+		boolean bountyFound = false;
+		Random generator = new Random();
+		int count = 0;
+		
+		while(!bountyFound){
+			int randomIndex = generator.nextInt(targets.size());
+			SuperNPlayer sntarget = targets.get(randomIndex);
+			
+			if(!bountyList.contains(sntarget) && sntarget.isSuper()){
+				bountyList.add(sntarget);
+				SupernaturalsPlugin.instance.getServer().broadcastMessage(ChatColor.WHITE+sntarget.getName()+ChatColor.RED+" has been added to the WitchHunter target list!");
+				bountyFound = true;
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log("Bounty created on "+sntarget.getName());
+				return;
+			}
+			count++;
+			if(count>50)
+				return;
+		}
+	}
+	
+	public static void updateBounties(){
+		List<SuperNPlayer> snplayers = new ArrayList<SuperNPlayer>();
+		
+		if(bountyList.isEmpty())
+			return;
+		
+		for(SuperNPlayer snplayer : bountyList){
+			if(!snplayer.isSuper()){
+				snplayers.add(snplayer);
+			}
+		}
+		
+		for(SuperNPlayer snplayer : snplayers){
+			removeBounty(snplayer);
+			addBounty();
+		}
+	}
+	
+	public static void createBounties(){
+		List<SuperNPlayer> targets = SupernaturalManager.getSupernaturals();
+		int numberFound = 0;
+		Random generator = new Random();
+		int count = 0;
+		
+		while(numberFound < SNConfigHandler.hunterMaxBounties){
+			int randomIndex = generator.nextInt(targets.size());
+			SuperNPlayer sntarget = targets.get(randomIndex);
+			if(!bountyList.contains(sntarget) && sntarget.isSuper()){
+				bountyList.add(sntarget);
+				numberFound++;
+				SupernaturalsPlugin.instance.getServer().broadcastMessage(ChatColor.WHITE+sntarget.getName()+ChatColor.RED+" has been added to the WitchHunter target list!");
+				if(SNConfigHandler.debugMode)
+					SupernaturalsPlugin.log("Bounty created on "+sntarget.getName());
+			}
+			count++;
+			if(count>100)
+				return;
+		}
+	}
 	
 	// -------------------------------------------- //
 	// 					Doors						//

@@ -23,9 +23,10 @@ public class SNCommandHelp extends SNCommand{
 	
 	static{
 		helpMessages.add("*** "+ChatColor.WHITE+"Supernatural Help "+ChatColor.RED+"***");
-		helpMessages.add("/sn power "+ChatColor.WHITE+"- Show current power level.");
-		helpMessages.add("/sn list "+ChatColor.WHITE+"- List supernaturals on the server.");
-		helpMessages.add("/sn classes "+ChatColor.WHITE+"- Show the list of available Super-classes");
+		helpMessages.add("/sn Power "+ChatColor.WHITE+"- Show current power level.");
+		helpMessages.add("/sn List "+ChatColor.WHITE+"- List supernaturals on the server.");
+		helpMessages.add("/sn Classes "+ChatColor.WHITE+"- Show the list of available Super-classes.");
+		helpMessages.add("/sn KillList "+ChatColor.WHITE+"- Show the list of current WitchHunter targets.");
 	}
 	
 	@Override
@@ -35,7 +36,7 @@ public class SNCommandHelp extends SNCommand{
 		Player senderPlayer = (Player) sender;
 		
 		if(!SupernaturalsPlugin.hasPermissions(senderPlayer, permissions2)){
-			if(helpMessages.size()==4){
+			if(helpMessages.size()==5){
 				helpMessages.add("/sn admin "+ChatColor.WHITE+"- Show list of admin-only commands");
 			}
 		}

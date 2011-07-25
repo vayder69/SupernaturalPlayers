@@ -26,7 +26,8 @@ public class SNCommandAdmin extends SNCommand{
 		adminHelpMessages.add("/sn cure <PlayerName> "+ChatColor.WHITE+"- Cure self or player.");
 		adminHelpMessages.add("/sn convert <PlayerName> [SupernaturalType] "+ChatColor.WHITE+"- Turn self or player into any supernatural.");
 		adminHelpMessages.add("/sn reset <PlayerName>"+ChatColor.WHITE+"- Reset self or player's power.");
-		adminHelpMessages.add("/sn power <Playername> [Power] "+ChatColor.WHITE+"- Give power to self or player.");
+		adminHelpMessages.add("/sn power <PlayerName> [Power] "+ChatColor.WHITE+"- Give power to self or player.");
+		adminHelpMessages.add("/sn rmtarget <PlayerName> "+ChatColor.WHITE+"- Removes player from current WitchHunter kill list.");
 		adminHelpMessages.add("/sn save "+ChatColor.WHITE+"- Save data to disk.");
 		adminHelpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
 		adminHelpMessages.add("/sn setchurch "+ChatColor.WHITE+"- Sets your current location as the priests' church.");

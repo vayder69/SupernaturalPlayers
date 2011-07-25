@@ -4,15 +4,20 @@ import java.util.ArrayList;
 
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
+import me.matterz.supernaturals.manager.SupernaturalManager;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockListener;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class SNBlockListener extends BlockListener{
 
 	private SupernaturalsPlugin plugin;
+	private String permissions = "supernatural.player.witchhuntersign";
 	
 	public SNBlockListener(SupernaturalsPlugin instance){
 		this.plugin = instance;
@@ -30,6 +35,23 @@ public class SNBlockListener extends BlockListener{
 				plugin.getDemonManager().removeWeb(block);
 				if(SNConfigHandler.debugMode)
 					SupernaturalsPlugin.log("Removed web block through destruction.");
+				return;
+			}
+		}
+	}
+	
+	@Override
+	public void onSignChange(SignChangeEvent event){
+		Player player = event.getPlayer();
+		String[] text = event.getLines();
+		for(int i =0; i < text.length; i++){
+			if(text[i].contains(SNConfigHandler.hunterHallMessage)){
+				if(!SupernaturalsPlugin.hasPermissions(player, permissions)){
+					SupernaturalManager.sendMessage(SupernaturalManager.get(player), "You do not have permission to create WitchHunter signs");
+					event.setCancelled(true);
+					event.getBlock().setTypeId(0);
+					player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.SIGN,1));
+				}
 				return;
 			}
 		}

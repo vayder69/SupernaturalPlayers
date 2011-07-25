@@ -8,6 +8,7 @@ import java.util.Timer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creature;
@@ -17,9 +18,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
-import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByProjectileEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
@@ -108,6 +110,7 @@ public class SupernaturalManager {
 		SupernaturalsPlugin.log(snplayer.getName() + " turned into a " + ChatColor.WHITE + superType + ChatColor.RED + "!");
 		
 		updateName(snplayer);
+		HunterManager.updateBounties();
 //		if(snplayer.getType().equalsIgnoreCase("hunter"))
 //			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
 //		else
@@ -132,6 +135,7 @@ public class SupernaturalManager {
 		snplayer.setTruce(true);
 		
 		updateName(snplayer);
+		HunterManager.updateBounties();
 //		if(snplayer.getType().equalsIgnoreCase("hunter"))
 //			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
 //		else
@@ -157,6 +161,7 @@ public class SupernaturalManager {
 		snplayer.setTruce(true);
 		
 		updateName(snplayer);
+		HunterManager.updateBounties();
 //		if(snplayer.getType().equalsIgnoreCase("hunter"))
 //			SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName()).setSneaking(true);
 //		else
@@ -166,8 +171,7 @@ public class SupernaturalManager {
 		
 		SupernaturalManager.sendMessage(snplayer, "You been reverted to your previous state of being a " 
 				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
-		SupernaturalsPlugin.log(snplayer.getName() + " was reverted to the previous state of being a " 
-				+ ChatColor.WHITE + oldType + ChatColor.RED + "!");
+		SupernaturalsPlugin.log(snplayer.getName() + " was reverted to the previous state of being a " +oldType+"!");
 		SupernaturalsPlugin.saveData();
 		
 	}
@@ -254,6 +258,11 @@ public class SupernaturalManager {
 			}else if(damager.isHunter()){
 				if(victim.getPower() > SNConfigHandler.hunterKillPowerPlayerGain){
 					alterPower(damager, SNConfigHandler.hunterKillPowerPlayerGain, "Player killed!");
+					if(HunterManager.checkBounty(victim)){
+						alterPower(damager, SNConfigHandler.hunterBountyCompletion, "Bounty Fulfilled!");
+						HunterManager.removeBounty(victim);
+						HunterManager.addBounty();
+					}
 				}else{
 					SupernaturalManager.sendMessage(damager, "You cannot gain power from a player with no power themselves.");
 				}
@@ -262,7 +271,13 @@ public class SupernaturalManager {
 	}
 	
 	public static void deathEvent(Player player){
+		if(SNConfigHandler.debugMode)
+			SupernaturalsPlugin.log("Player died.");
+		
 		SuperNPlayer snplayer = get(player);
+		Entity damager = null;
+		EntityDamageEvent e = player.getLastDamageCause();
+		
 		if(!snplayer.isSuper()){
 			if(snplayer.isPriest()){
 				alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
@@ -272,8 +287,15 @@ public class SupernaturalManager {
 				SupernaturalsPlugin.instance.getHunterManager().removePlayerApp(player);
 			}
 			
-			Entity damager = null;
-			Event e = player.getLastDamageCause();
+			if(e.getCause().equals(DamageCause.LAVA) || e.getCause().equals(DamageCause.FIRE) || e.getCause().equals(DamageCause.FIRE_TICK)){
+				if(player.getWorld().getEnvironment().equals(Environment.NETHER)){
+					if(SupernaturalsPlugin.instance.getDemonManager().checkPlayerApp(player)){
+						sendMessage(snplayer, "Hellfire races through your veins!");
+						curse(snplayer, "demon", SNConfigHandler.demonPowerStart);
+					}
+				}
+			}
+			
 			if(e instanceof EntityDamageByEntityEvent){
 				damager = ((EntityDamageByEntityEvent) e).getDamager();
 			} else if(e instanceof EntityDamageByProjectileEvent){
@@ -283,13 +305,15 @@ public class SupernaturalManager {
 			if(damager!=null){
 				double random = Math.random();
 				if(random<SNConfigHandler.spreadChance){
-					if((damager instanceof PigZombie) && player.getWorld().getEnvironment().equals(Environment.NETHER)){
-						curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
-						SupernaturalManager.sendMessage(snplayer, "You have been transformed into a Ghoul!");
+					if(player.getWorld().getEnvironment().equals(Environment.NETHER)){
+						if(damager instanceof PigZombie){
+							curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
+							sendMessage(snplayer, "You have been transformed into a Ghoul!");
+						}
 					}else if((damager instanceof Wolf)){
 						if(!(((Wolf)damager).isTamed()) && worldTimeIsNight(player)){
 							curse(snplayer, "werewolf", SNConfigHandler.werePowerStart);
-							SupernaturalManager.sendMessage(snplayer, "You have mutated into a werewolf!");
+							sendMessage(snplayer, "You have mutated into a werewolf!");
 						}
 					}
 				}
@@ -303,6 +327,18 @@ public class SupernaturalManager {
 				alterPower(snplayer, -SNConfigHandler.wereDeathPowerPenalty, "You died!");
 			} else if(snplayer.isDemon()){
 				alterPower(snplayer, -SNConfigHandler.demonDeathPowerPenalty, "You died!");
+				if(e.getCause().equals(DamageCause.DROWNING) && player.getWorld().getTemperature(player.getLocation().getBlockX(), player.getLocation().getBlockZ())<0.6){
+					if(snplayer.isDemon()){
+						if(SNConfigHandler.debugMode)
+							SupernaturalsPlugin.log("Demon drowned.  Checking inventory...");
+						if(player.getInventory().contains(Material.SNOW_BALL, SNConfigHandler.demonSnowballAmount)){
+							sendMessage(snplayer, "Your icy death has cooled the infernal fires raging within your body.");
+							cure(snplayer);
+							if(SNConfigHandler.debugMode)
+								SupernaturalsPlugin.log("Snowballs found!");
+						}
+					}
+				}
 			}
 		}
 	}

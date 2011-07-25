@@ -6,9 +6,11 @@ import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SupernaturalManager;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerPortalEvent;
 
 public class SNPlayerMonitor extends PlayerListener {
 	
@@ -24,6 +26,16 @@ private SupernaturalsPlugin plugin;
 //			event.getPlayer().setSneaking(true);
 //		}
 //	}
+	
+	@Override
+	public void onPlayerPortal(PlayerPortalEvent event){
+		Player player = event.getPlayer();
+		if(event.getTo().getWorld().getEnvironment().equals(Environment.NETHER)){
+			if(SNConfigHandler.debugMode)
+				SupernaturalsPlugin.log("Player inventory logged.");
+			plugin.getDemonManager().checkInventory(player);
+		}
+	}
 	
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event){	    
