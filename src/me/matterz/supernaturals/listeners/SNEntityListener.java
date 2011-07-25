@@ -12,11 +12,14 @@ import me.matterz.supernaturals.util.EntityUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByProjectileEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
@@ -31,6 +34,30 @@ public class SNEntityListener extends EntityListener{
 	
 	public SNEntityListener(SupernaturalsPlugin instance){
 		this.plugin = instance;
+	}
+	
+	@Override
+	public void onEntityExplode(EntityExplodeEvent event){
+		if(SNConfigHandler.debugMode)
+			SupernaturalsPlugin.log("Entity Explode event with "+event.getEntity().getClass().getSimpleName());
+		if(event.getEntity() instanceof Fireball){
+			Fireball fireball = (Fireball) event.getEntity();
+			for(Entity entity : fireball.getNearbyEntities(3, 3, 3)){
+				if(entity instanceof LivingEntity){
+					LivingEntity lEntity = (LivingEntity) entity;
+					if(entity instanceof Player){
+						Player player = (Player) entity;
+						SuperNPlayer snplayer = SupernaturalManager.get(player);
+						if(snplayer.isDemon())
+							continue;
+						if(!SupernaturalsPlugin.instance.getPvP(player))
+							continue;
+					}
+					lEntity.damage(SNConfigHandler.demonFireballDamage, fireball);
+					lEntity.setFireTicks(200);
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -98,7 +125,7 @@ public class SNEntityListener extends EntityListener{
 			                public void run() {
 			                	demons.remove(dPlayer);
 			                }
-			            }, 20);
+			            }, 41);
 					}
 					pVictim.setFireTicks(0);
 					event.setCancelled(true);

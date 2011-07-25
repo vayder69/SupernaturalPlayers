@@ -107,6 +107,10 @@ public class DemonManager {
 	
 	public boolean fireball(Player player){
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		if(!SupernaturalsPlugin.instance.getPvP(player)){
+			SupernaturalManager.sendMessage(snplayer, "You cannot shoot fireballs in non-PvP areas");
+			return false;
+		}
 		if(snplayer.getPower() < SNConfigHandler.demonPowerFireball){
 			SupernaturalManager.sendMessage(snplayer, "Not enough power to cast fireball!");
 			return false;
@@ -115,6 +119,7 @@ public class DemonManager {
 				player.getLocation().getYaw(), player.getLocation().getPitch());
 		Fireball fireball = player.getWorld().spawn(loc, Fireball.class);
 		fireball.setShooter(player);
+		fireball.setYield(0);
 		SupernaturalManager.alterPower(SupernaturalManager.get(player), -SNConfigHandler.demonPowerFireball, "Fireball!");
 		ItemStack item = player.getItemInHand();
 		if(item.getAmount()==1){

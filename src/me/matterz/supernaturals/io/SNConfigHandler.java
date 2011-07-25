@@ -93,6 +93,7 @@ public class SNConfigHandler {
 	public static int demonKillPowerCreatureGain;
 	public static int demonKillPowerPlayerGain;
 	public static int demonSnowballAmount;
+	public static int demonFireballDamage;
 	public static int hunterDeathPowerPenalty;
 	public static int hunterPowerArrowFire;
 	public static int hunterPowerArrowTriple;
@@ -337,10 +338,11 @@ public class SNConfigHandler {
 		demonKillPowerCreatureGain = config.getInt("Demon.Power.CreatureKill", 20);
 		demonKillPowerPlayerGain = config.getInt("Demon.Power.PlayerKill", 100);
 		demonPowerGain = config.getInt("Demon.Power.Gain", 40);
-		demonPowerLoss = config.getInt("Demon.Power.Loss", 15);
+		demonPowerLoss = config.getInt("Demon.Power.Loss", 4);
 		demonPowerFireball = config.getInt("Demon.Power.Fireball", 2000);
 		demonHealing = config.getInt("Demon.Healing", 1);
-		demonMaterial = config.getString("Demon.FireballMaterial", "REDSTONE");
+		demonMaterial = config.getString("Demon.Fireball.Material", "REDSTONE");
+		demonFireballDamage = config.getInt("Demon.Fireball.Damage", 10);
 		demonPowerSnare = config.getInt("Demon.Power.Snare", 1000);
 		demonSnareDuration = config.getInt("Demon.Snare.Duration", 10000);
 		demonSnareMaterial = config.getString("Demon.Snare.Material", "INK_SACK");
