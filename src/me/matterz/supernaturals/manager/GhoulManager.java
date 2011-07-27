@@ -40,7 +40,7 @@ public class GhoulManager {
 			player.setHealth(health);
 			EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.DROWNING, SNConfigHandler.ghoulDamageWater);
 			player.setLastDamageCause(event);
-			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Ghouls disintegrate in water!  Get Out Quick!");
+			SuperNManager.sendMessage(SuperNManager.get(player), "Ghouls disintegrate in water!  Get Out Quick!");
 		}
 	}
 	
@@ -49,15 +49,15 @@ public class GhoulManager {
 	// -------------------------------------------- //
 	
 	public boolean summon(Player player){
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		ItemStack item = player.getItemInHand();
 		if(!SupernaturalsPlugin.instance.getSpawn(player)){
-			SupernaturalManager.sendMessage(snplayer, "You cannot summon here.");
+			SuperNManager.sendMessage(snplayer, "You cannot summon here.");
 			return false;
 		}
 		if((snplayer.getPower() > SNConfigHandler.ghoulPowerSummonCost)){
 			player.getWorld().spawnCreature(player.getLocation(), CreatureType.ZOMBIE);
-			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.ghoulPowerSummonCost, "Summoning a Zombie!");
+			SuperNManager.alterPower(snplayer, -SNConfigHandler.ghoulPowerSummonCost, "Summoning a Zombie!");
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log(snplayer.getName() + " summoned a Zombie!");
 			if(item.getAmount()==1){
@@ -67,7 +67,7 @@ public class GhoulManager {
 			}
 			return true;
 		} else {
-			SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
+			SuperNManager.sendMessage(snplayer, "Not enough power to summon.");
 			return false;
 		}
 	}

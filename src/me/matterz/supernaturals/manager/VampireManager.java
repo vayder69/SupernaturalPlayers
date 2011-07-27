@@ -24,7 +24,7 @@ public class VampireManager{
 	public void gainPowerAdvanceTime(SuperNPlayer snplayer, int milliseconds){
 		double deltaSeconds = milliseconds / 1000D;
 		double deltaPower = deltaSeconds * SNConfigHandler.vampireTimePowerGained;
-		SupernaturalManager.alterPower(snplayer, deltaPower);
+		SuperNManager.alterPower(snplayer, deltaPower);
 	}
 	
 	// -------------------------------------------- //
@@ -32,10 +32,10 @@ public class VampireManager{
 	// -------------------------------------------- //
 	
 	public boolean teleport(Player player){
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		ItemStack item = player.getItemInHand();
 		if(snplayer.getPower()>SNConfigHandler.vampireTeleportCost){
-			SupernaturalManager.alterPower(snplayer, -SNConfigHandler.vampireTeleportCost, "Teleport!");
+			SuperNManager.alterPower(snplayer, -SNConfigHandler.vampireTeleportCost, "Teleport!");
 			player.teleport(SNConfigHandler.vampireTeleportLocation);
 			if(item.getAmount()==1){
 				player.setItemInHand(null);
@@ -44,7 +44,7 @@ public class VampireManager{
 			}
 			return true;
 		}else{
-			SupernaturalManager.sendMessage(snplayer, "Not enough power to teleport.");
+			SuperNManager.sendMessage(snplayer, "Not enough power to teleport.");
 			return false;
 		}
 	}
@@ -55,7 +55,7 @@ public class VampireManager{
 	
 	public void useAltarInfect(Player player, Block centerBlock) {
 
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 
 		// The altar must be big enough
 		int count = GeometryUtil.countNearby(centerBlock, Material.getMaterial(SNConfigHandler.vampireAltarInfectMaterialSurround), 
@@ -65,7 +65,7 @@ public class VampireManager{
 		}
 
 		if (count < SNConfigHandler.vampireAltarInfectMaterialSurroundCount) {
-			SupernaturalManager.sendMessage(snplayer, "Something happens... The "
+			SuperNManager.sendMessage(snplayer, "Something happens... The "
 					+SNConfigHandler.vampireAltarInfectMaterial.toLowerCase()
 					+" draws energy from the "+SNConfigHandler.vampireAltarInfectMaterialSurround.toLowerCase()
 					+"... But there doesn't seem to be enough "+SNConfigHandler.vampireAltarInfectMaterialSurround.toLowerCase()
@@ -74,35 +74,35 @@ public class VampireManager{
 		}
 
 		// Always examine first
-		SupernaturalManager.sendMessage(snplayer, "This altar looks really evil.");
+		SuperNManager.sendMessage(snplayer, "This altar looks really evil.");
 
 		// Is Vampire
 		if (snplayer.isVampire()) {
-			SupernaturalManager.sendMessage(snplayer, "This is of no use to you as you are already a vampire.");
+			SuperNManager.sendMessage(snplayer, "This is of no use to you as you are already a vampire.");
 			return;
 		} else if (snplayer.isSuper()) {
-			SupernaturalManager.sendMessage(snplayer, "This is of no use to you as you are already supernatural.");
+			SuperNManager.sendMessage(snplayer, "This is of no use to you as you are already supernatural.");
 			return;
 		}
 
 		// Is healthy and thus can be infected...
 		if (SNConfigHandler.vampireAltarInfectRecipe.playerHasEnough(player)) {
-			SupernaturalManager.sendMessage(snplayer, "You use these items on the altar:");
-			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
-			SupernaturalManager.sendMessage(snplayer, "The "
+			SuperNManager.sendMessage(snplayer, "You use these items on the altar:");
+			SuperNManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
+			SuperNManager.sendMessage(snplayer, "The "
 					+SNConfigHandler.vampireAltarInfectMaterial.toLowerCase()
 					+" draws energy from the "+SNConfigHandler.vampireAltarInfectMaterialSurround.toLowerCase()
 					+"... The energy rushes through you and you feel a bitter cold...");
 			SNConfigHandler.vampireAltarInfectRecipe.removeFromPlayer(player);
-			SupernaturalManager.curse(snplayer, "vampire", SNConfigHandler.vampirePowerStart);
+			SuperNManager.curse(snplayer, "vampire", SNConfigHandler.vampirePowerStart);
 		} else {
-			SupernaturalManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
-			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
+			SuperNManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
+			SuperNManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());
 		}
 	}
 
 	public void useAltarCure(Player player, Block centerBlock) {		
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 
 		//Altar must be big enough
 		int count = GeometryUtil.countNearby(centerBlock, Material.getMaterial(SNConfigHandler.vampireAltarCureMaterialSurround), 
@@ -112,7 +112,7 @@ public class VampireManager{
 		}
 
 		if (count < SNConfigHandler.vampireAltarCureMaterialSurroundCount) {
-			SupernaturalManager.sendMessage(snplayer, "Something happens... The "
+			SuperNManager.sendMessage(snplayer, "Something happens... The "
 					+SNConfigHandler.vampireAltarCureMaterial.toLowerCase()
 					+" draws energy from the "+SNConfigHandler.vampireAltarCureMaterialSurround.toLowerCase()
 					+"... But there doesn't seem to be enough "+SNConfigHandler.vampireAltarCureMaterialSurround.toLowerCase()
@@ -121,30 +121,30 @@ public class VampireManager{
 		}
 
 		// Always examine first
-		SupernaturalManager.sendMessage(snplayer, "This altar looks pure and clean.");
+		SuperNManager.sendMessage(snplayer, "This altar looks pure and clean.");
 
 		// If healthy
 		if (!snplayer.isVampire()) {
-			SupernaturalManager.sendMessage(snplayer, "It can probably cure curses, but you feel fine.");
+			SuperNManager.sendMessage(snplayer, "It can probably cure curses, but you feel fine.");
 			return;
 		}
 
 		// Is vampire and thus can be cured...
 		else if(SNConfigHandler.vampireAltarCureRecipe.playerHasEnough(player))
 		{
-			SupernaturalManager.sendMessage(snplayer, "You use these items on the altar:");
-			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
-			SupernaturalManager.sendMessage(snplayer, "The "
+			SuperNManager.sendMessage(snplayer, "You use these items on the altar:");
+			SuperNManager.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
+			SuperNManager.sendMessage(snplayer, "The "
 					+SNConfigHandler.vampireAltarCureMaterial.toLowerCase()
 					+" draws energy from the "+SNConfigHandler.vampireAltarCureMaterialSurround.toLowerCase()
 					+"... Then the energy rushes through you and you feel pure and clean.");
 			SNConfigHandler.vampireAltarCureRecipe.removeFromPlayer(player);
-			SupernaturalManager.cure(snplayer);
+			SuperNManager.cure(snplayer);
 		}
 		else
 		{
-			SupernaturalManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
-			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
+			SuperNManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
+			SuperNManager.sendMessage(snplayer, SNConfigHandler.vampireAltarCureRecipe.getRecipeLine());
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class VampireManager{
 	// -------------------------------------------- //
 	
 	public boolean combustAdvanceTime(Player player, long milliseconds) {
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		if (!this.standsInSunlight(player))
 			return false;
 		
@@ -165,7 +165,7 @@ public class VampireManager{
 		ticksTillNext += 5; // just to be on the safe side.
 		
 		if (player.getFireTicks() <= 0 && SNConfigHandler.vampireBurnMessageEnabled){
-			SupernaturalManager.sendMessage(snplayer, "Vampires burn in sunlight! Take cover!");
+			SuperNManager.sendMessage(snplayer, "Vampires burn in sunlight! Take cover!");
 		}
 		
 		player.setFireTicks(ticksTillNext + SNConfigHandler.vampireCombustFireTicks);
@@ -181,7 +181,7 @@ public class VampireManager{
 			return false;
 		
 		if ((player.getWorld().getEnvironment().equals(Environment.NETHER)) 
-				|| SupernaturalManager.worldTimeIsNight(player) || this.isUnderRoof(player) || material == Material.STATIONARY_WATER
+				|| SuperNManager.worldTimeIsNight(player) || this.isUnderRoof(player) || material == Material.STATIONARY_WATER
 				|| material == Material.WATER || playerWorld.hasStorm())
 		{
 			return false;

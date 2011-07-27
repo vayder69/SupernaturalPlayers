@@ -22,16 +22,16 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	// -------------------------------------------- //
 
 	public boolean wolfbane(Player player){
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		if(SNConfigHandler.wereWolfbaneRecipe.playerHasEnough(player)) {
-			SupernaturalManager.sendMessage(snplayer, "You create a wolfbane potion!");
-			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.wereWolfbaneRecipe.getRecipeLine());
+			SuperNManager.sendMessage(snplayer, "You create a wolfbane potion!");
+			SuperNManager.sendMessage(snplayer, SNConfigHandler.wereWolfbaneRecipe.getRecipeLine());
 			SNConfigHandler.wereWolfbaneRecipe.removeFromPlayer(player);
-			SupernaturalManager.cure(snplayer);
+			SuperNManager.cure(snplayer);
 			return true;
 		}else{
-			SupernaturalManager.sendMessage(snplayer, "You cannot create a Wolfbane potion without the following: ");
-			SupernaturalManager.sendMessage(snplayer, SNConfigHandler.wereWolfbaneRecipe.getRecipeLine());
+			SuperNManager.sendMessage(snplayer, "You cannot create a Wolfbane potion without the following: ");
+			SuperNManager.sendMessage(snplayer, SNConfigHandler.wereWolfbaneRecipe.getRecipeLine());
 			return false;
 		}
 	}
@@ -41,13 +41,13 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 	// -------------------------------------------- //
 	
 	public boolean summon(Player player){
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		ItemStack item = player.getItemInHand();
 		if(!SupernaturalsPlugin.instance.getSpawn(player)){
-			SupernaturalManager.sendMessage(snplayer, "You cannot summon here.");
+			SuperNManager.sendMessage(snplayer, "You cannot summon here.");
 			return false;
 		}
-		if(SupernaturalManager.worldTimeIsNight(player)){
+		if(SuperNManager.worldTimeIsNight(player)){
 			if(snplayer.getPower() >= SNConfigHandler.werePowerSummonCost){
 				int i = 0;
 				for(Wolf wolf : wolvesMap.keySet()){
@@ -61,7 +61,7 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 					wolf.setOwner(player);
 					wolf.setHealth(20);
 					wolvesMap.put(wolf, snplayer);
-					SupernaturalManager.alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
+					SuperNManager.alterPower(snplayer, -SNConfigHandler.werePowerSummonCost, "Summoning wolf!");
 					if(SNConfigHandler.debugMode)
 						SupernaturalsPlugin.log(snplayer.getName() + " summoned a wolf pet!");
 					if(item.getAmount()==1){
@@ -71,15 +71,15 @@ private static HashMap<Wolf, SuperNPlayer> wolvesMap = new HashMap<Wolf, SuperNP
 					}
 					return true;
 				}else{
-					SupernaturalManager.sendMessage(snplayer, "You already have all the wolves you can control.");
+					SuperNManager.sendMessage(snplayer, "You already have all the wolves you can control.");
 					return false;
 				}
 			}else{
-				SupernaturalManager.sendMessage(snplayer, "Not enough power to summon.");
+				SuperNManager.sendMessage(snplayer, "Not enough power to summon.");
 				return false;
 			}
 		}else{
-			SupernaturalManager.sendMessage(snplayer, "Cannot use werewolf abilities during the day!");
+			SuperNManager.sendMessage(snplayer, "Cannot use werewolf abilities during the day!");
 			return false;
 		}
 	}

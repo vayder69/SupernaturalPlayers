@@ -6,7 +6,7 @@ import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.manager.HunterManager;
 import me.matterz.supernaturals.manager.SNCommand;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -31,7 +31,7 @@ public class SNCommandRmTarget extends SNCommand {
 		}
 		
 		if(parameters.isEmpty()){
-			SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
+			SuperNPlayer snplayer = SuperNManager.get(senderPlayer);
 			if(HunterManager.removeBounty(snplayer)){
 				this.sendMessage("You were removed from the target list!");
 				return;
@@ -41,7 +41,7 @@ public class SNCommandRmTarget extends SNCommand {
 			}
 		}else{
 			String playername = parameters.get(0);
-			SuperNPlayer snplayer = SupernaturalManager.get(playername);
+			SuperNPlayer snplayer = SuperNManager.get(playername);
 			
 			if (snplayer == null) {
 				this.sendMessage("Player not found.");

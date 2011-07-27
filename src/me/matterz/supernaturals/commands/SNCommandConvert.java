@@ -6,7 +6,7 @@ import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
 import me.matterz.supernaturals.manager.SNCommand;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class SNCommandConvert extends SNCommand {
 				return;
 			}
 			
-			SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
+			SuperNPlayer snplayer = SuperNManager.get(senderPlayer);
 			
 			if(snplayer.getType().equalsIgnoreCase(superType)){
 				this.sendMessage(ChatColor.WHITE + senderPlayer.getName() + ChatColor.RED + " is already a " 
@@ -48,11 +48,11 @@ public class SNCommandConvert extends SNCommand {
 			}else if(snplayer.getOldType().equalsIgnoreCase(superType)){
 				this.sendMessage(ChatColor.WHITE + senderPlayer.getName() + ChatColor.RED + " was turned BACK into a " 
 						+ ChatColor.WHITE + superType +ChatColor.RED + " !");
-				SupernaturalManager.revert(snplayer);
+				SuperNManager.revert(snplayer);
 			}else{
 				this.sendMessage(ChatColor.WHITE + senderPlayer.getName() + ChatColor.RED + " was turned into a " 
 						+ ChatColor.WHITE + superType +ChatColor.RED + " !");
-				SupernaturalManager.curse(snplayer, superType);
+				SuperNManager.curse(snplayer, superType);
 			}
 		}else{
 			String playername = parameters.get(0);
@@ -69,7 +69,7 @@ public class SNCommandConvert extends SNCommand {
 				return;
 			}
 			
-			SuperNPlayer snplayer = SupernaturalManager.get(player);
+			SuperNPlayer snplayer = SuperNManager.get(player);
 			
 			if(snplayer.getType().equalsIgnoreCase(superType)){
 				this.sendMessage(ChatColor.WHITE + player.getName() + ChatColor.RED + " is already a " 
@@ -77,11 +77,11 @@ public class SNCommandConvert extends SNCommand {
 			}else if(snplayer.getOldType().equalsIgnoreCase(superType)){
 				this.sendMessage(ChatColor.WHITE + player.getName() + ChatColor.RED + " was turned BACK into a " 
 						+ ChatColor.WHITE + superType +ChatColor.RED + " !");
-				SupernaturalManager.revert(snplayer);
+				SuperNManager.revert(snplayer);
 			}else{
 				this.sendMessage(ChatColor.WHITE + player.getName() + ChatColor.RED + " was turned into a " 
 						+ ChatColor.WHITE + superType +ChatColor.RED + " !");
-				SupernaturalManager.curse(snplayer, superType);
+				SuperNManager.curse(snplayer, superType);
 			}
 		}
 	}

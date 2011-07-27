@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.manager.SNCommand;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public class SNCommandPower extends SNCommand {
 				this.sendMessage("You do not have permissions to use this command.");
 				return;
 			}
-			SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
+			SuperNPlayer snplayer = SuperNManager.get(senderPlayer);
 					
 			this.sendMessage("You are a "+ChatColor.WHITE+snplayer.getType()+ChatColor.RED+" and your current power level is: " +ChatColor.WHITE+ (int) snplayer.getPower());
 			return;
@@ -59,8 +59,8 @@ public class SNCommandPower extends SNCommand {
 					powerGain=9999;
 				}
 				
-				SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
-				SupernaturalManager.alterPower(snplayer, powerGain, "Admin boost!");
+				SuperNPlayer snplayer = SuperNManager.get(senderPlayer);
+				SuperNManager.alterPower(snplayer, powerGain, "Admin boost!");
 			}else{
 				String playername = parameters.get(0);
 				Player player = SupernaturalsPlugin.instance.getServer().getPlayer(playername);
@@ -80,8 +80,8 @@ public class SNCommandPower extends SNCommand {
 					powerGain=9999;
 				}
 				this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " has been powered up!");
-				SuperNPlayer snplayer = SupernaturalManager.get(player);
-				SupernaturalManager.alterPower(snplayer, powerGain, "Admin boost!");
+				SuperNPlayer snplayer = SuperNManager.get(player);
+				SuperNManager.alterPower(snplayer, powerGain, "Admin boost!");
 			}
 		}
 	}

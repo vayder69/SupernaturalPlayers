@@ -35,7 +35,7 @@ import me.matterz.supernaturals.manager.GhoulManager;
 import me.matterz.supernaturals.manager.HunterManager;
 import me.matterz.supernaturals.manager.PriestManager;
 import me.matterz.supernaturals.manager.SNCommand;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 import me.matterz.supernaturals.manager.VampireManager;
 import me.matterz.supernaturals.manager.WereManager;
 import me.matterz.supernaturals.util.TextUtil;
@@ -72,7 +72,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	private final SNEntityMonitor entityMonitor = new SNEntityMonitor(this);
 	private final SNBlockListener blockListener = new SNBlockListener(this);
 	
-	private SupernaturalManager superManager = new SupernaturalManager(this);
+	private SuperNManager superManager = new SuperNManager(this);
 	private VampireManager vampManager = new VampireManager();
 	private PriestManager priestManager = new PriestManager();
 	private WereManager wereManager = new WereManager();
@@ -94,7 +94,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	// 					Managers					//
 	// -------------------------------------------- //
 	
-	public SupernaturalManager getSuperManager(){
+	public SuperNManager getSuperManager(){
 		return superManager;
 	}
 	
@@ -132,7 +132,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		SupernaturalManager.cancelTimer();
+		SuperNManager.cancelTimer();
 		saveData();
 		PluginDescriptionFile pdfFile = this.getDescription();
         log(pdfFile.getName() + " version " + pdfFile.getVersion() + " disabled.");
@@ -186,7 +186,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
         SNConfigHandler.getConfiguration();
 
 	    loadData();
-	    SupernaturalManager.startTimer();
+	    SuperNManager.startTimer();
 	    HunterManager.createBounties();
 	    setupPermissions();	    
 	}
@@ -241,14 +241,14 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	public static void saveData(){
 		File file = new File(dataFolder, "data.yml");
-        SNPlayerHandler.save(SupernaturalManager.getSupernaturals(), file);
+        SNPlayerHandler.save(SuperNManager.getSupernaturals(), file);
         
         SNConfigHandler.saveConfig();
 	}
 	
 	public static void loadData(){
 		File file = new File(dataFolder, "data.yml");
-		SupernaturalManager.setSupernaturals(SNPlayerHandler.load(file));
+		SuperNManager.setSupernaturals(SNPlayerHandler.load(file));
 	}
 	
 	public static void reloadConfig(){
@@ -259,12 +259,12 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	public static void reloadData(){
 		File file = new File(dataFolder, "data.yml");
-		SupernaturalManager.setSupernaturals(SNPlayerHandler.load(file));
+		SuperNManager.setSupernaturals(SNPlayerHandler.load(file));
 	}
 	
 	public static void restartTask(){
-		SupernaturalManager.cancelTimer();
-		SupernaturalManager.startTimer();
+		SuperNManager.cancelTimer();
+		SuperNManager.startTimer();
 	}
 	
 	// -------------------------------------------- //

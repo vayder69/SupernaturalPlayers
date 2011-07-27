@@ -81,8 +81,8 @@ public class DemonManager {
 	
 	public void powerAdvanceTime(Player player, int seconds){
 		if(!player.getWorld().getEnvironment().equals(Environment.NETHER)){
-			SuperNPlayer snplayer = SupernaturalManager.get(player);
-			SupernaturalManager.alterPower(snplayer, -(SNConfigHandler.demonPowerLoss*seconds));
+			SuperNPlayer snplayer = SuperNManager.get(player);
+			SuperNManager.alterPower(snplayer, -(SNConfigHandler.demonPowerLoss*seconds));
 		}
 	}
 	
@@ -106,13 +106,13 @@ public class DemonManager {
 	// -------------------------------------------- //
 	
 	public boolean fireball(Player player){
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		if(!SupernaturalsPlugin.instance.getPvP(player)){
-			SupernaturalManager.sendMessage(snplayer, "You cannot shoot fireballs in non-PvP areas");
+			SuperNManager.sendMessage(snplayer, "You cannot shoot fireballs in non-PvP areas");
 			return false;
 		}
 		if(snplayer.getPower() < SNConfigHandler.demonPowerFireball){
-			SupernaturalManager.sendMessage(snplayer, "Not enough power to cast fireball!");
+			SuperNManager.sendMessage(snplayer, "Not enough power to cast fireball!");
 			return false;
 		}
 		Location loc = player.getEyeLocation().toVector().add(player.getLocation().getDirection().multiply(2)).toLocation(player.getWorld(), 
@@ -120,7 +120,7 @@ public class DemonManager {
 		Fireball fireball = player.getWorld().spawn(loc, Fireball.class);
 		fireball.setShooter(player);
 		fireball.setYield(0);
-		SupernaturalManager.alterPower(SupernaturalManager.get(player), -SNConfigHandler.demonPowerFireball, "Fireball!");
+		SuperNManager.alterPower(SuperNManager.get(player), -SNConfigHandler.demonPowerFireball, "Fireball!");
 		ItemStack item = player.getItemInHand();
 		if(item.getAmount()==1){
 			player.setItemInHand(null);
@@ -131,9 +131,9 @@ public class DemonManager {
 	}
 	
 	public boolean snare(Player player, Player target){
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		if(snplayer.getPower() < SNConfigHandler.demonPowerSnare){
-			SupernaturalManager.sendMessage(snplayer, "Not enough power to cast snare!");
+			SuperNManager.sendMessage(snplayer, "Not enough power to cast snare!");
 			return false;
 		}
 		Block block;
@@ -183,7 +183,7 @@ public class DemonManager {
 			item.setAmount(player.getItemInHand().getAmount()-1);
 		}
 		
-		SupernaturalManager.alterPower(SupernaturalManager.get(player), -SNConfigHandler.demonPowerSnare, "Snare!");
+		SuperNManager.alterPower(SuperNManager.get(player), -SNConfigHandler.demonPowerSnare, "Snare!");
 		return true;
 	}
 

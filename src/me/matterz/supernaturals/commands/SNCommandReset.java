@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.manager.SNCommand;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 
 import org.bukkit.entity.Player;
 
@@ -30,8 +30,8 @@ public class SNCommandReset extends SNCommand {
 			return;
 		}
 		if(parameters.isEmpty()){
-			SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
-			SupernaturalManager.alterPower(snplayer, -10000, "Admin");
+			SuperNPlayer snplayer = SuperNManager.get(senderPlayer);
+			SuperNManager.alterPower(snplayer, -10000, "Admin");
 		}else{
 			String playername = parameters.get(0);
 			Player player = SupernaturalsPlugin.instance.getServer().getPlayer(playername);
@@ -40,8 +40,8 @@ public class SNCommandReset extends SNCommand {
 				this.sendMessage("Player not found!");
 				return;
 			}			
-			SuperNPlayer snplayer = SupernaturalManager.get(player);
-			SupernaturalManager.alterPower(snplayer, -10000, "Admin");
+			SuperNPlayer snplayer = SuperNManager.get(player);
+			SuperNManager.alterPower(snplayer, -10000, "Admin");
 			this.sendMessage("Power reset for player: "+snplayer.getName());
 		}
 	}

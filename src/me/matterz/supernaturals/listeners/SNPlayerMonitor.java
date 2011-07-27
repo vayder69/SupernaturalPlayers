@@ -3,7 +3,7 @@ package me.matterz.supernaturals.listeners;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World.Environment;
@@ -31,7 +31,7 @@ public class SNPlayerMonitor extends PlayerListener {
 	@Override
 	public void onPlayerPortal(PlayerPortalEvent event){
 		Player player = event.getPlayer();
-		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission))
+		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission) && SNConfigHandler.multiworld)
 			return;
 		if(event.getTo().getWorld().getEnvironment().equals(Environment.NETHER)){
 			if(SNConfigHandler.debugMode)
@@ -43,9 +43,9 @@ public class SNPlayerMonitor extends PlayerListener {
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event){	    
 		Player player = event.getPlayer();
-		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission))
+		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission) && SNConfigHandler.multiworld)
 			return;
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		
 		if(SNConfigHandler.enableColors){
 			if(snplayer.isHuman()){

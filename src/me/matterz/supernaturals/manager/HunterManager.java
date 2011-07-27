@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
@@ -54,7 +55,7 @@ public class HunterManager {
 	}
 	
 	public static void addBounty(){
-		List<SuperNPlayer> targets = SupernaturalManager.getSupernaturals();
+		List<SuperNPlayer> targets = SuperNManager.getSupernaturals();
 		boolean bountyFound = false;
 		Random generator = new Random();
 		int count = 0;
@@ -96,7 +97,12 @@ public class HunterManager {
 	}
 	
 	public static void createBounties(){
-		List<SuperNPlayer> targets = SupernaturalManager.getSupernaturals();
+		List<SuperNPlayer> targets = SuperNManager.getSupernaturals();
+		if(targets.size()==0){
+			SupernaturalsPlugin.log(Level.WARNING, "No targets found for WitchHunters!");
+			return;
+		}
+			
 		int numberFound = 0;
 		Random generator = new Random();
 		int count = 0;
@@ -143,7 +149,7 @@ public class HunterManager {
 		if(SNConfigHandler.debugMode)
 			SupernaturalsPlugin.log(player.getName()+" activated a WitchHunters' Hall.");
 		
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		boolean open = false;
 		
 		final Location loc = block.getLocation();
@@ -178,7 +184,7 @@ public class HunterManager {
 				SupernaturalsPlugin.log("WitchHunter door is set open.");
 			return true;
 		}
-		SupernaturalManager.sendMessage(snplayer, "WitchHunters Only!");
+		SuperNManager.sendMessage(snplayer, "WitchHunters Only!");
 		return true;
 	}
 	
@@ -234,8 +240,8 @@ public class HunterManager {
 	public void invite(final SuperNPlayer snplayer){
 		SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
             public void run() {
-            	SupernaturalManager.sendMessage(snplayer, "You have been invited to join the WitchHunter society!");
-        		SupernaturalManager.sendMessage(snplayer, "If you wish to accept this invitation visit a WitchHunters' Hall");
+            	SuperNManager.sendMessage(snplayer, "You have been invited to join the WitchHunter society!");
+        		SuperNManager.sendMessage(snplayer, "If you wish to accept this invitation visit a WitchHunters' Hall");
         		if(!playerInvites.contains(snplayer))
         			playerInvites.add(snplayer);
             }
@@ -244,8 +250,8 @@ public class HunterManager {
 	
 	public boolean join(SuperNPlayer snplayer){
 		if(playerInvites.contains(snplayer)){
-			SupernaturalManager.sendMessage(snplayer, "Welcome to the WitchHunter society!");
-			SupernaturalManager.curse(snplayer, "witchhunter", SNConfigHandler.hunterPowerStart);
+			SuperNManager.sendMessage(snplayer, "Welcome to the WitchHunter society!");
+			SuperNManager.curse(snplayer, "witchhunter", SNConfigHandler.hunterPowerStart);
 			return true;
 		}
 		return false;
@@ -274,7 +280,7 @@ public class HunterManager {
 		}
 
 		hunterMap.put(snplayer, nextType);
-		SupernaturalManager.sendMessage(snplayer, "Changed to arrow type: " +ChatColor.WHITE+ nextType);
+		SuperNManager.sendMessage(snplayer, "Changed to arrow type: " +ChatColor.WHITE+ nextType);
 		if(SNConfigHandler.debugMode)
 			SupernaturalsPlugin.log(snplayer.getName()+" changed to arrow type: "+nextType);
 		return true;
@@ -302,16 +308,16 @@ public class HunterManager {
 	
 	public boolean shoot(final Player player){
 		
-		final SuperNPlayer snplayer = SupernaturalManager.get(player);
+		final SuperNPlayer snplayer = SuperNManager.get(player);
 		
 		if(!SupernaturalsPlugin.instance.getPvP(player)){
-			SupernaturalManager.sendMessage(snplayer, "You cannot use special arrows in non-PvP areas.");
+			SuperNManager.sendMessage(snplayer, "You cannot use special arrows in non-PvP areas.");
 			return false;
 		}
 		
 		if(drainedPlayers.contains(player)){
 			player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.ARROW, 1));
-			SupernaturalManager.sendMessage(snplayer, "You are still recovering from Power Shot.");
+			SuperNManager.sendMessage(snplayer, "You are still recovering from Power Shot.");
 			return true;
 		}
 		
@@ -325,20 +331,20 @@ public class HunterManager {
 		
 		if(arrowType.equalsIgnoreCase("fire")){
 			if(snplayer.getPower()>SNConfigHandler.hunterPowerArrowFire){
-				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowFire, "Fire Arrow!");
+				SuperNManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowFire, "Fire Arrow!");
 				Arrow arrow = player.shootArrow();
 				arrowMap.put(arrow, arrowType);
 				arrow.setFireTicks(SNConfigHandler.hunterFireArrowFireTicks);
 				return true;
 			}else{
-				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Fire Arrows!");
-				SupernaturalManager.sendMessage(snplayer, "Switching to normal arrows.");
+				SuperNManager.sendMessage(snplayer, "Not enough power to shoot Fire Arrows!");
+				SuperNManager.sendMessage(snplayer, "Switching to normal arrows.");
 				hunterMap.put(snplayer, "normal");
 				return false;
 			}
 		}else if(arrowType.equalsIgnoreCase("triple")){
 			if(snplayer.getPower()>SNConfigHandler.hunterPowerArrowTriple){
-				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowTriple, "Triple Arrow!");
+				SuperNManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowTriple, "Triple Arrow!");
 				final Arrow arrow = player.shootArrow();
 				arrowMap.put(arrow, arrowType);
 				SupernaturalsPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(SupernaturalsPlugin.instance, new Runnable() {
@@ -348,14 +354,14 @@ public class HunterManager {
 	            }, 4);
 				return true;
 			}else{
-				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Triple Arrows!");
-				SupernaturalManager.sendMessage(snplayer, "Switching to normal arrows.");
+				SuperNManager.sendMessage(snplayer, "Not enough power to shoot Triple Arrows!");
+				SuperNManager.sendMessage(snplayer, "Switching to normal arrows.");
 				hunterMap.put(snplayer, "normal");
 				return false;
 			}
 		}else if(arrowType.equalsIgnoreCase("power")){
 			if(snplayer.getPower()>SNConfigHandler.hunterPowerArrowPower){
-				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowPower, "Power Arrow!");
+				SuperNManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowPower, "Power Arrow!");
 				Arrow arrow = player.shootArrow();
 				arrowMap.put(arrow, arrowType);
 				drainedPlayers.add(player);
@@ -365,26 +371,26 @@ public class HunterManager {
 	                public void run() {
 	                	drainedPlayers.remove(player);
 	                	if(player.isOnline())
-	                		SupernaturalManager.sendMessage(snplayer, "You can shoot again!");
+	                		SuperNManager.sendMessage(snplayer, "You can shoot again!");
 	                	SupernaturalsPlugin.log(snplayer.getName()+" is no longer drained.");
 	                }
 	            }, (SNConfigHandler.hunterCooldown/50));
 				return true;
 			}else{
-				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Power Arrows!");
-				SupernaturalManager.sendMessage(snplayer, "Switching to normal arrows.");
+				SuperNManager.sendMessage(snplayer, "Not enough power to shoot Power Arrows!");
+				SuperNManager.sendMessage(snplayer, "Switching to normal arrows.");
 				hunterMap.put(snplayer, "normal");
 				return false;
 			}
 		}else if(arrowType.equalsIgnoreCase("grapple")){
 			if(snplayer.getPower()>SNConfigHandler.hunterPowerArrowGrapple){
-				SupernaturalManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowGrapple, "Grapple Arrow!");
+				SuperNManager.alterPower(snplayer, -SNConfigHandler.hunterPowerArrowGrapple, "Grapple Arrow!");
 				Arrow arrow = player.shootArrow();
 				arrowMap.put(arrow, arrowType);
 				return true;
 			}else{
-				SupernaturalManager.sendMessage(snplayer, "Not enough power to shoot Grapple Arrow!");
-				SupernaturalManager.sendMessage(snplayer, "Switching to normal arrows.");
+				SuperNManager.sendMessage(snplayer, "Not enough power to shoot Grapple Arrow!");
+				SuperNManager.sendMessage(snplayer, "Switching to normal arrows.");
 				hunterMap.put(snplayer, "normal");
 				return false;
 			}

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.manager.SNCommand;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -31,8 +31,8 @@ public class SNCommandCure extends SNCommand {
 		}
 		
 		if(parameters.isEmpty()){
-			SuperNPlayer snplayer = SupernaturalManager.get(senderPlayer);
-			SupernaturalManager.cure(snplayer);
+			SuperNPlayer snplayer = SuperNManager.get(senderPlayer);
+			SuperNManager.cure(snplayer);
 		}else{
 			String playername = parameters.get(0);
 			Player player = SupernaturalsPlugin.instance.getServer().getPlayer(playername);
@@ -42,8 +42,8 @@ public class SNCommandCure extends SNCommand {
 			}
 			this.sendMessage(ChatColor.WHITE + player.getDisplayName() + ChatColor.RED + " was cured of any curse!");
 			
-			SuperNPlayer snplayer = SupernaturalManager.get(player);
-			SupernaturalManager.cure(snplayer);
+			SuperNPlayer snplayer = SuperNManager.get(player);
+			SuperNManager.cure(snplayer);
 		}
 	}
 }

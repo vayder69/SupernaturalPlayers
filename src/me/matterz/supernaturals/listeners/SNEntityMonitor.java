@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 import me.matterz.supernaturals.manager.WereManager;
 import me.matterz.supernaturals.util.EntityUtil;
 
@@ -39,7 +39,7 @@ public class SNEntityMonitor extends EntityListener {
             Arrow arrow = (Arrow)event.getEntity();
             if(plugin.getHunterManager().getArrowMap().containsKey(arrow)){
         		Player player = (Player)arrow.getShooter();
-        		if(SupernaturalsPlugin.hasPermissions(player, worldPermission))
+        		if(SupernaturalsPlugin.hasPermissions(player, worldPermission) && SNConfigHandler.multiworld)
         			return;
             	String arrowType = plugin.getHunterManager().getArrowMap().get(arrow);
             	if(arrowType.equalsIgnoreCase("grapple")){
@@ -88,10 +88,10 @@ public class SNEntityMonitor extends EntityListener {
 				return;
 			}
 		
-			if(SupernaturalsPlugin.hasPermissions(pDamager, worldPermission))
+			if(SupernaturalsPlugin.hasPermissions(pDamager, worldPermission) && SNConfigHandler.multiworld)
     			return;
 			
-			snDamager = SupernaturalManager.get(pDamager);
+			snDamager = SuperNManager.get(pDamager);
 			
 			if(victim instanceof Creature){
 				Creature cVictim = (Creature)victim;
@@ -122,7 +122,7 @@ public class SNEntityMonitor extends EntityListener {
 		}
 
 		pDamager = (Player)damager;
-		snDamager = SupernaturalManager.get(pDamager);
+		snDamager = SuperNManager.get(pDamager);
 		
 		if(victim instanceof Creature){
 			Creature cVictim = (Creature)victim;
@@ -168,11 +168,11 @@ public class SNEntityMonitor extends EntityListener {
 					return;
 				}
 				
-				if(SupernaturalsPlugin.hasPermissions(pDamager, worldPermission))
+				if(SupernaturalsPlugin.hasPermissions(pDamager, worldPermission) && SNConfigHandler.multiworld)
 	    			return;
 				
-				SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
-				SupernaturalManager.killEvent(snDamager, null);
+				SuperNPlayer snDamager = SuperNManager.get(pDamager);
+				SuperNManager.killEvent(snDamager, null);
 			}
 			if(entity instanceof Wolf){
 				WereManager.removeWolf((Wolf) entity);
@@ -189,7 +189,7 @@ public class SNEntityMonitor extends EntityListener {
 		if(!pVictim.isOnline())
 			return;
 		
-		SuperNPlayer snplayer = SupernaturalManager.get(pVictim);
+		SuperNPlayer snplayer = SuperNManager.get(pVictim);
 		//SupernaturalManager.deathEvent(pVictim);
 		
 		Entity damager = null;
@@ -204,15 +204,15 @@ public class SNEntityMonitor extends EntityListener {
 		if(damager!=null){
 			if(damager instanceof Player){
 				pDamager = (Player) damager;
-				SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
+				SuperNPlayer snDamager = SuperNManager.get(pDamager);
 				if(SNConfigHandler.debugMode){
 					SupernaturalsPlugin.log("Player "+snDamager.getName()+" has killed "+snplayer.getName());
 				}
 				if(snplayer.isHunter()){
 					if(snDamager.equals(snplayer)){
-						SupernaturalManager.sendMessage(snplayer, "You have killed yourself!");
-						SupernaturalManager.sendMessage(snplayer, "This action, voluntary or not, has rescinded your status as a WitchHunter.");
-						SupernaturalManager.cure(snplayer);
+						SuperNManager.sendMessage(snplayer, "You have killed yourself!");
+						SuperNManager.sendMessage(snplayer, "This action, voluntary or not, has rescinded your status as a WitchHunter.");
+						SuperNManager.cure(snplayer);
 						if(SNConfigHandler.debugMode){
 							SupernaturalsPlugin.log("Player "+pDamager.getName()+" cured themself.");
 						}
@@ -247,9 +247,9 @@ public class SNEntityMonitor extends EntityListener {
 			}else{
 				return;
 			}
-			SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
-			SupernaturalManager.killEvent(snDamager, snplayer);
+			SuperNPlayer snDamager = SuperNManager.get(pDamager);
+			SuperNManager.killEvent(snDamager, snplayer);
 		}
-		SupernaturalManager.deathEvent(pVictim);
+		SuperNManager.deathEvent(pVictim);
 	}
 }

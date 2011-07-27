@@ -3,7 +3,7 @@ package me.matterz.supernaturals.listeners;
 import me.matterz.supernaturals.SuperNPlayer;
 import me.matterz.supernaturals.SupernaturalsPlugin;
 import me.matterz.supernaturals.io.SNConfigHandler;
-import me.matterz.supernaturals.manager.SupernaturalManager;
+import me.matterz.supernaturals.manager.SuperNManager;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,10 +48,10 @@ public class SNPlayerListener extends PlayerListener{
 		
 		Player player = event.getPlayer();
 		
-		if(SupernaturalsPlugin.hasPermissions(player, worldPermission))
+		if(SupernaturalsPlugin.hasPermissions(player, worldPermission) && SNConfigHandler.multiworld)
 			return;
 		
-		SuperNPlayer snplayer = SupernaturalManager.get(player);
+		SuperNPlayer snplayer = SuperNManager.get(player);
 		boolean cancelled = false;
 		Material itemMaterial = event.getMaterial();
 		
@@ -110,7 +110,7 @@ public class SNPlayerListener extends PlayerListener{
 			
 			if(snplayer.isVampire()){
 				if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){
-					SupernaturalManager.jump(player, SNConfigHandler.jumpDeltaSpeed, true);
+					SuperNManager.jump(player, SNConfigHandler.jumpDeltaSpeed, true);
 					event.setCancelled(true);
 					return;
 				}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.vampireMaterial)){
@@ -120,20 +120,20 @@ public class SNPlayerListener extends PlayerListener{
 				}
 			}else if(snplayer.isWere()){
 					if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.wolfMaterial)){
-						if(SupernaturalManager.worldTimeIsNight(player)){
+						if(SuperNManager.worldTimeIsNight(player)){
 							plugin.getWereManager().summon(player);
 							event.setCancelled(true);
 							return;
 						}else{
-							SupernaturalManager.sendMessage(snplayer, "Cannot use this ability during the day.");
+							SuperNManager.sendMessage(snplayer, "Cannot use this ability during the day.");
 							return;
 						}
 					}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.wolfbaneMaterial)){
 						if(!SupernaturalsPlugin.hasPermissions(player, permissions2)){
 							return;
 						}
-						if(SupernaturalManager.worldTimeIsNight(player)){
-							SupernaturalManager.sendMessage(snplayer, "Cannot cure lycanthropy during the night.");
+						if(SuperNManager.worldTimeIsNight(player)){
+							SuperNManager.sendMessage(snplayer, "Cannot cure lycanthropy during the night.");
 							return;
 						}else{
 							plugin.getWereManager().wolfbane(player);
@@ -141,12 +141,12 @@ public class SNPlayerListener extends PlayerListener{
 							return;
 						}
 					}else if(itemMaterial.toString().equalsIgnoreCase(SNConfigHandler.dashMaterial)){
-						if(SupernaturalManager.worldTimeIsNight(player)){
-							SupernaturalManager.jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
+						if(SuperNManager.worldTimeIsNight(player)){
+							SuperNManager.jump(event.getPlayer(), SNConfigHandler.dashDeltaSpeed, false);
 							event.setCancelled(true);
 							return;
 						}else{
-							SupernaturalManager.sendMessage(snplayer, "Cannot use this ability during the day.");
+							SuperNManager.sendMessage(snplayer, "Cannot use this ability during the day.");
 							return;
 						}
 					}
@@ -233,15 +233,15 @@ public class SNPlayerListener extends PlayerListener{
 				{
 					if(SNConfigHandler.debugMode)
 						SupernaturalsPlugin.log(snplayer.getName() + " attempted to eat " + itemMaterial.toString());
-					SupernaturalManager.sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
+					SuperNManager.sendMessage(snplayer, "Vampires can't eat food. You must drink blood instead.");
 					event.setCancelled(true);
 					return;
 				}else if(snplayer.isWere()){
 					if(itemMaterial.equals(Material.BREAD)){
-						SupernaturalManager.sendMessage(snplayer, "Werewolves do not gain power from Bread.");
+						SuperNManager.sendMessage(snplayer, "Werewolves do not gain power from Bread.");
 						return;
 					}else{
-						SupernaturalManager.alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
+						SuperNManager.alterPower(snplayer, SNConfigHandler.werePowerFood, "Eating!");
 						if(SNConfigHandler.debugMode)
 							SupernaturalsPlugin.log(snplayer.getName() + " ate " + itemMaterial.toString() + " to gain " + SNConfigHandler.werePowerFood + " power!");
 						return;
@@ -281,11 +281,11 @@ public class SNPlayerListener extends PlayerListener{
 			return;
 		}
 		
-		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission))
+		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission) && SNConfigHandler.multiworld)
 			return;
 		
 		if ((event.getLeaveMessage().contains("Flying")) || (event.getReason().contains("Flying"))) {
-			SuperNPlayer snplayer = SupernaturalManager.get(event.getPlayer());
+			SuperNPlayer snplayer = SuperNManager.get(event.getPlayer());
 			if(snplayer.isVampire()&& event.getPlayer().getItemInHand().getType().toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){
 				event.setCancelled(true);
 				if(SNConfigHandler.debugMode)
