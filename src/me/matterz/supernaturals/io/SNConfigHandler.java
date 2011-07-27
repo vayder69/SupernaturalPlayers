@@ -292,6 +292,7 @@ public class SNConfigHandler {
 		priestPowerCure = config.getInt("Priest.Power.Cure", 1000);
 		priestPowerDrain = config.getInt("Priest.Power.Drain", 1000);
 		priestDrainFactor = config.getDouble("Priest.Spell.DrainFactor", 0.15);
+		priestFireTicks = config.getInt("Priest.DamageFactor.FireTicks", 50);
 		priestAltarMaterial = config.getString("Priest.Church.AltarMaterial","DIAMOND_BLOCK");
 		priestMaterialsString = config.getStringList("Priest.Spell.Material", null);
 		priestAltarMaterialsString = config.getStringList("Priest.Church.Recipe.Materials", null);

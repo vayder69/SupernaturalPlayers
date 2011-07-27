@@ -1,6 +1,7 @@
 package me.matterz.supernaturals.manager;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Boat;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -24,6 +25,11 @@ public class GhoulManager {
 			return;
 		if(SupernaturalsPlugin.hasPermissions(player, permissions))
 			return;
+		if(player.isInsideVehicle()){
+			if(player.getVehicle() instanceof Boat){
+				return;
+			}
+		}
 		
 		Material material = player.getLocation().getBlock().getType();
 		
@@ -31,9 +37,9 @@ public class GhoulManager {
 			int health = (player.getHealth()-SNConfigHandler.ghoulDamageWater);
 			if(health<0)
 				health=0;
+			player.setHealth(health);
 			EntityDamageEvent event = new EntityDamageEvent(player, DamageCause.DROWNING, SNConfigHandler.ghoulDamageWater);
 			player.setLastDamageCause(event);
-			player.setHealth(health);
 			SupernaturalManager.sendMessage(SupernaturalManager.get(player), "Ghouls disintegrate in water!  Get Out Quick!");
 		}
 	}

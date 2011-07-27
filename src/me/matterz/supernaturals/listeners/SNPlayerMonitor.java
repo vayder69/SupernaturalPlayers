@@ -14,7 +14,8 @@ import org.bukkit.event.player.PlayerPortalEvent;
 
 public class SNPlayerMonitor extends PlayerListener {
 	
-private SupernaturalsPlugin plugin;
+	private SupernaturalsPlugin plugin;
+	private String worldPermission = "supernatural.world.disabled";
 	
 	public SNPlayerMonitor(SupernaturalsPlugin instance){
 		this.plugin = instance;
@@ -30,6 +31,8 @@ private SupernaturalsPlugin plugin;
 	@Override
 	public void onPlayerPortal(PlayerPortalEvent event){
 		Player player = event.getPlayer();
+		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission))
+			return;
 		if(event.getTo().getWorld().getEnvironment().equals(Environment.NETHER)){
 			if(SNConfigHandler.debugMode)
 				SupernaturalsPlugin.log("Player inventory logged.");
@@ -40,6 +43,8 @@ private SupernaturalsPlugin plugin;
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event){	    
 		Player player = event.getPlayer();
+		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission))
+			return;
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		
 		if(SNConfigHandler.enableColors){

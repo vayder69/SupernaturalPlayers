@@ -16,6 +16,7 @@ import me.matterz.supernaturals.commands.SNCommandCure;
 import me.matterz.supernaturals.commands.SNCommandHelp;
 import me.matterz.supernaturals.commands.SNCommandList;
 import me.matterz.supernaturals.commands.SNCommandReset;
+import me.matterz.supernaturals.commands.SNCommandRestartTask;
 import me.matterz.supernaturals.commands.SNCommandRmTarget;
 import me.matterz.supernaturals.commands.SNCommandSave;
 import me.matterz.supernaturals.commands.SNCommandConvert;
@@ -131,7 +132,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		superManager.cancelTimer();
+		SupernaturalManager.cancelTimer();
 		saveData();
 		PluginDescriptionFile pdfFile = this.getDescription();
         log(pdfFile.getName() + " version " + pdfFile.getVersion() + " disabled.");
@@ -157,6 +158,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandReset());
 		commands.add(new SNCommandKillList());
 		commands.add(new SNCommandRmTarget());
+		commands.add(new SNCommandRestartTask());
 		
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Lowest, this);
@@ -184,7 +186,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
         SNConfigHandler.getConfiguration();
 
 	    loadData();
-	    superManager.startTimer();
+	    SupernaturalManager.startTimer();
 	    HunterManager.createBounties();
 	    setupPermissions();	    
 	}
@@ -258,6 +260,11 @@ public class SupernaturalsPlugin extends JavaPlugin {
 	public static void reloadData(){
 		File file = new File(dataFolder, "data.yml");
 		SupernaturalManager.setSupernaturals(SNPlayerHandler.load(file));
+	}
+	
+	public static void restartTask(){
+		SupernaturalManager.cancelTimer();
+		SupernaturalManager.startTimer();
 	}
 	
 	// -------------------------------------------- //

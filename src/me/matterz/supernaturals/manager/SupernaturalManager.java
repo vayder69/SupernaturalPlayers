@@ -35,11 +35,12 @@ import me.matterz.supernaturals.util.SuperNTaskTimer;
 public class SupernaturalManager {
 
 	private SupernaturalsPlugin plugin;
+	private String worldPermission = "supernatural.world.disabled";
 	
 	private static List<SuperNPlayer> supernaturals = new ArrayList<SuperNPlayer>();
 	private transient int taskCounter = 0;
 	
-	private Timer timer = new Timer();
+	private static Timer timer = new Timer();
 	
 	public SupernaturalManager(SupernaturalsPlugin plugin){
 		this.plugin = plugin;
@@ -277,6 +278,9 @@ public class SupernaturalManager {
 		SuperNPlayer snplayer = get(player);
 		Entity damager = null;
 		EntityDamageEvent e = player.getLastDamageCause();
+		
+		if(e.getCause()==null)
+			return;
 		
 		if(!snplayer.isSuper()){
 			if(snplayer.isPriest()){
@@ -595,6 +599,8 @@ public class SupernaturalManager {
 	
 	public static void sendMessage(SuperNPlayer snplayer, String message) {
 		Player player = SupernaturalsPlugin.instance.getServer().getPlayer(snplayer.getName());
+		if(!player.isOnline())
+			return;
 		player.sendMessage(ChatColor.RED + message);
 	}
 	
@@ -648,16 +654,20 @@ public class SupernaturalManager {
 		return false; 
 	}
 	
-	public void startTimer(){
-		timer.schedule(new SuperNTaskTimer(plugin),0,1000);
+	public static void startTimer(){
+		timer.schedule(new SuperNTaskTimer(SupernaturalsPlugin.instance),0,1000);
 	}
 	
-	public void cancelTimer(){
+	public static void cancelTimer(){
 		timer.cancel();
 	}
 	
 	public void advanceTime(SuperNPlayer snplayer, int milliseconds) {
 		Player player = plugin.getServer().getPlayer(snplayer.getName());
+		
+		if(SupernaturalsPlugin.hasPermissions(player, worldPermission))
+			return;
+		
 		taskCounter++;
 		if(taskCounter>= 30){
 			taskCounter = 0;

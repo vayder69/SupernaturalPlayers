@@ -27,7 +27,8 @@ import org.bukkit.inventory.ItemStack;
 public class SNEntityListener extends EntityListener{
 
 	private SupernaturalsPlugin plugin;
-
+	private String worldPermission = "supernatural.world.disabled";
+	
 	private boolean projectileCalled = false;
 	private String arrowType = "normal";
 	private List<Player> demons = new ArrayList<Player>();
@@ -42,19 +43,23 @@ public class SNEntityListener extends EntityListener{
 			SupernaturalsPlugin.log("Entity Explode event with "+event.getEntity().getClass().getSimpleName());
 		if(event.getEntity() instanceof Fireball){
 			Fireball fireball = (Fireball) event.getEntity();
-			for(Entity entity : fireball.getNearbyEntities(3, 3, 3)){
-				if(entity instanceof LivingEntity){
-					LivingEntity lEntity = (LivingEntity) entity;
-					if(entity instanceof Player){
-						Player player = (Player) entity;
-						SuperNPlayer snplayer = SupernaturalManager.get(player);
-						if(snplayer.isDemon())
-							continue;
-						if(!SupernaturalsPlugin.instance.getPvP(player))
-							continue;
+			if(fireball.getShooter() instanceof Player){
+				if(SupernaturalsPlugin.hasPermissions((Player) fireball.getShooter(), worldPermission))
+					return;
+				for(Entity entity : fireball.getNearbyEntities(3, 3, 3)){
+					if(entity instanceof LivingEntity){
+						LivingEntity lEntity = (LivingEntity) entity;
+						if(entity instanceof Player){
+							Player player = (Player) entity;
+							SuperNPlayer snplayer = SupernaturalManager.get(player);
+							if(snplayer.isDemon())
+								continue;
+							if(!SupernaturalsPlugin.instance.getPvP(player))
+								continue;
+						}
+						lEntity.damage(SNConfigHandler.demonFireballDamage, fireball);
+						lEntity.setFireTicks(200);
 					}
-					lEntity.damage(SNConfigHandler.demonFireballDamage, fireball);
-					lEntity.setFireTicks(200);
 				}
 			}
 		}
@@ -84,6 +89,8 @@ public class SNEntityListener extends EntityListener{
 		//Modify victim player damage
 		if(victim instanceof Player){
 			pVictim = (Player) victim;
+			if(SupernaturalsPlugin.hasPermissions(pVictim, worldPermission))
+				return;
 			snpVictim = SupernaturalManager.get(pVictim);
 			if(snpVictim.isVampire()){
 				if(event.getCause().equals(DamageCause.DROWNING)){
@@ -147,7 +154,7 @@ public class SNEntityListener extends EntityListener{
 			edbeEvent = (EntityDamageByEntityEvent) event;
 			damager = edbeEvent.getDamager();
 			damage = event.getDamage();
-		} else
+		}else
 			return;
 		if(!(damager instanceof Player))
 			return;	
@@ -252,6 +259,9 @@ public class SNEntityListener extends EntityListener{
 		if(event.getEntity()==null){
 			return;
 		}
+		
+		if(SupernaturalsPlugin.hasPermissions((Player) event.getTarget(), worldPermission))
+			return;
 		
 		SuperNPlayer snplayer = SupernaturalManager.get((Player)event.getTarget());
 

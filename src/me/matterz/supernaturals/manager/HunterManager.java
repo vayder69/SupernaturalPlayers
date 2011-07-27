@@ -301,7 +301,14 @@ public class HunterManager {
 	// -------------------------------------------- //
 	
 	public boolean shoot(final Player player){
+		
 		final SuperNPlayer snplayer = SupernaturalManager.get(player);
+		
+		if(!SupernaturalsPlugin.instance.getPvP(player)){
+			SupernaturalManager.sendMessage(snplayer, "You cannot use special arrows in non-PvP areas.");
+			return false;
+		}
+		
 		if(drainedPlayers.contains(player)){
 			player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.ARROW, 1));
 			SupernaturalManager.sendMessage(snplayer, "You are still recovering from Power Shot.");

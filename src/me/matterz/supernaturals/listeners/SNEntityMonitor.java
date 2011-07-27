@@ -27,6 +27,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 public class SNEntityMonitor extends EntityListener {
 	
 	private static SupernaturalsPlugin plugin;
+	private String worldPermission = "supernatural.world.disabled";
 	
 	public SNEntityMonitor(SupernaturalsPlugin instance){
 		SNEntityMonitor.plugin = instance;
@@ -37,9 +38,11 @@ public class SNEntityMonitor extends EntityListener {
         if(event.getEntity() instanceof Arrow) {
             Arrow arrow = (Arrow)event.getEntity();
             if(plugin.getHunterManager().getArrowMap().containsKey(arrow)){
+        		Player player = (Player)arrow.getShooter();
+        		if(SupernaturalsPlugin.hasPermissions(player, worldPermission))
+        			return;
             	String arrowType = plugin.getHunterManager().getArrowMap().get(arrow);
             	if(arrowType.equalsIgnoreCase("grapple")){
-            		Player player = (Player)arrow.getShooter();
                     plugin.getHunterManager().startGrappling(player, arrow.getLocation());
             	}else if(arrowType.equalsIgnoreCase("fire")){
             		arrow.getLocation();
@@ -85,6 +88,9 @@ public class SNEntityMonitor extends EntityListener {
 				return;
 			}
 		
+			if(SupernaturalsPlugin.hasPermissions(pDamager, worldPermission))
+    			return;
+			
 			snDamager = SupernaturalManager.get(pDamager);
 			
 			if(victim instanceof Creature){
@@ -161,6 +167,10 @@ public class SNEntityMonitor extends EntityListener {
 				}else{
 					return;
 				}
+				
+				if(SupernaturalsPlugin.hasPermissions(pDamager, worldPermission))
+	    			return;
+				
 				SuperNPlayer snDamager = SupernaturalManager.get(pDamager);
 				SupernaturalManager.killEvent(snDamager, null);
 			}

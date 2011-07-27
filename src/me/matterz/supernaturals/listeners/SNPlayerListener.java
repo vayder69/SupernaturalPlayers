@@ -22,6 +22,7 @@ public class SNPlayerListener extends PlayerListener{
 	public static SupernaturalsPlugin plugin;
 	private String permissions = "supernatural.player.shrineuse";
 	private String permissions2 = "supernatural.player.wolfbane";
+	private String worldPermission = "supernatural.world.disabled";
 	
 	public SNPlayerListener(SupernaturalsPlugin instance){
 		SNPlayerListener.plugin = instance;
@@ -46,6 +47,10 @@ public class SNPlayerListener extends PlayerListener{
 		}
 		
 		Player player = event.getPlayer();
+		
+		if(SupernaturalsPlugin.hasPermissions(player, worldPermission))
+			return;
+		
 		SuperNPlayer snplayer = SupernaturalManager.get(player);
 		boolean cancelled = false;
 		Material itemMaterial = event.getMaterial();
@@ -275,6 +280,10 @@ public class SNPlayerListener extends PlayerListener{
 		if(event.isCancelled()){
 			return;
 		}
+		
+		if(SupernaturalsPlugin.hasPermissions(event.getPlayer(), worldPermission))
+			return;
+		
 		if ((event.getLeaveMessage().contains("Flying")) || (event.getReason().contains("Flying"))) {
 			SuperNPlayer snplayer = SupernaturalManager.get(event.getPlayer());
 			if(snplayer.isVampire()&& event.getPlayer().getItemInHand().getType().toString().equalsIgnoreCase(SNConfigHandler.jumpMaterial)){

@@ -30,6 +30,7 @@ public class SNCommandAdmin extends SNCommand{
 		adminHelpMessages.add("/sn rmtarget <PlayerName> "+ChatColor.WHITE+"- Removes player from current WitchHunter kill list.");
 		adminHelpMessages.add("/sn save "+ChatColor.WHITE+"- Save data to disk.");
 		adminHelpMessages.add("/sn reload "+ChatColor.WHITE+"- Reload data from disk.");
+		adminHelpMessages.add("/sn restartTask "+ChatColor.WHITE+"- Restarts the Task Timer.");
 		adminHelpMessages.add("/sn setchurch "+ChatColor.WHITE+"- Sets your current location as the priests' church.");
 		adminHelpMessages.add("/sn setbanish "+ChatColor.WHITE+"- Sets your current location as the priests' banish spot.");
 		adminHelpMessages.add("/sn setcoven "+ChatColor.WHITE+"- Sets your current location as the vampires' teleport spot.");

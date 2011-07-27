@@ -18,6 +18,7 @@ public class SNBlockListener extends BlockListener{
 
 	private SupernaturalsPlugin plugin;
 	private String permissions = "supernatural.player.witchhuntersign";
+	private String worldPermission = "supernatural.world.disabled";
 	
 	public SNBlockListener(SupernaturalsPlugin instance){
 		this.plugin = instance;
@@ -44,6 +45,8 @@ public class SNBlockListener extends BlockListener{
 	public void onSignChange(SignChangeEvent event){
 		Player player = event.getPlayer();
 		String[] text = event.getLines();
+		if(SupernaturalsPlugin.hasPermissions(player, worldPermission))
+			return;
 		for(int i =0; i < text.length; i++){
 			if(text[i].contains(SNConfigHandler.hunterHallMessage)){
 				if(!SupernaturalsPlugin.hasPermissions(player, permissions)){
