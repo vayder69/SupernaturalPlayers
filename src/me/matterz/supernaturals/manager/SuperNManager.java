@@ -116,6 +116,8 @@ public class SuperNManager {
 	}
 	
 	public static void curse(SuperNPlayer snplayer, String superType, int powerLevel) {
+		if(!SNConfigHandler.supernaturalTypes.contains(superType))
+			return;
 		String type = superType.toLowerCase();
 		snplayer.setOldType(snplayer.getType());
 		snplayer.setOldPower(snplayer.getPower());
@@ -225,6 +227,9 @@ public class SuperNManager {
 				alterPower(damager, SNConfigHandler.wereKillPowerCreatureGain, "Creature death!");
 			}else if(damager.isDemon()){
 				alterPower(damager, SNConfigHandler.demonKillPowerCreatureGain, "Creature death!");
+			}else if(damager.isHunter()){
+				if(SNConfigHandler.hunterKillPowerCreatureGain>0)
+					alterPower(damager, SNConfigHandler.hunterKillPowerCreatureGain, "Creature death!");
 			}
 		}else{
 			double random = Math.random();
@@ -510,6 +515,8 @@ public class SuperNManager {
 			SuperNManager.alterPower(snplayer, -SNConfigHandler.vampireHealthCost, "Healing!");
 			
 		}else if(snplayer.isGhoul()){
+			if(player.getWorld().hasStorm() && !plugin.getVampireManager().isUnderRoof(player))
+				return;
 			deltaHeal = deltaSeconds * SNConfigHandler.ghoulHealthGained;
 		}else{
 			if(!worldTimeIsNight(player))

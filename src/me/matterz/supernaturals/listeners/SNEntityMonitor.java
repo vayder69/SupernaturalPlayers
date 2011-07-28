@@ -251,9 +251,11 @@ public class SNEntityMonitor extends EntityListener {
 					}
 					plugin.getHunterManager().addPlayerApp(pDamager, supersKilled);
 				}
+				SuperNManager.killEvent(snDamager, snplayer);
 			}else if(damager instanceof Wolf){
 				Wolf wolf = (Wolf) damager;
 				if(!wolf.isTamed()){
+					SuperNManager.deathEvent(pVictim);
 					return;
 				}
 				if(!(wolf.getOwner() instanceof Player)){
@@ -263,11 +265,9 @@ public class SNEntityMonitor extends EntityListener {
 				if(SNConfigHandler.debugMode){
 					SupernaturalsPlugin.log("Player "+pDamager.getName()+" has killed "+snplayer.getName()+" with wolf.");
 				}
-			}else{
-				return;
+				SuperNPlayer snDamager = SuperNManager.get(pDamager);
+				SuperNManager.killEvent(snDamager, snplayer);
 			}
-			SuperNPlayer snDamager = SuperNManager.get(pDamager);
-			SuperNManager.killEvent(snDamager, snplayer);
 		}
 		SuperNManager.deathEvent(pVictim);
 	}

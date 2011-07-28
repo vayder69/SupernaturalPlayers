@@ -100,6 +100,8 @@ public class DemonManager {
 	
 	public void powerAdvanceTime(Player player, int seconds){
 		if(!player.getWorld().getEnvironment().equals(Environment.NETHER)){
+			if(player.getLocation().getBlock().getType().equals(Material.FIRE) || player.getLocation().getBlock().getType().equals(Material.LAVA))
+				return;
 			SuperNPlayer snplayer = SuperNManager.get(player);
 			SuperNManager.alterPower(snplayer, -(SNConfigHandler.demonPowerLoss*seconds));
 		}

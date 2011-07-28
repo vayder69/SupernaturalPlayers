@@ -121,6 +121,7 @@ public class SNConfigHandler {
 	public static int hunterPowerArrowPower;
 	public static int hunterCooldown;
 	public static int hunterKillPowerPlayerGain;
+	public static int hunterKillPowerCreatureGain;
 	public static int hunterFallReduction;
 	public static int hunterFireArrowFireTicks;
 	public static int hunterPowerStart;
@@ -240,7 +241,7 @@ public class SNConfigHandler {
 	}
 	
 	public static void loadValues(Configuration config){
-		debugMode = config.getBoolean("DebugMode", true);
+		debugMode = config.getBoolean("DebugMode", false);
 		multiworld = config.getBoolean("MultiWorld", false);
 		enableColors = config.getBoolean("EnableChatColors", true);
 		truceBreakTime = config.getInt("Supernatural.Truce.BreakTime", 120000);
@@ -373,11 +374,12 @@ public class SNConfigHandler {
 		hunterPowerStart = config.getInt("WitchHunter.Power.StartingPower", 10000);
 		hunterDeathPowerPenalty = config.getInt("WitchHunter.Power.DeathPenalty", 500);
 		hunterKillPowerPlayerGain = config.getInt("WitchHunter.Power.PlayerKill", 2000);
+		hunterKillPowerCreatureGain = config.getInt("WitchHunter.Power.CreatureKill", 0);
 		hunterBountyCompletion = config.getInt("WitchHunter.Bounty.CompletionBonus", 8000);
 		hunterPowerArrowFire = config.getInt("WitchHunter.Power.ArrowFire", 100);
 		hunterPowerArrowTriple = config.getInt("WitchHunter.Power.ArrowTriple", 100);
 		hunterPowerArrowGrapple = config.getInt("WitchHunter.Power.ArrowGrapple", 500);
-		hunterPowerArrowPower = config.getInt("WitchHunter.Power.ArrowPower", 2000);
+		hunterPowerArrowPower = config.getInt("WitchHunter.Power.ArrowPower", 1000);
 		hunterPowerArrowDamage = config.getDouble("WitchHunter.ArrowPower.DamageFactor", 2.0);
 		hunterCooldown = config.getInt("WitchHunter.PowerArrow.Cooldown", 15000);
 		hunterArmorString = config.getStringList("WitchHunter.Armor", null);
