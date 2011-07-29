@@ -156,6 +156,9 @@ public class SNEntityListener extends EntityListener{
 					pVictim.setFireTicks(0);
 					event.setCancelled(true);
 					return;
+				}else if(event.getCause().equals(DamageCause.FALL)){
+					event.setCancelled(true);
+					return;
 				}
 			}else if(snpVictim.isHunter()){
 				if(event.getCause().equals(DamageCause.FALL)){
