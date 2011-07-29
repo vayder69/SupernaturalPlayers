@@ -102,7 +102,7 @@ public class PriestManager {
 								SuperNManager.sendMessage(snplayer, SNConfigHandler.priestAltarRecipe.getRecipeLine());
 								SuperNManager.sendMessage(snplayer, "The Church recognizes your holy spirit and accepts you into the priesthood.");
 								SNConfigHandler.priestAltarRecipe.removeFromPlayer(player);
-								SuperNManager.curse(snplayer, "priest", SNConfigHandler.priestPowerStart);
+								SuperNManager.convert(snplayer, "priest", SNConfigHandler.priestPowerStart);
 							}else{
 								SuperNManager.sendMessage(snplayer, "The Church judges your intended donate insufficient.  You must gather the following: ");
 								SuperNManager.sendMessage(snplayer, SNConfigHandler.priestAltarRecipe.getRecipeLine());

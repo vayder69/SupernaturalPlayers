@@ -270,7 +270,7 @@ public class HunterManager {
 	public boolean join(SuperNPlayer snplayer){
 		if(playerInvites.contains(snplayer)){
 			SuperNManager.sendMessage(snplayer, "Welcome to the WitchHunter society!");
-			SuperNManager.curse(snplayer, "witchhunter", SNConfigHandler.hunterPowerStart);
+			SuperNManager.convert(snplayer, "witchhunter", SNConfigHandler.hunterPowerStart);
 			return true;
 		}
 		return false;

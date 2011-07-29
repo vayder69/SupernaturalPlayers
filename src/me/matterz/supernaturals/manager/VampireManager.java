@@ -113,7 +113,7 @@ public class VampireManager{
 					+" draws energy from the "+SNConfigHandler.vampireAltarInfectMaterialSurround.toLowerCase()
 					+"... The energy rushes through you and you feel a bitter cold...");
 			SNConfigHandler.vampireAltarInfectRecipe.removeFromPlayer(player);
-			SuperNManager.curse(snplayer, "vampire", SNConfigHandler.vampirePowerStart);
+			SuperNManager.convert(snplayer, "vampire", SNConfigHandler.vampirePowerStart);
 		} else {
 			SuperNManager.sendMessage(snplayer, "To use it you need to collect these ingredients:");
 			SuperNManager.sendMessage(snplayer, SNConfigHandler.vampireAltarInfectRecipe.getRecipeLine());

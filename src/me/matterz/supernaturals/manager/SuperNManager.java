@@ -111,11 +111,11 @@ public class SuperNManager {
 	// 			Supernatural Conversions			//
 	// -------------------------------------------- //
 	
-	public static void curse(SuperNPlayer snplayer, String superType) {
-		curse(snplayer, superType, 0);
+	public static void convert(SuperNPlayer snplayer, String superType) {
+		convert(snplayer, superType, 0);
 	}
 	
-	public static void curse(SuperNPlayer snplayer, String superType, int powerLevel) {
+	public static void convert(SuperNPlayer snplayer, String superType, int powerLevel) {
 		if(!SNConfigHandler.supernaturalTypes.contains(superType))
 			return;
 		String type = superType.toLowerCase();
@@ -210,13 +210,6 @@ public class SuperNManager {
 		SuperNManager.sendMessage(snplayer, "Power: "+ChatColor.WHITE+(int)snplayer.getPower()+ChatColor.RED+" ("+ChatColor.WHITE+(int)delta+ChatColor.RED+") "+reason);
 	}
 	
-	public static void bloodDrink(SuperNPlayer snplayer, double amount, String source) {
-		if (snplayer.getPower() == 10000D) {
-			return;
-		}
-		alterPower(snplayer, amount, String.format("from %s", source));
-	}
-	
 	public static void killEvent(SuperNPlayer damager, SuperNPlayer victim){
 		if(victim==null){
 			if(damager.isVampire()){
@@ -244,7 +237,7 @@ public class SuperNManager {
 
 					if(random<SNConfigHandler.spreadChance){
 						SuperNManager.sendMessage(victim, "You feel your heart stop! You have contracted vampirism.");
-						curse(victim, "vampire");
+						convert(victim, "vampire");
 					}
 				}
 			}else if(damager.isGhoul()){
@@ -257,7 +250,7 @@ public class SuperNManager {
 				{
 					if(random<SNConfigHandler.spreadChance){
 						SuperNManager.sendMessage(victim, "Your body dies... You feel a deep hatred for the living.");
-						curse(victim, "ghoul");
+						convert(victim, "ghoul");
 					}
 				}
 			}else if(damager.isWere()){
@@ -270,7 +263,7 @@ public class SuperNManager {
 				{
 					if(random<SNConfigHandler.spreadChance){
 						SuperNManager.sendMessage(victim, "Your basic nature changes... You feel more in touch with your animal side.");
-						curse(victim, "werewolf");
+						convert(victim, "werewolf");
 					}
 				}
 			}else if(damager.isDemon()){
@@ -302,7 +295,7 @@ public class SuperNManager {
 		Entity damager = null;
 		EntityDamageEvent e = player.getLastDamageCause();
 		
-		if(e.getCause()==null)
+		if(e==null)
 			return;
 		
 		if(!snplayer.isSuper()){
@@ -318,7 +311,7 @@ public class SuperNManager {
 				if(player.getWorld().getEnvironment().equals(Environment.NETHER)){
 					if(SupernaturalsPlugin.instance.getDemonManager().checkPlayerApp(player)){
 						sendMessage(snplayer, "Hellfire races through your veins!");
-						curse(snplayer, "demon", SNConfigHandler.demonPowerStart);
+						convert(snplayer, "demon", SNConfigHandler.demonPowerStart);
 					}
 				}
 			}
@@ -334,12 +327,12 @@ public class SuperNManager {
 				if(random<SNConfigHandler.spreadChance){
 					if(player.getWorld().getEnvironment().equals(Environment.NETHER)){
 						if(damager instanceof PigZombie){
-							curse(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
+							convert(snplayer, "ghoul", SNConfigHandler.ghoulPowerStart);
 							sendMessage(snplayer, "You have been transformed into a Ghoul!");
 						}
 					}else if((damager instanceof Wolf)){
 						if(!(((Wolf)damager).isTamed()) && worldTimeIsNight(player)){
-							curse(snplayer, "werewolf", SNConfigHandler.werePowerStart);
+							convert(snplayer, "werewolf", SNConfigHandler.werePowerStart);
 							sendMessage(snplayer, "You have mutated into a werewolf!");
 						}
 					}

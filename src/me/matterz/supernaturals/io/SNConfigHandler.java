@@ -475,7 +475,6 @@ public class SNConfigHandler {
 		}
 		
 		if(priestAltarMaterialsString.size() == 0){
-			priestAltarMaterialsString.add("DIAMOND");
 			priestAltarMaterialsString.add("GOLD_INGOT");
 			priestAltarMaterialsString.add("GLOWSTONE_DUST");
 			priestAltarMaterialsString.add("REDSTONE");
@@ -484,7 +483,6 @@ public class SNConfigHandler {
 		}
 		
 		if(priestAltarQuantities.size() == 0){
-			priestAltarQuantities.add(2);
 			priestAltarQuantities.add(4);
 			priestAltarQuantities.add(4);
 			priestAltarQuantities.add(8);

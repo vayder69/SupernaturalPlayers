@@ -71,7 +71,7 @@ public class SNCommandConvert extends SNCommand {
 			}else{
 				this.sendMessage(ChatColor.WHITE + senderPlayer.getName() + ChatColor.RED + " was turned into a " 
 						+ ChatColor.WHITE + superType +ChatColor.RED + " !");
-				SuperNManager.curse(snplayer, superType);
+				SuperNManager.convert(snplayer, superType);
 			}
 		}else{
 			String playername = parameters.get(0);
@@ -100,7 +100,7 @@ public class SNCommandConvert extends SNCommand {
 			}else{
 				this.sendMessage(ChatColor.WHITE + player.getName() + ChatColor.RED + " was turned into a " 
 						+ ChatColor.WHITE + superType +ChatColor.RED + " !");
-				SuperNManager.curse(snplayer, superType);
+				SuperNManager.convert(snplayer, superType);
 			}
 		}
 	}
