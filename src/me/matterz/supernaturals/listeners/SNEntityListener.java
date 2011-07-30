@@ -207,6 +207,9 @@ public class SNEntityListener extends EntityListener{
 				projectileCalled = false;
 			}
 			
+			if(SupernaturalsPlugin.hasPermissions(pDamager, worldPermission) && SNConfigHandler.multiworld)
+				return;
+			
 			//Modify damage if damager is a supernatural
 			if(snpDamager.isVampire()){
 				damage += damage * snpDamager.scale(SNConfigHandler.vampireDamageFactor);

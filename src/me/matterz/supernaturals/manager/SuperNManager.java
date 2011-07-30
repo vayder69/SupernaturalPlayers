@@ -517,7 +517,7 @@ public class SuperNManager {
 			SuperNManager.alterPower(snplayer, -SNConfigHandler.vampireHealthCost, "Healing!");
 			
 		}else if(snplayer.isGhoul()){
-			if(player.getWorld().hasStorm() && !plugin.getVampireManager().isUnderRoof(player))
+			if(player.getWorld().hasStorm() && !plugin.getGhoulManager().isUnderRoof(player))
 				return;
 			deltaHeal = deltaSeconds * SNConfigHandler.ghoulHealthGained;
 		}else{
