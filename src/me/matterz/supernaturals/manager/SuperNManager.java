@@ -302,9 +302,6 @@ public class SuperNManager {
 		Entity damager = null;
 		EntityDamageEvent e = player.getLastDamageCause();
 		
-		if(e==null)
-			return;
-		
 		if(!snplayer.isSuper()){
 			if(snplayer.isPriest()){
 				alterPower(snplayer, -SNConfigHandler.priestDeathPowerPenalty, "You died!");
@@ -313,6 +310,9 @@ public class SuperNManager {
 			}else if(snplayer.isHuman()){
 				SupernaturalsPlugin.instance.getHunterManager().removePlayerApp(player);
 			}
+			
+			if(e==null)
+				return;
 			
 			if(e.getCause().equals(DamageCause.LAVA) || e.getCause().equals(DamageCause.FIRE) || e.getCause().equals(DamageCause.FIRE_TICK)){
 				if(player.getWorld().getEnvironment().equals(Environment.NETHER)){
@@ -354,6 +354,8 @@ public class SuperNManager {
 				alterPower(snplayer, -SNConfigHandler.wereDeathPowerPenalty, "You died!");
 			} else if(snplayer.isDemon()){
 				alterPower(snplayer, -SNConfigHandler.demonDeathPowerPenalty, "You died!");
+				if(e==null)
+					return;
 				if(e.getCause().equals(DamageCause.DROWNING) && player.getWorld().getTemperature(player.getLocation().getBlockX(), player.getLocation().getBlockZ())<0.6){
 					if(snplayer.isDemon()){
 						if(SNConfigHandler.debugMode)

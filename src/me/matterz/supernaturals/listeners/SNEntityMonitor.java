@@ -259,6 +259,7 @@ public class SNEntityMonitor extends EntityListener {
 					return;
 				}
 				if(!(wolf.getOwner() instanceof Player)){
+					SuperNManager.deathEvent(pVictim);
 					return;
 				}
 				pDamager = (Player) wolf.getOwner();

@@ -1,6 +1,6 @@
 name: SupernaturalPlayers
 main: me.matterz.supernaturals.SupernaturalsPlugin
-version: 2.2.7
+version: 2.2.8
 author: Matterz
 commands:
   sn:
