@@ -329,6 +329,9 @@ public class HunterManager {
 		
 		final SuperNPlayer snplayer = SuperNManager.get(player);
 		
+		if(!player.getInventory().contains(Material.ARROW))
+			return false;
+		
 		if(!SupernaturalsPlugin.instance.getPvP(player)){
 			SuperNManager.sendMessage(snplayer, "You cannot use special arrows in non-PvP areas.");
 			return false;
