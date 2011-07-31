@@ -180,7 +180,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		commands.add(new SNCommandRestartTask());
 		
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Lowest, this);
+		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Priority.Low, this);
 		pm.registerEvent(Type.PLAYER_KICK, this.playerListener, Priority.Low, this);
 		
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
