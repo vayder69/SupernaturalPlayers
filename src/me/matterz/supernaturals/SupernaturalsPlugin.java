@@ -186,7 +186,7 @@ public class SupernaturalsPlugin extends JavaPlugin {
 		pm.registerEvent(Type.PLAYER_JOIN, this.playerMonitor, Priority.Monitor, this);
 		pm.registerEvent(Type.PLAYER_PORTAL, this.playerMonitor, Priority.Monitor, this);
 		
-		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Highest, this);
+		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Priority.Normal, this);
 		pm.registerEvent(Type.ENTITY_TARGET, this.entityListener, Priority.Normal, this);
 		pm.registerEvent(Type.ENTITY_EXPLODE, this.entityListener, Priority.Normal, this);
 		
